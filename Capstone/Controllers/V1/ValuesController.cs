@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Capstone.Routes.V1;
+using Capstone.Helpers;
 
 namespace Capstone.Controllers.V1
 {
@@ -15,7 +16,10 @@ namespace Capstone.Controllers.V1
         [HttpGet(Api.Values.GetAll)]
         public IActionResult GetAll()
         {
+            
             var values = new[] { "value 1", "value 2", "value 3" };
+            //get user ID
+            var userId = HttpContext.GetUserId();
             return Ok(values);
         }
 
