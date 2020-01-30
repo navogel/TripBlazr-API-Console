@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Capstone.Interfaces;
-using Capstone.Models.ViewModels;
-using Capstone.Routes.V1;
+using TripBlazrConsole.Interfaces;
+using TripBlazrConsole.Models.ViewModels;
+using TripBlazrConsole.Routes.V1;
 
-namespace Capstone.Controllers.V1
+namespace TripBlazrConsole.Controllers.V1
 {
     [ApiController]
     public class UserController : ControllerBase

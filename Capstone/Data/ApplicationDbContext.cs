@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Capstone.Models.Data;
+using TripBlazrConsole.Models.Data;
 
-namespace Capstone.Data
+namespace TripBlazrConsole.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

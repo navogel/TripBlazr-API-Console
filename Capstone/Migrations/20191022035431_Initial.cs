@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Capstone.Migrations
+namespace TripBlazrConsole.Migrations
 {
     public partial class Initial : Migration
     {

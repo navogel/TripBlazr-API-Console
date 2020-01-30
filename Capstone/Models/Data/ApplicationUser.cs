@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Capstone.Models.Data
+namespace TripBlazrConsole.Models.Data
 {
     // ******************* 
     // NOTE: Do NOT return an ApplicationUser as part of a json response.

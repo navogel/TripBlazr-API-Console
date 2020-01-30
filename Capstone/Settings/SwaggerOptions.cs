@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Capstone.Settings
+namespace TripBlazrConsole.Settings
 {
     public class SwaggerOptions
     {

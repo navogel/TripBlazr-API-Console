@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Capstone.Data;
+using TripBlazrConsole.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Capstone.Settings;
+using TripBlazrConsole.Settings;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Capstone.Interfaces;
-using Capstone.Services;
-using Capstone.Models.Data;
+using TripBlazrConsole.Interfaces;
+using TripBlazrConsole.Services;
+using TripBlazrConsole.Models.Data;
 
-namespace Capstone
+namespace TripBlazrConsole
 {
     public class Startup
     {

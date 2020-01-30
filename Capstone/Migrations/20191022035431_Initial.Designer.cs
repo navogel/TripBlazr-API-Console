@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Capstone.Data;
+using TripBlazrConsole.Data;
 
-namespace Capstone.Migrations
+namespace TripBlazrConsole.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20191022035431_Initial")]
@@ -156,7 +156,7 @@ namespace Capstone.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Capstone.Models.Data.ApplicationUser", b =>
+            modelBuilder.Entity("TripBlazrConsole.Models.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -230,7 +230,7 @@ namespace Capstone.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Capstone.Models.Data.RefreshToken", b =>
+            modelBuilder.Entity("TripBlazrConsole.Models.Data.RefreshToken", b =>
                 {
                     b.Property<Guid>("TokenId")
                         .ValueGeneratedOnAdd()
@@ -272,7 +272,7 @@ namespace Capstone.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Capstone.Models.Data.ApplicationUser", null)
+                    b.HasOne("TripBlazrConsole.Models.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -281,7 +281,7 @@ namespace Capstone.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Capstone.Models.Data.ApplicationUser", null)
+                    b.HasOne("TripBlazrConsole.Models.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -296,7 +296,7 @@ namespace Capstone.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Capstone.Models.Data.ApplicationUser", null)
+                    b.HasOne("TripBlazrConsole.Models.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -305,16 +305,16 @@ namespace Capstone.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Capstone.Models.Data.ApplicationUser", null)
+                    b.HasOne("TripBlazrConsole.Models.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Capstone.Models.Data.RefreshToken", b =>
+            modelBuilder.Entity("TripBlazrConsole.Models.Data.RefreshToken", b =>
                 {
-                    b.HasOne("Capstone.Models.Data.ApplicationUser", "User")
+                    b.HasOne("TripBlazrConsole.Models.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });

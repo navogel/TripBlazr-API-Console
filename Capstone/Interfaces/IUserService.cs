@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Capstone.Models.Data;
-using Capstone.Models.ViewModels;
+using TripBlazrConsole.Models.Data;
+using TripBlazrConsole.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Capstone.Interfaces
+namespace TripBlazrConsole.Interfaces
 {
     public interface IUserService
     {

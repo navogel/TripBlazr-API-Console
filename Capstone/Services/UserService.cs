@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Capstone.Data;
-using Capstone.Interfaces;
-using Capstone.Models.Data;
-using Capstone.Models.ViewModels;
-using Capstone.Settings;
+using TripBlazrConsole.Data;
+using TripBlazrConsole.Interfaces;
+using TripBlazrConsole.Models.Data;
+using TripBlazrConsole.Models.ViewModels;
+using TripBlazrConsole.Settings;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,7 +14,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Capstone.Services
+namespace TripBlazrConsole.Services
 {
     public class UserService : IUserService
     {

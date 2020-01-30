@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Capstone.Routes.V1;
-using Capstone.Helpers;
+using TripBlazrConsole.Routes.V1;
+using TripBlazrConsole.Helpers;
 
-namespace Capstone.Controllers.V1
+namespace TripBlazrConsole.Controllers.V1
 {
     [ApiController]
     [Authorize]
