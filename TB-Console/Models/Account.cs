@@ -21,7 +21,7 @@ namespace TripBlazrConsole.Models
         [Required]
         public double Longitude { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool Inactive { get; set; }
 
         [Required]
         public string CitySlug { get; set; }
