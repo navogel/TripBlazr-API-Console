@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TripBlazrConsole.Data;
 
 namespace TripBlazrConsole.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200201040734_UpdateModel")]
+    partial class UpdateModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,7 +170,7 @@ namespace TripBlazrConsole.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Inactive")
+                    b.Property<bool>("Inactive")
                         .HasColumnType("bit");
 
                     b.Property<double>("Latitude")
@@ -195,15 +197,11 @@ namespace TripBlazrConsole.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AccountUserId");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("AccountUser");
                 });
@@ -363,13 +361,13 @@ namespace TripBlazrConsole.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Inactive")
+                    b.Property<bool>("Inactive")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("Is24Hours")
+                    b.Property<bool>("Is24Hours")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsDeleted")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<double>("Latitude")
@@ -397,7 +395,7 @@ namespace TripBlazrConsole.Migrations
                     b.Property<int?>("SaturdayOpen")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("SeeWebsite")
+                    b.Property<bool>("SeeWebsite")
                         .HasColumnType("bit");
 
                     b.Property<string>("ShortSummary")
@@ -465,10 +463,6 @@ namespace TripBlazrConsole.Migrations
 
                     b.HasKey("LocationCategoryId");
 
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("LocationId");
-
                     b.ToTable("LocationCategories");
                 });
 
@@ -486,10 +480,6 @@ namespace TripBlazrConsole.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("LocationTagId");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("TagId");
 
                     b.ToTable("LocationTags");
                 });
@@ -532,8 +522,6 @@ namespace TripBlazrConsole.Migrations
 
                     b.HasKey("TagId");
 
-                    b.HasIndex("AccountId");
-
                     b.ToTable("Tags");
                 });
 
@@ -544,6 +532,9 @@ namespace TripBlazrConsole.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
                     b.Property<int>("MenuGroupId")
                         .HasColumnType("int");
 
@@ -551,10 +542,6 @@ namespace TripBlazrConsole.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("TagMenuGroupId");
-
-                    b.HasIndex("MenuGroupId");
-
-                    b.HasIndex("TagId");
 
                     b.ToTable("TagMenuGroups");
                 });
@@ -610,80 +597,11 @@ namespace TripBlazrConsole.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TripBlazrConsole.Models.AccountUser", b =>
-                {
-                    b.HasOne("TripBlazrConsole.Models.Account", "Account")
-                        .WithMany("AccountUsers")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TripBlazrConsole.Models.Data.ApplicationUser", "ApplicationUser")
-                        .WithMany("AccountUsers")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TripBlazrConsole.Models.Data.RefreshToken", b =>
                 {
                     b.HasOne("TripBlazrConsole.Models.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("TripBlazrConsole.Models.LocationCategory", b =>
-                {
-                    b.HasOne("TripBlazrConsole.Models.Category", "Category")
-                        .WithMany("LocationCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TripBlazrConsole.Models.Location", "Location")
-                        .WithMany("LocationCategories")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("TripBlazrConsole.Models.LocationTag", b =>
-                {
-                    b.HasOne("TripBlazrConsole.Models.Location", "Location")
-                        .WithMany("LocationTags")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TripBlazrConsole.Models.Tag", "Tag")
-                        .WithMany("LocationTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("TripBlazrConsole.Models.Tag", b =>
-                {
-                    b.HasOne("TripBlazrConsole.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("TripBlazrConsole.Models.TagMenuGroup", b =>
-                {
-                    b.HasOne("TripBlazrConsole.Models.MenuGroup", "MenuGroup")
-                        .WithMany("TagMenuGroups")
-                        .HasForeignKey("MenuGroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TripBlazrConsole.Models.Tag", "Tag")
-                        .WithMany("TagMenuGroups")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

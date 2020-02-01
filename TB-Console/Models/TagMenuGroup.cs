@@ -8,16 +8,17 @@ namespace TripBlazrConsole.Models
 {
     public class TagMenuGroup
     {
-        [Required]
+        [Key]
         public int TagMenuGroupId { get; set; }
         
         [Required]
         public int MenuGroupId { get; set; }
-
-        [Required]
-        public int AccountId { get; set; }
+        
+        public MenuGroup MenuGroup { get; set; }
 
         [Required]
         public int TagId { get; set; }
+
+        public Tag Tag { get; set; }
     }
 }

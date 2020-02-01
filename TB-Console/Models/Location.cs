@@ -8,7 +8,12 @@ namespace TripBlazrConsole.Models
 {
     public class Location
     {
-        [Required]
+        //public Location()
+        //{
+        //    this.Tags = new HashSet<Tag>();
+        //    this.Categories = new HashSet<Category>();
+        //}
+        [Key]
         public int LocationId { get; set; }
 
         [Required]
@@ -45,9 +50,9 @@ namespace TripBlazrConsole.Models
 
         //City Controls 
 
-        public bool Inactive { get; set; }
+        public bool? Inactive { get; set; } 
 
-        public bool IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; } 
 
 
         //address
@@ -62,9 +67,9 @@ namespace TripBlazrConsole.Models
 
         //hours
 
-        public bool Is24Hours { get; set; }
+        public bool? Is24Hours { get; set; }
 
-        public bool SeeWebsite { get; set; }
+        public bool? SeeWebsite { get; set; } 
 
         public string HoursNotes { get; set; }
         
@@ -95,6 +100,10 @@ namespace TripBlazrConsole.Models
         public int? SundayOpen { get; set; }
 
         public int? SundayClose { get; set; }
+
+        public virtual ICollection<LocationTag> LocationTags { get; set; }
+
+        public virtual ICollection<LocationCategory> LocationCategories { get; set; }
     }
 }
 

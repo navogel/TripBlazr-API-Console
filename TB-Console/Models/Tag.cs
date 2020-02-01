@@ -8,7 +8,12 @@ namespace TripBlazrConsole.Models
 {
     public class Tag
     {
-        [Required]
+        //public Tag()
+        //{
+        //    this.Locations = new HashSet<Location>();
+        //    this.MenuGroups = new HashSet<MenuGroup>();
+        //}
+        [Key]
         public int TagId { get; set; }
 
         [Required]
@@ -18,5 +23,11 @@ namespace TripBlazrConsole.Models
 
         [Required]
         public int AccountId { get; set; }
+
+        public Account Account { get; set; }
+
+        public virtual ICollection<LocationTag> LocationTags { get; set; }
+
+        public virtual ICollection<TagMenuGroup> TagMenuGroups { get; set; }
     }
 }

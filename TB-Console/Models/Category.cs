@@ -8,12 +8,15 @@ namespace TripBlazrConsole.Models
 {
     public class Category
     {
-        [Required]
+        [Key]
         public int CategoryId { get; set; }
         
         [Required]
         public string Name { get; set; }
 
         public string Image { get; set; }
+
+        public virtual ICollection<LocationCategory> LocationCategories { get; set; }
     }
+
 }

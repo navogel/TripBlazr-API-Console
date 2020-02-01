@@ -8,14 +8,19 @@ namespace TripBlazrConsole.Models
 {
     public class LocationCategory
     {
-        [Required]
+        [Key]
         public int LocationCategoryId { get; set; }
+
 
         [Required]
         public int LocationId { get; set; }
 
+        public Location Location { get; set; }
+
         [Required]
         public int CategoryId { get; set; }
+
+        public Category Category { get; set; }
 
     }
 }

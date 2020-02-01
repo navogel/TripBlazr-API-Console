@@ -8,12 +8,19 @@ namespace TripBlazrConsole.Models
 {
     public class MenuGroup
     {
-        [Required]
+        //public MenuGroup()
+        //{
+        //    this.Tags = new HashSet<Tag>();
+            
+        //}
+        [Key]
         public int MenuGroupId { get; set; }
 
         [Required]
         public string Name { get; set; }
 
         public int? SortId { get; set; }
+
+        public virtual ICollection<TagMenuGroup> TagMenuGroups { get; set; }
     }
 }
