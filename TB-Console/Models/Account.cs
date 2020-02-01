@@ -32,6 +32,6 @@ namespace TripBlazrConsole.Models
         [Required]
         public string CitySlug { get; set; }
 
-        public virtual ICollection<AccountUser> AccountUsers { get; set; }
+        public ICollection<AccountUser> AccountUsers { get; set; }
     }
 }

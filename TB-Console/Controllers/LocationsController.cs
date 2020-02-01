@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using TripBlazrConsole.Data;
 using TripBlazrConsole.Models;
 using TripBlazrConsole.Models.ViewModels.LocationViewModels;
+//using TripBlazrConsole.Routes.V1;
 
 namespace TripBlazrConsole.Controllers
 {
@@ -24,12 +25,22 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/Locations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LocationsExtendedViewModel>>> GetLocations()
+        public async Task<ActionResult<IEnumerable<LocationsExtendedViewModel>>> GetLocations(string citySlug)
         {
-            var applicationDbContext = await _context.Locations
-                //.Include(l => l.LocationTags)
-                //    .ThenInclude(p => p.Tag)
-                .ToListAsync();
+            var applicationDbContext = await _context.Location
+               
+               .Include(l => l.LocationCategories)
+                    .ThenInclude(lc => lc.Category)
+               .Include(l => l.LocationTags)
+                     .ThenInclude(c => c.Tag)
+                .Where(l => l.Account.CitySlug == citySlug)
+               .Select(l => new LocationsExtendedViewModel()
+                {
+                    Location = l,
+                    Tags = l.LocationTags.Select(t => t.Tag).ToList(),
+                    Categories = l.LocationCategories.Select(c => c.Category).ToList()
+                }).ToListAsync();
+                
 
             return Ok(applicationDbContext);
         }
@@ -38,7 +49,7 @@ namespace TripBlazrConsole.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(int id)
         {
-            var location = await _context.Locations.FindAsync(id);
+            var location = await _context.Location.FindAsync(id);
 
             if (location == null)
             {
@@ -86,7 +97,7 @@ namespace TripBlazrConsole.Controllers
         [HttpPost]
         public async Task<ActionResult<Location>> PostLocation(Location location)
         {
-            _context.Locations.Add(location);
+            _context.Location.Add(location);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
@@ -96,13 +107,13 @@ namespace TripBlazrConsole.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Location>> DeleteLocation(int id)
         {
-            var location = await _context.Locations.FindAsync(id);
+            var location = await _context.Location.FindAsync(id);
             if (location == null)
             {
                 return NotFound();
             }
 
-            _context.Locations.Remove(location);
+            _context.Location.Remove(location);
             await _context.SaveChangesAsync();
 
             return location;
@@ -110,7 +121,7 @@ namespace TripBlazrConsole.Controllers
 
         private bool LocationExists(int id)
         {
-            return _context.Locations.Any(e => e.LocationId == id);
+            return _context.Location.Any(e => e.LocationId == id);
         }
     }
 }

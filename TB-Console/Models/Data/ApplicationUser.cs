@@ -20,6 +20,6 @@ namespace TripBlazrConsole.Models.Data
         public string LastName { get; set; }
         public string StreetAddress { get; set; }
 
-        public virtual ICollection<AccountUser> AccountUsers { get; set; }
+        public ICollection<AccountUser> AccountUsers { get; set; }
     }
 }

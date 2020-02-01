@@ -9,10 +9,10 @@ namespace TripBlazrConsole.Models
 {
     public class AccountUser
     {
-        [Key]
+        //[Key]
 
         
-        public int AccountUserId { get; set; }
+        //public int AccountUserId { get; set; }
 
         [Required]
         public int AccountId { get; set; }

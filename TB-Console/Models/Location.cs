@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TripBlazrConsole.Models
@@ -15,6 +16,11 @@ namespace TripBlazrConsole.Models
         //}
         [Key]
         public int LocationId { get; set; }
+
+        [Required]
+        public int AccountId { get; set; }
+
+        public Account Account { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -101,9 +107,11 @@ namespace TripBlazrConsole.Models
 
         public int? SundayClose { get; set; }
 
-        public virtual ICollection<LocationTag> LocationTags { get; set; }
+       [JsonIgnore]
+        public ICollection<LocationTag> LocationTags { get; set; }
 
-        public virtual ICollection<LocationCategory> LocationCategories { get; set; }
+       [JsonIgnore]
+        public ICollection<LocationCategory> LocationCategories { get; set; }
     }
 }
 

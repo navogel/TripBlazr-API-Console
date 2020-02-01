@@ -11,6 +11,24 @@
     <Compile Remove="Migrations\20200201013224_AddModels.Designer.cs" />
     <Compile Remove="Migrations\20200201034129_updateModel.cs" />
     <Compile Remove="Migrations\20200201034129_updateModel.Designer.cs" />
+    <Compile Remove="Migrations\20200201040734_UpdateModel.cs" />
+    <Compile Remove="Migrations\20200201040734_UpdateModel.Designer.cs" />
+    <Compile Remove="Migrations\20200201073112_MANYtime.cs" />
+    <Compile Remove="Migrations\20200201073112_MANYtime.Designer.cs" />
+    <Compile Remove="Migrations\20200201083234_MANYTRYS.cs" />
+    <Compile Remove="Migrations\20200201083234_MANYTRYS.Designer.cs" />
+    <Compile Remove="Migrations\20200201085259_manymany.cs" />
+    <Compile Remove="Migrations\20200201085259_manymany.Designer.cs" />
+    <Compile Remove="Migrations\20200201090345_manyManyToManys.cs" />
+    <Compile Remove="Migrations\20200201090345_manyManyToManys.Designer.cs" />
+    <Compile Remove="Migrations\20200201202954_Cascade-test.cs" />
+    <Compile Remove="Migrations\20200201202954_Cascade-test.Designer.cs" />
+    <Compile Remove="Migrations\20200201204213_cascade2.cs" />
+    <Compile Remove="Migrations\20200201204213_cascade2.Designer.cs" />
+    <Compile Remove="Migrations\20200201204625_cascade3.cs" />
+    <Compile Remove="Migrations\20200201204625_cascade3.Designer.cs" />
+    <Compile Remove="Migrations\20200201204907_cascading.cs" />
+    <Compile Remove="Migrations\20200201204907_cascading.Designer.cs" />
   </ItemGroup>
 
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TripBlazrConsole.Models
@@ -16,7 +17,8 @@ namespace TripBlazrConsole.Models
 
         public string Image { get; set; }
 
-        public virtual ICollection<LocationCategory> LocationCategories { get; set; }
+        [JsonIgnore]
+        public ICollection<LocationCategory> LocationCategories { get; set; }
     }
 
 }

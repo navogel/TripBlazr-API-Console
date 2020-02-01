@@ -16,11 +16,17 @@ namespace TripBlazrConsole.Models
         [Key]
         public int MenuGroupId { get; set; }
 
+        public int AccountId { get; set; }
+
+        public Account Account { get; set; }
+
         [Required]
         public string Name { get; set; }
 
         public int? SortId { get; set; }
 
-        public virtual ICollection<TagMenuGroup> TagMenuGroups { get; set; }
+        public ICollection<TagMenuGroup> TagMenuGroups { get; set; }
+
+
     }
 }
