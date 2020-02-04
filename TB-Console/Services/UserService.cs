@@ -125,7 +125,7 @@ namespace TripBlazrConsole.Services
 
         public async Task<ApplicationUser> GetUserAsync(string id)
         {
-            return await _context.ApplicationUsers.FindAsync(id);
+            return await _context.ApplicationUser.FindAsync(id);
         }
 
         private async Task<(bool IsValid, string ErrorMessage, RefreshToken refreshToken)> ValidateExpiredTokenAsync(ClaimsPrincipal principal)

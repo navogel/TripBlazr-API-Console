@@ -9,17 +9,17 @@ namespace TripBlazrConsole.Models
 {
     public class TagMenuGroup
     {
-        //[Key]
-        //public int TagMenuGroupId { get; set; }
+       
         
         
        // [JsonIgnore]
+       [Required]
         public int MenuGroupId { get; set; }
        // [JsonIgnore]
         public MenuGroup MenuGroup { get; set; }
 
-     
-       // [JsonIgnore]
+        [Required]
+        // [JsonIgnore]
         public int TagId { get; set; }
 
         public Tag Tag { get; set; }

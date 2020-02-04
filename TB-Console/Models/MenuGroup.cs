@@ -8,14 +8,11 @@ namespace TripBlazrConsole.Models
 {
     public class MenuGroup
     {
-        //public MenuGroup()
-        //{
-        //    this.Tags = new HashSet<Tag>();
-            
-        //}
+        
         [Key]
         public int MenuGroupId { get; set; }
 
+        [Required]
         public int AccountId { get; set; }
 
         public Account Account { get; set; }

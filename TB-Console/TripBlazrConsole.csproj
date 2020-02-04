@@ -21,6 +21,8 @@
     <Compile Remove="Migrations\20200201085259_manymany.Designer.cs" />
     <Compile Remove="Migrations\20200201090345_manyManyToManys.cs" />
     <Compile Remove="Migrations\20200201090345_manyManyToManys.Designer.cs" />
+    <Compile Remove="Migrations\20200201193155_ManiesMany.cs" />
+    <Compile Remove="Migrations\20200201193155_ManiesMany.Designer.cs" />
     <Compile Remove="Migrations\20200201202954_Cascade-test.cs" />
     <Compile Remove="Migrations\20200201202954_Cascade-test.Designer.cs" />
     <Compile Remove="Migrations\20200201204213_cascade2.cs" />

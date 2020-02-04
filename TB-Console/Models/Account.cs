@@ -10,10 +10,7 @@ namespace TripBlazrConsole.Models
 {
     public class Account
     {
-        //public Account()
-        //{
-        //    this.User = new HashSet<ApplicationUser>();
-        //}
+       
         [Key]
         public int AccountId { get; set; }
         
@@ -29,9 +26,17 @@ namespace TripBlazrConsole.Models
 
         public bool? Inactive { get; set; } 
 
+        public bool? IsDeleted { get; set; }
+
         [Required]
         public string CitySlug { get; set; }
 
-        public ICollection<AccountUser> AccountUsers { get; set; }
+        public virtual ICollection<AccountUser> AccountUsers { get; set; }
+
+        public virtual ICollection<Location> Locations { get; set; }
+
+        public virtual ICollection<Tag> Tags { get; set; }
+
+        public virtual ICollection<MenuGroup> MenuGroups { get; set; }
     }
 }

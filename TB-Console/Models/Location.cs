@@ -9,11 +9,7 @@ namespace TripBlazrConsole.Models
 {
     public class Location
     {
-        //public Location()
-        //{
-        //    this.Tags = new HashSet<Tag>();
-        //    this.Categories = new HashSet<Category>();
-        //}
+       
         [Key]
         public int LocationId { get; set; }
 
@@ -78,40 +74,15 @@ namespace TripBlazrConsole.Models
         public bool? SeeWebsite { get; set; } 
 
         public string HoursNotes { get; set; }
-        
-        public int? MondayOpen { get; set; }
 
-        public int? MondayClose { get; set; }
 
-        public int? TuesdayOpen { get; set; }
-
-        public int? TuesdayClose { get; set; }
-
-        public int? WednesdayOpen { get; set; }
-
-        public int? WednesdayClose { get; set; }
-
-        public int? ThursdayOpen { get; set; }
-
-        public int? ThursdayClose { get; set; }
-
-        public int? FridayOpen { get; set; }
-
-        public int? FridayClose { get; set; }
-
-        public int? SaturdayOpen { get; set; }
-
-        public int? SaturdayClose { get; set; }
-
-        public int? SundayOpen { get; set; }
-
-        public int? SundayClose { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<LocationTag> LocationTags { get; set; }
 
        [JsonIgnore]
-        public ICollection<LocationTag> LocationTags { get; set; }
+        public virtual ICollection<LocationCategory> LocationCategories { get; set; }
 
-       [JsonIgnore]
-        public ICollection<LocationCategory> LocationCategories { get; set; }
+        public virtual ICollection<Hours> Hours { get; set; }
     }
 }
 

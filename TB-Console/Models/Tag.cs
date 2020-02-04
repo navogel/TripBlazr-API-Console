@@ -9,11 +9,7 @@ namespace TripBlazrConsole.Models
 {
     public class Tag
     {
-        //public Tag()
-        //{
-        //    this.Locations = new HashSet<Location>();
-        //    this.MenuGroups = new HashSet<MenuGroup>();
-        //}
+        
         [Key]
         public int TagId { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace TripBlazrConsole.Migrations
 {
-    public partial class ManiesMany : Migration
+    public partial class manyToMany : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,6 +17,7 @@ namespace TripBlazrConsole.Migrations
                     Latitude = table.Column<double>(nullable: false),
                     Longitude = table.Column<double>(nullable: false),
                     Inactive = table.Column<bool>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: true),
                     CitySlug = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -59,7 +60,7 @@ namespace TripBlazrConsole.Migrations
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,21 +90,7 @@ namespace TripBlazrConsole.Migrations
                     Zipcode = table.Column<int>(nullable: true),
                     Is24Hours = table.Column<bool>(nullable: true),
                     SeeWebsite = table.Column<bool>(nullable: true),
-                    HoursNotes = table.Column<string>(nullable: true),
-                    MondayOpen = table.Column<int>(nullable: true),
-                    MondayClose = table.Column<int>(nullable: true),
-                    TuesdayOpen = table.Column<int>(nullable: true),
-                    TuesdayClose = table.Column<int>(nullable: true),
-                    WednesdayOpen = table.Column<int>(nullable: true),
-                    WednesdayClose = table.Column<int>(nullable: true),
-                    ThursdayOpen = table.Column<int>(nullable: true),
-                    ThursdayClose = table.Column<int>(nullable: true),
-                    FridayOpen = table.Column<int>(nullable: true),
-                    FridayClose = table.Column<int>(nullable: true),
-                    SaturdayOpen = table.Column<int>(nullable: true),
-                    SaturdayClose = table.Column<int>(nullable: true),
-                    SundayOpen = table.Column<int>(nullable: true),
-                    SundayClose = table.Column<int>(nullable: true)
+                    HoursNotes = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -113,7 +100,7 @@ namespace TripBlazrConsole.Migrations
                         column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "AccountId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,7 +121,7 @@ namespace TripBlazrConsole.Migrations
                         column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "AccountId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,6 +142,28 @@ namespace TripBlazrConsole.Migrations
                         column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "AccountId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Hours",
+                columns: table => new
+                {
+                    HoursId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LocationId = table.Column<int>(nullable: false),
+                    DayCode = table.Column<int>(nullable: false),
+                    Open = table.Column<string>(nullable: false),
+                    Close = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Hours", x => x.HoursId);
+                    table.ForeignKey(
+                        name: "FK_Hours_Location_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Location",
+                        principalColumn: "LocationId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -173,13 +182,13 @@ namespace TripBlazrConsole.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Category",
                         principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LocationCategory_Location_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Location",
                         principalColumn: "LocationId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,13 +206,13 @@ namespace TripBlazrConsole.Migrations
                         column: x => x.LocationId,
                         principalTable: "Location",
                         principalColumn: "LocationId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LocationTag_Tag_TagId",
                         column: x => x.TagId,
                         principalTable: "Tag",
                         principalColumn: "TagId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -221,19 +230,24 @@ namespace TripBlazrConsole.Migrations
                         column: x => x.MenuGroupId,
                         principalTable: "MenuGroup",
                         principalColumn: "MenuGroupId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TagMenuGroup_Tag_TagId",
                         column: x => x.TagId,
                         principalTable: "Tag",
                         principalColumn: "TagId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountUser_ApplicationUserId",
                 table: "AccountUser",
                 column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Hours_LocationId",
+                table: "Hours",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Location_AccountId",
@@ -270,6 +284,9 @@ namespace TripBlazrConsole.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AccountUser");
+
+            migrationBuilder.DropTable(
+                name: "Hours");
 
             migrationBuilder.DropTable(
                 name: "LocationCategory");

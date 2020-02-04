@@ -9,8 +9,7 @@ namespace TripBlazrConsole.Models
 {
     public class LocationCategory
     {
-        //[Key]
-        //public int LocationCategoryId { get; set; }
+        
 
 
         [Required]
