@@ -52,14 +52,12 @@ namespace TripBlazrConsole.Data
                 .HasOne(bc => bc.Location)
                 .WithMany(b => b.LocationTags)
                 .HasForeignKey(bc => bc.LocationId);
-            // .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<LocationTag>()
                 .HasOne(bc => bc.Tag)
                 .WithMany(c => c.LocationTags)
                 .HasForeignKey(bc => bc.TagId);
-               // .OnDelete(DeleteBehavior.Restrict);
 
             //
 
@@ -70,13 +68,11 @@ namespace TripBlazrConsole.Data
                 .HasOne(bc => bc.Account)
                 .WithMany(b => b.AccountUsers)
                 .HasForeignKey(bc => bc.AccountId);
-            //.OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<AccountUser>()
                 .HasOne(bc => bc.ApplicationUser)
                 .WithMany(c => c.AccountUsers)
                 .HasForeignKey(bc => bc.ApplicationUserId);
-               // .OnDelete(DeleteBehavior.Restrict);
 
             //
 
@@ -87,13 +83,11 @@ namespace TripBlazrConsole.Data
                 .HasOne(bc => bc.Location)
                 .WithMany(b => b.LocationCategories)
                 .HasForeignKey(bc => bc.LocationId);
-            //.OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<LocationCategory>()
                 .HasOne(bc => bc.Category)
                 .WithMany(c => c.LocationCategories)
                 .HasForeignKey(bc => bc.CategoryId);
-               // .OnDelete(DeleteBehavior.Restrict);
 
             //
 
@@ -104,13 +98,11 @@ namespace TripBlazrConsole.Data
                 .HasOne(bc => bc.Tag)
                 .WithMany(b => b.TagMenuGroups)
                 .HasForeignKey(bc => bc.TagId);
-            // .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TagMenuGroup>()
                 .HasOne(bc => bc.MenuGroup)
                 .WithMany(c => c.TagMenuGroups)
                 .HasForeignKey(bc => bc.MenuGroupId);
-               // .OnDelete(DeleteBehavior.Restrict);
 
             //allowing cascades from main tables to joins
 
@@ -170,6 +162,12 @@ namespace TripBlazrConsole.Data
                .HasMany(l => l.MenuGroups)
                .WithOne(lt => lt.Account)
               .OnDelete(DeleteBehavior.Restrict);
+
+            //force unique citySlug
+
+            modelBuilder.Entity<Account>()
+               .HasIndex(u => u.CitySlug)
+               .IsUnique();
 
 
 

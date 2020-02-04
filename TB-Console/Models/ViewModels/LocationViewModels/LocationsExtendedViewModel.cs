@@ -12,5 +12,7 @@ namespace TripBlazrConsole.Models.ViewModels.LocationViewModels
         public List<Tag> Tags { get; set; }
 
         public List<Category> Categories { get; set; }
+
+        public List<Hours> Hours { get; set; }
     }
 }
