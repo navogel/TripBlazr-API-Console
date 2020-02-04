@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TripBlazrConsole.Models.ViewModels.LocationViewModels
 {
-    public class LocationsExtendedViewModel
+    public class LocationsPublicViewModel
     {
         public Location Location { get; set; }
 

@@ -49,4 +49,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc4" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Models\ViewModels\TagViewModels\" />
+  </ItemGroup>
+
 </Project>

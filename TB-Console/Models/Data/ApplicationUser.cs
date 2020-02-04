@@ -12,10 +12,7 @@ namespace TripBlazrConsole.Models.Data
     // Instead, always convert an ApplicationUser to an ApplicationUserViewModel before it get sent as JSON
     public class ApplicationUser : IdentityUser
     {
-        //public ApplicationUser()
-        //{
-        //    this.Accounts = new HashSet<Account>();
-        //}
+        
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string StreetAddress { get; set; }

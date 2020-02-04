@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripBlazrConsole.Data;
+using TripBlazrConsole.Helpers;
 using TripBlazrConsole.Models;
 using TripBlazrConsole.Models.ViewModels.LocationViewModels;
 //using TripBlazrConsole.Routes.V1;
@@ -25,10 +26,10 @@ namespace TripBlazrConsole.Controllers
             _context = context;
         }
 
-        // GET: api/Locations
+        // GET: api/Locations param city slug
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LocationsExtendedViewModel>>> GetLocations(string citySlug)
+        public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(string citySlug)
         {
             var applicationDbContext = await _context.Location
                .Include(l => l.Hours)
@@ -37,14 +38,14 @@ namespace TripBlazrConsole.Controllers
                .Include(l => l.LocationTags)
                      .ThenInclude(c => c.Tag)
                 .Where(l => l.Account.CitySlug == citySlug)
-               .Select(l => new LocationsExtendedViewModel()
-                {
-                    Location = l,
-                    Tags = l.LocationTags.Select(t => t.Tag).ToList(),
-                    Categories = l.LocationCategories.Select(c => c.Category).ToList(),
-                    Hours = l.Hours.ToList()
-                }).ToListAsync();
-                
+               .Select(l => new LocationsPublicViewModel()
+               {
+                   Location = l,
+                   Tags = l.LocationTags.Select(t => t.Tag).ToList(),
+                   Categories = l.LocationCategories.Select(c => c.Category).ToList(),
+                   Hours = l.Hours.ToList()
+               }).ToListAsync();
+
 
             return Ok(applicationDbContext);
         }
@@ -53,7 +54,29 @@ namespace TripBlazrConsole.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(int id)
         {
-            var location = await _context.Location.FindAsync(id);
+            var userId = HttpContext.GetUserId();
+
+            var location = await _context.Location
+                .Include(l => l.Hours)
+                .Include(l => l.LocationCategories)
+                    .ThenInclude(lc => lc.Category)
+                .Include(l => l.LocationTags)
+                    .ThenInclude(lt => lt.Tag)
+                .Include(l => l.Account.AccountUsers)
+                .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+
+               .FirstOrDefaultAsync(l => l.LocationId == id);
+
+
+
+               // .Include(l => l.Account.AccountUsers)
+                    //.ThenInclude(au => au.ApplicationUser)
+                    //.Where(l => l.Account.AccountUsers.Contains(userId)) 
+
+
+
+                
+
 
             if (location == null)
             {
