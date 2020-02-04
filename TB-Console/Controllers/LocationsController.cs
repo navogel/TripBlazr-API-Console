@@ -28,7 +28,7 @@ namespace TripBlazrConsole.Controllers
         public async Task<ActionResult<IEnumerable<LocationsExtendedViewModel>>> GetLocations(string citySlug)
         {
             var applicationDbContext = await _context.Location
-               
+               .Include(l => l.Hours)
                .Include(l => l.LocationCategories)
                     .ThenInclude(lc => lc.Category)
                .Include(l => l.LocationTags)
@@ -38,7 +38,8 @@ namespace TripBlazrConsole.Controllers
                 {
                     Location = l,
                     Tags = l.LocationTags.Select(t => t.Tag).ToList(),
-                    Categories = l.LocationCategories.Select(c => c.Category).ToList()
+                    Categories = l.LocationCategories.Select(c => c.Category).ToList(),
+                    Hours = l.Hours.ToList()
                 }).ToListAsync();
                 
 

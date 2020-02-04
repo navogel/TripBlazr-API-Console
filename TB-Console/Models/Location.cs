@@ -14,7 +14,11 @@ namespace TripBlazrConsole.Models
         public int LocationId { get; set; }
 
         [Required]
+
+        [JsonIgnore]
         public int AccountId { get; set; }
+
+        [JsonIgnore]
 
         public Account Account { get; set; }
 
@@ -82,6 +86,7 @@ namespace TripBlazrConsole.Models
        [JsonIgnore]
         public virtual ICollection<LocationCategory> LocationCategories { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Hours> Hours { get; set; }
     }
 }
