@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using TripBlazrConsole.Models.ViewModels.TagViewModels;
 
 namespace TripBlazrConsole.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MenuGroupsController : ControllerBase
@@ -23,19 +25,16 @@ namespace TripBlazrConsole.Controllers
         }
 
         // GET: api/MenuGroups
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MenuTagsViewModel>>> GetMenuGroup(string citySlug)
         {
             
-
                var applicationDbContext = await _context.MenuGroup
-
                .Include(m => m.TagMenuGroups)
                     .ThenInclude(mg => mg.Tag)             
                .OrderBy(m => m.SortId)
                .Where(m => m.Account.CitySlug == citySlug)
-
-
                .Select(l => new MenuTagsViewModel()
                {
                    MenuGroupId = l.MenuGroupId,
