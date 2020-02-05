@@ -118,6 +118,7 @@ namespace TripBlazrConsole
             }
 
             app.UseDefaultFiles();
+
             app.UseStaticFiles();
 
             var swaggerOptions = new SwaggerOptions();

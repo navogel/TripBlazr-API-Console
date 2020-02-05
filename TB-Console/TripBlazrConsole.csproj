@@ -51,7 +51,7 @@
 
 
   <ItemGroup>
-    <Folder Include="Models\ViewModels\TagViewModels\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

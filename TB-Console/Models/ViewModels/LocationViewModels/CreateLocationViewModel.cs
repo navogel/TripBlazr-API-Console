@@ -2,27 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace TripBlazrConsole.Models
+namespace TripBlazrConsole.Models.ViewModels.LocationViewModels
 {
-    public class Location
+    public class CreateLocationViewModel
     {
-       
-        [Key]
-        public int LocationId { get; set; }
+        public IFormFile File { get; set; }
+        
+       // public int LocationId { get; set; }
 
         [Required]
 
-        [JsonIgnore]
         public int AccountId { get; set; }
-
-        [JsonIgnore]
-
-        public Account Account { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -56,14 +49,11 @@ namespace TripBlazrConsole.Models
 
         public string ImageUrl { get; set; }
 
-        [NotMapped]
-        public IFormFile File { get; set; }
-
         //City Controls 
 
-        public bool? Inactive { get; set; } 
+        //public bool? Inactive { get; set; }
 
-        public bool? IsDeleted { get; set; } 
+        //public bool? IsDeleted { get; set; }
 
 
         //address
@@ -80,19 +70,8 @@ namespace TripBlazrConsole.Models
 
         public bool? Is24Hours { get; set; }
 
-        public bool? SeeWebsite { get; set; } 
+        public bool? SeeWebsite { get; set; }
 
         public string HoursNotes { get; set; }
-
-
-        [JsonIgnore]
-        public virtual ICollection<LocationTag> LocationTags { get; set; }
-
-       [JsonIgnore]
-        public virtual ICollection<LocationCategory> LocationCategories { get; set; }
-
-        [JsonIgnore]
-        public virtual ICollection<Hours> Hours { get; set; }
     }
 }
-
