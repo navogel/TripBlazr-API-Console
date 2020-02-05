@@ -31,7 +31,7 @@ namespace TripBlazrConsole.Controllers
             _environment = environment;
         }
 
-        // GET: api/Locations param city slug
+        // GET: CLIENT: ANON: api/Locations?citySlug={city slug}
         [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(string citySlug)
@@ -42,7 +42,7 @@ namespace TripBlazrConsole.Controllers
                     .ThenInclude(lc => lc.Category)
                .Include(l => l.LocationTags)
                      .ThenInclude(c => c.Tag)
-               .Where(l => l.Account.CitySlug == citySlug)
+               .Where(l => l.Account.CitySlug == citySlug && l.Inactive != true)
                .Select(l => new LocationsPublicViewModel()
                {
                    Location = l,
@@ -55,11 +55,12 @@ namespace TripBlazrConsole.Controllers
             return Ok(applicationDbContext);
         }
 
-        // GET: FOR CONSOLE api/Locations param city slug
+        // GET: CONSOLE: PRIVATE: api/Locations/Account/{id}?search/category/tag={params}
         [AllowAnonymous]
         [HttpGet("Account/{id}")]
         public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(int id, string search, string category, string tag)
         {
+            var userId = HttpContext.GetUserId();
             //initial query restricting by account
             var query = await _context.Location
              .Include(l => l.Hours)
@@ -67,8 +68,10 @@ namespace TripBlazrConsole.Controllers
                   .ThenInclude(lc => lc.Category)
              .Include(l => l.LocationTags)
                    .ThenInclude(c => c.Tag)
-             .Where(q => q.AccountId == id).ToListAsync();
-                 
+             .Where(q => q.AccountId == id && q.Inactive != true)
+             //verify user has access to this account
+             .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
+
             //parameter filters
             if (search != null)
             {
@@ -98,7 +101,7 @@ namespace TripBlazrConsole.Controllers
             return Ok(locations);
         }
 
-        // GET: api/Locations/5
+        // GET: CONSOLE: PRIVATE api/Locations/by Id
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(int id)
@@ -149,7 +152,8 @@ namespace TripBlazrConsole.Controllers
                 Address1 = viewModel.Address1,
                 Address2 = viewModel.Address2,
                 City = viewModel.City,
-                Zipcode = viewModel.Zipcode
+                Zipcode = viewModel.Zipcode,
+                IsDeleted = false
             };
            
             //create new location
@@ -214,7 +218,7 @@ namespace TripBlazrConsole.Controllers
 
                 location.ImageUrl = "\\Upload\\" + id + currentFile.Extension;
 
-                _context.Entry(location).State = EntityState.Modified;
+               _context.Entry(location).State = EntityState.Modified;
 
                 try
                 {
@@ -274,18 +278,22 @@ namespace TripBlazrConsole.Controllers
 
 
 
-        // DELETE: api/Locations/5
+        // SOFTDELETE: api/Locations/5
         [AllowAnonymous]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Location>> DeleteLocation(int id)
         {
             var location = await _context.Location.FindAsync(id);
+
             if (location == null)
             {
                 return NotFound();
             }
 
-            _context.Location.Remove(location);
+            location.IsDeleted = true;
+
+            _context.Update(location);
+
             await _context.SaveChangesAsync();
 
             return location;
