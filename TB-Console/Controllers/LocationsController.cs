@@ -119,46 +119,20 @@ namespace TripBlazrConsole.Controllers
                 City = viewModel.City,
                 Zipcode = viewModel.Zipcode
             };
-
            
-
-            //CODE THAT WORKS BELOW
-
-            //if (viewModel.File != null && viewModel.File.Length > 0)
-            //{
-            //    if (!Directory.Exists(_environment.WebRootPath + "\\Upload\\"))
-            //    {
-            //        Directory.CreateDirectory(_environment.WebRootPath + "\\Upload\\");
-            //    }
-
-            //    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
-            //    {
-            //        viewModel.File.CopyTo(fileStream);
-            //        fileStream.Flush();
-
-            //    }
-            //    location.ImageUrl = "\\Upload\\" + viewModel.File.FileName;
-
-            //}
-
-
-
-           
+            //create new location
              _context.Location.Add(location);
             await _context.SaveChangesAsync();
-            int id = location.LocationId;
 
-
+            //check if there is a file attatched
 
             if (viewModel.File != null && viewModel.File.Length > 0)
             {
-                //if (!Directory.Exists(_environment.WebRootPath + "\\Upload\\"))
-                //{
-                //    Directory.CreateDirectory(_environment.WebRootPath + "\\Upload\\");
-                //}
+                
+                //create filname based on created location ID
                 int fileName = location.LocationId;
 
-               // var ext = Path.GetExtension(viewModel.File);
+               //create path and insert image with original filename
 
                 using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
                 {
@@ -166,35 +140,28 @@ namespace TripBlazrConsole.Controllers
                     fileStream.Flush();
                 }
 
+                //replace original filename with location ID filename, keeping extension
+
                 FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
                 currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension);
                 
+                // update location with new filename
 
                 location.ImageUrl = "\\Upload\\" + fileName + currentFile.Extension;
-
                 _context.Entry(location).State = EntityState.Modified;
-
                 await _context.SaveChangesAsync();
 
-                
-
-                return Ok(location);
-                
-
+                return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
             }
 
             return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
         }
 
-        //[Route("upload")]
+        //PUT for IMAGE update only
         [AllowAnonymous]
         [HttpPut("upload/{id}")]
         public async Task<ActionResult<Location>> Upload(IFormFile file, [FromRoute]int id)
         {
-
-
-            
-
             if (id > 0 && file != null && file.Length > 0)
             {
                 if (!Directory.Exists(_environment.WebRootPath + "\\Upload\\"))
@@ -206,13 +173,14 @@ namespace TripBlazrConsole.Controllers
                 {
                     file.CopyTo(fileStream);
                     fileStream.Flush();
-
                 }
+
+                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + file.FileName);
+                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + id + currentFile.Extension, true);
 
                 var location = await _context.Location.FirstOrDefaultAsync(l => l.LocationId == id);
 
-                location.ImageUrl = "\\Upload\\" + file.FileName;
-
+                location.ImageUrl = "\\Upload\\" + id + currentFile.Extension;
 
                 _context.Entry(location).State = EntityState.Modified;
 
@@ -232,22 +200,7 @@ namespace TripBlazrConsole.Controllers
                         throw;
                     }
                 }
-
-                
-                //    location.ImageUrl = "\\Upload\\" + file.FileName;
-
-                //bangazonsite version
-
-                //var fileName = Path.GetFileName(location.File.FileName); //getting path of actual file name
-                //var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName); //creating path combining file name w/ www.root\\images directory
-                //using (var fileSteam = new FileStream(filePath, FileMode.Create)) //using filestream to get the actual path 
-                //{
-                //    await location.File.CopyToAsync(fileSteam);
-                //}
-                //location.ImageUrl = fileName;
-
             }
-
 
             return NotFound();
         }
