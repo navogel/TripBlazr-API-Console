@@ -60,7 +60,7 @@ namespace TripBlazrConsole.Controllers
         [HttpGet("Account/{id}")]
         public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(int id, string search, string category, string tag)
         {
-
+            //initial query restricting by account
             var query = await _context.Location
              .Include(l => l.Hours)
              .Include(l => l.LocationCategories)
@@ -69,6 +69,7 @@ namespace TripBlazrConsole.Controllers
                    .ThenInclude(c => c.Tag)
              .Where(q => q.AccountId == id).ToListAsync();
                  
+            //parameter filters
             if (search != null)
             {
             query = query.Where(q => q.Name.Contains(search)).ToList();
@@ -81,11 +82,10 @@ namespace TripBlazrConsole.Controllers
 
             if (tag != null)
             {
-                query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == category)).ToList();
+                query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
             };
 
-
-
+            //create location object after filtering
             var locations = query
            .Select(l => new LocationsPublicViewModel()
            {
@@ -96,12 +96,10 @@ namespace TripBlazrConsole.Controllers
            });
                 
             return Ok(locations);
-           
-
-            
         }
 
         // GET: api/Locations/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(int id)
         {
