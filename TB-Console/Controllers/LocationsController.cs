@@ -42,7 +42,7 @@ namespace TripBlazrConsole.Controllers
                     .ThenInclude(lc => lc.Category)
                .Include(l => l.LocationTags)
                      .ThenInclude(c => c.Tag)
-               .Where(l => l.Account.CitySlug == citySlug && l.Inactive != true)
+               .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true)
                .Select(l => new LocationsPublicViewModel()
                {
                    Location = l,
@@ -58,7 +58,7 @@ namespace TripBlazrConsole.Controllers
         // GET: CONSOLE: PRIVATE: api/Locations/Account/{id}?search/category/tag={params}
         [AllowAnonymous]
         [HttpGet("Account/{id}")]
-        public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(int id, string search, string category, string tag)
+        public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(int id, string search, string category, string tag, bool isActive)
         {
             var userId = HttpContext.GetUserId();
             //initial query restricting by account
@@ -68,7 +68,7 @@ namespace TripBlazrConsole.Controllers
                   .ThenInclude(lc => lc.Category)
              .Include(l => l.LocationTags)
                    .ThenInclude(c => c.Tag)
-             .Where(q => q.AccountId == id && q.Inactive != true)
+             .Where(q => q.AccountId == id && q.IsDeleted != true)
              //verify user has access to this account
              .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
 
@@ -86,6 +86,16 @@ namespace TripBlazrConsole.Controllers
             if (tag != null)
             {
                 query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
+            };
+
+            if (isActive == false)
+            {
+                query = query.Where(q => q.Inactive == true).ToList();
+            };
+
+            if (isActive == true)
+            {
+                query = query.Where(q => q.Inactive == false).ToList();
             };
 
             //create location object after filtering
