@@ -16,7 +16,7 @@ using TripBlazrConsole.Models.ViewModels.LocationViewModels;
 
 namespace TripBlazrConsole.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LocationsController : ControllerBase
@@ -31,9 +31,9 @@ namespace TripBlazrConsole.Controllers
             _environment = environment;
         }
 
-        // GET: CLIENT: ANON: api/Locations?citySlug={city slug}
+        // GET: CLIENT: ANON: api/Locations/citySlug
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("{citySlug}")]
         public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(string citySlug)
         {
             var applicationDbContext = await _context.Location
@@ -51,14 +51,13 @@ namespace TripBlazrConsole.Controllers
                    Hours = l.Hours.ToList()
                }).ToListAsync();
 
-
             return Ok(applicationDbContext);
         }
 
         // GET: CONSOLE: PRIVATE: api/Locations/Account/{id}?search/category/tag={params}
-        [AllowAnonymous]
-        [HttpGet("Account/{id}")]
-        public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(int id, string search, string category, string tag, bool isActive)
+        
+        [HttpGet("ByAccount/{id}")]
+        public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(int id, string search, string category, string tag, bool? isActive)
         {
             var userId = HttpContext.GetUserId();
             //initial query restricting by account
@@ -112,7 +111,7 @@ namespace TripBlazrConsole.Controllers
         }
 
         // GET: CONSOLE: PRIVATE api/Locations/by Id
-        [AllowAnonymous]
+       
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(int id)
         {
@@ -130,10 +129,10 @@ namespace TripBlazrConsole.Controllers
 
             if (location == null)
             {
-                return NotFound();
+                return NotFound($"No Location found with the ID of {id}");
             }
 
-            return location;
+            return Ok(location);
         }
 
        
@@ -141,7 +140,7 @@ namespace TripBlazrConsole.Controllers
         // POST: api/Locations  - CREATE LOCATION
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [AllowAnonymous]
+       
         [HttpPost]
         public async Task<ActionResult<Location>> PostLocation([FromForm]CreateLocationViewModel viewModel)
         //public async Task<ActionResult<Location>> PostLocation([FromBody]CreateLocationViewModel viewModel, IFormFile file)
@@ -203,9 +202,9 @@ namespace TripBlazrConsole.Controllers
             return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
         }
 
-        //PUT for IMAGE update only
-        [AllowAnonymous]
-        [HttpPut("upload/{id}")]
+        //PUT for IMAGE update only /uploadImage/{id} of location
+        
+        [HttpPut("uploadImage/{id}")]
         public async Task<ActionResult<Location>> Upload(IFormFile file, [FromRoute]int id)
         {
             if (id > 0 && file != null && file.Length > 0)
@@ -256,7 +255,7 @@ namespace TripBlazrConsole.Controllers
         // PUT: api/Locations/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [AllowAnonymous]
+       
         [HttpPut("{id}")]
         public async Task<IActionResult> PutLocation(int id, Location location)
         {
@@ -266,6 +265,42 @@ namespace TripBlazrConsole.Controllers
             }
 
             _context.Entry(location).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LocationExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(location);
+        }
+
+        // SOFTDELETE: api/Locations/5
+        
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Location>> DeleteLocation(int id)
+        {
+            var location = await _context.Location.FindAsync(id);
+
+            if (location == null)
+            {
+                return NotFound();
+            }
+
+            location.IsDeleted = true;
+
+            _context.Update(location);
 
             try
             {
@@ -281,32 +316,52 @@ namespace TripBlazrConsole.Controllers
                 {
                     throw;
                 }
-            }
+            } 
 
-            return NoContent();
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
 
-
-
-        // SOFTDELETE: api/Locations/5
-        [AllowAnonymous]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Location>> DeleteLocation(int id)
+        //ADD TAGS TO Location
+        [HttpPost("{LocationId}/AddTag/{TagId}")]
+        public async Task<ActionResult<LocationTag>> AddTag([FromRoute] int locationId, [FromRoute] int tagId)
         {
-            var location = await _context.Location.FindAsync(id);
+           
+                var newTag = new LocationTag()
+                {
+                    TagId = tagId,
+                    LocationId = locationId
+                };
 
-            if (location == null)
+                _context.LocationTag.Add(newTag);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                
+                return Ok(newTag);        
+        }
+
+        //REMOVE: TAG FROM MENU GROUP
+      [HttpDelete("{locationId}/RemoveTag/{tagId}")]
+        public async Task<ActionResult<LocationTag>> DeleteTag([FromRoute] int locationId, [FromRoute] int tagId)
+        {
+            var tagToDelete = await _context.LocationTag.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
+                
+            if (tagToDelete == null)
             {
-                return NotFound();
+                return NotFound("No tag found");
             }
 
-            location.IsDeleted = true;
-
-            _context.Update(location);
+            _context.LocationTag.Remove(tagToDelete);
 
             await _context.SaveChangesAsync();
 
-            return location;
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
 
         private bool LocationExists(int id)

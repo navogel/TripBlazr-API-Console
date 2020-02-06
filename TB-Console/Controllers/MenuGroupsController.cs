@@ -12,7 +12,7 @@ using TripBlazrConsole.Models.ViewModels.TagViewModels;
 
 namespace TripBlazrConsole.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MenuGroupsController : ControllerBase
@@ -26,11 +26,11 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/MenuGroups
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("{citySlug}")]
         public async Task<ActionResult<IEnumerable<MenuTagsViewModel>>> GetMenuGroup(string citySlug)
         {
             
-               var applicationDbContext = await _context.MenuGroup
+               var menuGroup = await _context.MenuGroup
                .Include(m => m.TagMenuGroups)
                     .ThenInclude(mg => mg.Tag)             
                .OrderBy(m => m.SortId)
@@ -41,11 +41,9 @@ namespace TripBlazrConsole.Controllers
                    Name = l.Name,
                    SortId = l.SortId,
                    Tags = l.TagMenuGroups.Select(t => t.Tag).ToList(),
-
                }).ToListAsync();
 
-
-            return Ok(applicationDbContext);
+            return Ok(menuGroup);
         }
 
         // GET: api/MenuGroups/5
@@ -59,8 +57,27 @@ namespace TripBlazrConsole.Controllers
                 return NotFound();
             }
 
-            return menuGroup;
+            return Ok(menuGroup);
         }
+
+
+
+        // POST: api/MenuGroups
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
+       // [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult<MenuGroup>> PostMenuGroup(MenuGroup menuGroup)
+        {
+            _context.MenuGroup.Add(menuGroup);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetMenuGroup", new { id = menuGroup.MenuGroupId }, menuGroup);
+        }
+
+       
+
 
         // PUT: api/MenuGroups/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
@@ -94,33 +111,68 @@ namespace TripBlazrConsole.Controllers
             return NoContent();
         }
 
-        // POST: api/MenuGroups
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<MenuGroup>> PostMenuGroup(MenuGroup menuGroup)
-        {
-            _context.MenuGroup.Add(menuGroup);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMenuGroup", new { id = menuGroup.MenuGroupId }, menuGroup);
-        }
 
         // DELETE: api/MenuGroups/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<MenuGroup>> DeleteMenuGroup(int id)
         {
             var menuGroup = await _context.MenuGroup.FindAsync(id);
+
             if (menuGroup == null)
             {
                 return NotFound();
             }
 
             _context.MenuGroup.Remove(menuGroup);
+
             await _context.SaveChangesAsync();
 
-            return menuGroup;
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
+
+        //CREATE: ADD TAGS TO MENU GROUP
+        [HttpPost("{menuGroupId}/AddTag/{tagId}")]
+        public async Task<ActionResult<TagMenuGroup>> AddTag([FromRoute]int menuGroupId,[FromRoute] int tagId)
+        {
+            var newTag = new TagMenuGroup()
+            {
+                TagId = tagId,
+                MenuGroupId = menuGroupId
+            };
+
+            _context.TagMenuGroup.Add(newTag);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(newTag);
+        }
+
+        // REMOVE: TAG FROM MENU GROUP 
+        [HttpDelete("{menuGroupId}/RemoveTag/{tagId}")]
+        public async Task<ActionResult<TagMenuGroup>> DeleteTag([FromRoute]int menuGroupId, [FromRoute]int tagId)
+        {
+            var tagToDelete = await _context.TagMenuGroup.FirstOrDefaultAsync(tmg => tmg.MenuGroupId == menuGroupId && tmg.TagId == tagId);
+            
+            if (tagToDelete == null)
+            {
+                return NotFound();
+            }
+
+            _context.TagMenuGroup.Remove(tagToDelete);
+
+            await _context.SaveChangesAsync();
+
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
+        }
+
+        //HELPER FUNCTIONS
 
         private bool MenuGroupExists(int id)
         {
