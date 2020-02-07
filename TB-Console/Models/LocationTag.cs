@@ -10,14 +10,14 @@ namespace TripBlazrConsole.Models
     public class LocationTag
     {
         
-        [JsonIgnore]
+        
         [Required]
         public int TagId { get; set; }
-
+        [JsonIgnore]
         public Tag Tag { get; set; }
 
         
-        [JsonIgnore]
+        
         [Required]
         public int LocationId { get; set; }
 

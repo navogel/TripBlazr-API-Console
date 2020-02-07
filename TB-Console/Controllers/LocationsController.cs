@@ -33,7 +33,7 @@ namespace TripBlazrConsole.Controllers
 
         // GET: CLIENT: ANON: api/Locations/citySlug
         [AllowAnonymous]
-        [HttpGet("{citySlug}")]
+        [HttpGet("city/{citySlug}")]
         public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(string citySlug)
         {
             var applicationDbContext = await _context.Location
@@ -162,7 +162,8 @@ namespace TripBlazrConsole.Controllers
                 Address2 = viewModel.Address2,
                 City = viewModel.City,
                 Zipcode = viewModel.Zipcode,
-                IsDeleted = false
+                IsDeleted = false,
+                Inactive = false
             };
            
             //create new location
@@ -322,10 +323,11 @@ namespace TripBlazrConsole.Controllers
         }
 
         //ADD TAGS TO Location
-        [HttpPost("{LocationId}/AddTag/{TagId}")]
+        [HttpPost("{locationId}/AddTag/{tagId}")]
         public async Task<ActionResult<LocationTag>> AddTag([FromRoute] int locationId, [FromRoute] int tagId)
         {
-           
+            try
+            {
                 var newTag = new LocationTag()
                 {
                     TagId = tagId,
@@ -342,11 +344,16 @@ namespace TripBlazrConsole.Controllers
                 {
                     throw;
                 }
-                
-                return Ok(newTag);        
+
+                return Ok(newTag);
+
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
-        //REMOVE: TAG FROM MENU GROUP
+        //REMOVE: TAG FROM LOCATION
       [HttpDelete("{locationId}/RemoveTag/{tagId}")]
         public async Task<ActionResult<LocationTag>> DeleteTag([FromRoute] int locationId, [FromRoute] int tagId)
         {
@@ -359,7 +366,70 @@ namespace TripBlazrConsole.Controllers
 
             _context.LocationTag.Remove(tagToDelete);
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
+        }
+
+        //ADD CATS TO LOCATION
+        [HttpPost("{locationId}/AddCategory/{categoryId}")]
+        public async Task<ActionResult<LocationCategory>> AddCategory([FromRoute] int locationId, [FromRoute] int categoryId)
+        {
+            try
+            {
+                var newCat = new LocationCategory()
+                {
+                    CategoryId = categoryId,
+                    LocationId = locationId
+                };
+
+                _context.LocationCategory.Add(newCat);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Ok(newCat);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        //REMOVE: CATS FROM LOCATION
+        [HttpDelete("{locationId}/RemoveCategory/{categoryId}")]
+        public async Task<ActionResult<LocationCategory>> DeleteCategory([FromRoute] int locationId, [FromRoute] int categoryId)
+        {
+            var catToDelete = await _context.LocationCategory.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.CategoryId == categoryId);
+
+            if (catToDelete == null)
+            {
+                return NotFound("No Category found");
+            }
+
+            _context.LocationCategory.Remove(catToDelete);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
 
             return new StatusCodeResult(StatusCodes.Status204NoContent);
         }

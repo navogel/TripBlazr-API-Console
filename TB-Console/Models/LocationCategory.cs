@@ -13,15 +13,15 @@ namespace TripBlazrConsole.Models
 
 
         [Required]
-        [JsonIgnore]
+        
         public int LocationId { get; set; }
         [JsonIgnore]
         public Location Location { get; set; }
 
         [Required]
-        [JsonIgnore]
+        
         public int CategoryId { get; set; }
-
+        [JsonIgnore]
         public Category Category { get; set; }
 
     }

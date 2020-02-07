@@ -12,16 +12,16 @@ namespace TripBlazrConsole.Models
        
         
         
-       // [JsonIgnore]
+       //[JsonIgnore]
        [Required]
         public int MenuGroupId { get; set; }
-       // [JsonIgnore]
+       [JsonIgnore]
         public MenuGroup MenuGroup { get; set; }
 
         [Required]
-        // [JsonIgnore]
+        
         public int TagId { get; set; }
-
+        [JsonIgnore]
         public Tag Tag { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/MenuGroups
         [AllowAnonymous]
-        [HttpGet("{citySlug}")]
+        [HttpGet("city/{citySlug}")]
         public async Task<ActionResult<IEnumerable<MenuTagsViewModel>>> GetMenuGroup(string citySlug)
         {
             
@@ -134,25 +134,31 @@ namespace TripBlazrConsole.Controllers
         [HttpPost("{menuGroupId}/AddTag/{tagId}")]
         public async Task<ActionResult<TagMenuGroup>> AddTag([FromRoute]int menuGroupId,[FromRoute] int tagId)
         {
-            var newTag = new TagMenuGroup()
-            {
-                TagId = tagId,
-                MenuGroupId = menuGroupId
-            };
+            try { 
+                var newTag = new TagMenuGroup()
+                {
+                    TagId = tagId,
+                    MenuGroupId = menuGroupId
+                };
 
-            _context.TagMenuGroup.Add(newTag);
+                _context.TagMenuGroup.Add(newTag);
 
-            try
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Ok(newTag);
+
+            }catch
             {
-                await _context.SaveChangesAsync();
+                return BadRequest();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return Ok(newTag);
-        }
+}
 
         // REMOVE: TAG FROM MENU GROUP 
         [HttpDelete("{menuGroupId}/RemoveTag/{tagId}")]
@@ -162,12 +168,19 @@ namespace TripBlazrConsole.Controllers
             
             if (tagToDelete == null)
             {
-                return NotFound();
+                return NotFound("No tag found");
             }
 
             _context.TagMenuGroup.Remove(tagToDelete);
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
 
             return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
