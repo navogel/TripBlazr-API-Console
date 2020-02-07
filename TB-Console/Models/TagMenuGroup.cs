@@ -16,7 +16,7 @@ namespace TripBlazrConsole.Models
        [Required]
         public int MenuGroupId { get; set; }
        [JsonIgnore]
-        public MenuGroup MenuGroup { get; set; }
+        public MenuTagsDetailsViewModel MenuGroup { get; set; }
 
         [Required]
         

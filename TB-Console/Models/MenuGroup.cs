@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TripBlazrConsole.Models
 {
-    public class MenuGroup
+    public class MenuTagsDetailsViewModel
     {
         
         [Key]

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TripBlazrConsole.Models.ViewModels.TagViewModels
 {
-    public class MenuTagsViewModel
+    public class MenuTagsDetailViewModel
     {
         public int MenuGroupId { get; set; }
 

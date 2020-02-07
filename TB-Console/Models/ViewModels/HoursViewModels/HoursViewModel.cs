@@ -2,25 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace TripBlazrConsole.Models
+namespace TripBlazrConsole.Models.ViewModels.HoursViewModels
 {
-    public class Hours
+    public class HoursViewModel
     {
         public int HoursId { get; set; }
 
         [Required]
 
-        [JsonIgnore]
-
-
         public int LocationId { get; set; }
-
-        [JsonIgnore]
-
-        public Location Location { get; set; }
 
         [Required]
         [Range(1, 7, ErrorMessage = "Day Code must be between 1 and 7")]

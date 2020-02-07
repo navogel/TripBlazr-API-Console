@@ -27,7 +27,7 @@ namespace TripBlazrConsole.Controllers
         // GET: api/MenuGroups
         [AllowAnonymous]
         [HttpGet("city/{citySlug}")]
-        public async Task<ActionResult<IEnumerable<MenuTagsViewModel>>> GetMenuGroup(string citySlug)
+        public async Task<ActionResult<IEnumerable<MenuTagsDetailViewModel>>> GetMenuGroup(string citySlug)
         {
             
                var menuGroup = await _context.MenuGroup
@@ -35,7 +35,7 @@ namespace TripBlazrConsole.Controllers
                     .ThenInclude(mg => mg.Tag)             
                .OrderBy(m => m.SortId)
                .Where(m => m.Account.CitySlug == citySlug)
-               .Select(l => new MenuTagsViewModel()
+               .Select(l => new MenuTagsDetailViewModel()
                {
                    MenuGroupId = l.MenuGroupId,
                    Name = l.Name,
@@ -48,7 +48,7 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/MenuGroups/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MenuGroup>> GetMenuGroup(int id)
+        public async Task<ActionResult<MenuTagsDetailsViewModel>> GetMenuGroup(int id)
         {
             var menuGroup = await _context.MenuGroup.FindAsync(id);
 
@@ -67,7 +67,7 @@ namespace TripBlazrConsole.Controllers
         // more details see https://aka.ms/RazorPagesCRUD.
        // [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<MenuGroup>> PostMenuGroup(MenuGroup menuGroup)
+        public async Task<ActionResult<MenuTagsDetailsViewModel>> PostMenuGroup(MenuTagsDetailsViewModel menuGroup)
         {
             _context.MenuGroup.Add(menuGroup);
 
@@ -83,7 +83,7 @@ namespace TripBlazrConsole.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMenuGroup(int id, MenuGroup menuGroup)
+        public async Task<IActionResult> PutMenuGroup(int id, MenuTagsDetailsViewModel menuGroup)
         {
             if (id != menuGroup.MenuGroupId)
             {
@@ -114,7 +114,7 @@ namespace TripBlazrConsole.Controllers
 
         // DELETE: api/MenuGroups/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<MenuGroup>> DeleteMenuGroup(int id)
+        public async Task<ActionResult<MenuTagsDetailsViewModel>> DeleteMenuGroup(int id)
         {
             var menuGroup = await _context.MenuGroup.FindAsync(id);
 

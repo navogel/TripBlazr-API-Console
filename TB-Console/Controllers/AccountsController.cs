@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripBlazrConsole.Data;
+using TripBlazrConsole.Helpers;
 using TripBlazrConsole.Models;
+using TripBlazrConsole.Models.ViewModels.ConsoleViewModels;
 
 namespace TripBlazrConsole.Controllers
 {
@@ -23,9 +25,29 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/Accounts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Account>>> GetAccount()
+        public async Task<ActionResult<IEnumerable<AccountViewModel>>> GetAccounts()
         {
-            return await _context.Account.ToListAsync();
+            try
+            {
+                var userId = HttpContext.GetUserId();
+
+                return await _context.Account
+                    .Include(a => a.AccountUsers)
+                    .Where(a => a.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .Select(a => new AccountViewModel()
+                    {
+                        AccountId = a.AccountId,
+                        Name = a.Name,
+                        City = a.City,
+                        Latitude = a.Latitude,
+                        Longitude = a.Longitude
+                    }).ToListAsync();
+                    
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // GET: api/Accounts/5

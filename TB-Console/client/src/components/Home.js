@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { createAuthHeaders } from '../API/userManager';
+import AccountManager from '../API/accountManager';
 
 class Home extends Component {
     state = {
-        values: []
+        values: [],
+        accounts: []
     };
 
     componentDidMount() {
@@ -17,6 +19,10 @@ class Home extends Component {
             .then(values => {
                 this.setState({ values: values });
             });
+        AccountManager.getAllAccounts().then(data => {
+            this.setState({ accounts: data });
+            console.log(data);
+        });
     }
 
     render() {
@@ -24,8 +30,8 @@ class Home extends Component {
             <>
                 <h1>Welcome to my app</h1>
                 <ul>
-                    {this.state.values.map(value => (
-                        <li>{value}</li>
+                    {this.state.accounts.map(account => (
+                        <li>{account.city}</li>
                     ))}
                 </ul>
             </>

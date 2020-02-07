@@ -33,7 +33,7 @@ namespace TripBlazrConsole.Data
 
         public DbSet<LocationTag> LocationTag { get; set; }
 
-        public DbSet<MenuGroup> MenuGroup { get; set; }
+        public DbSet<MenuTagsDetailsViewModel> MenuGroup { get; set; }
 
         public DbSet<Tag> Tag { get; set; }
 
@@ -131,7 +131,7 @@ namespace TripBlazrConsole.Data
                 .WithOne(l => l.Tag)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<MenuGroup>()
+            modelBuilder.Entity<MenuTagsDetailsViewModel>()
                .HasMany(l => l.TagMenuGroups)
                .WithOne(lt => lt.MenuGroup)
                .OnDelete(DeleteBehavior.Cascade);

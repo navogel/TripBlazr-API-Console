@@ -26,7 +26,7 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/Tags
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MenuTagsViewModel>>> GetTag()
+        public async Task<ActionResult<IEnumerable<MenuTagsDetailViewModel>>> GetTag()
         {
             var applicationDbContext = await _context.Tag
 

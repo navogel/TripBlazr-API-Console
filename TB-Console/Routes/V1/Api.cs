@@ -23,5 +23,20 @@ namespace TripBlazrConsole.Routes.V1
             public const string Register = Base + "/Auth/Register";
             public const string Refresh = Base + "/Auth/Refresh";
         }
+
+        public static class Location
+        {
+            public const string GetLocations = Base + "/Locations/City/{citySlug}";
+            public const string GetConsoleLocations = Base + "/Locations/ByAccount/{id}";
+            public const string GetLocation = Base + "/Locations/{id}";
+            public const string PostLocation = Base + "/Locations";
+            public const string UploadImage = Base + "/Locations/UploadImage/{id}";
+            public const string EditLocation = Base + "/Locations/{id}";
+            public const string DeleteLocation = Base + "/Locations/{id}";
+            public const string AddTag = Base + "/Locations/{locationId}/AddTag/{tagId}";
+            public const string DeleteTag = Base + "/Locations/{locationId}/DeleteTag/{tagId}";
+            public const string AddCategory = Base + "/Locations/{locationId}/AddCategory/{categoryId}";
+            public const string DeleteCategory = Base + "/Locations/{locationId}/DeleteCategory/{categoryId}";
+        }
     }
 }

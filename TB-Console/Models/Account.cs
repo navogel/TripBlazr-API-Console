@@ -37,6 +37,6 @@ namespace TripBlazrConsole.Models
 
         public virtual ICollection<Tag> Tags { get; set; }
 
-        public virtual ICollection<MenuGroup> MenuGroups { get; set; }
+        public virtual ICollection<MenuTagsDetailsViewModel> MenuGroups { get; set; }
     }
 }

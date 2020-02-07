@@ -12,12 +12,12 @@ using TripBlazrConsole.Data;
 using TripBlazrConsole.Helpers;
 using TripBlazrConsole.Models;
 using TripBlazrConsole.Models.ViewModels.LocationViewModels;
-//using TripBlazrConsole.Routes.V1;
+using TripBlazrConsole.Routes.V1;
 
 namespace TripBlazrConsole.Controllers
 {
     //[Authorize]
-    [Route("api/[controller]")]
+   // [Route("api/[controller]")]
     [ApiController]
     public class LocationsController : ControllerBase
     {
@@ -33,8 +33,8 @@ namespace TripBlazrConsole.Controllers
 
         // GET: CLIENT: ANON: api/Locations/citySlug
         [AllowAnonymous]
-        [HttpGet("city/{citySlug}")]
-        public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(string citySlug)
+        [HttpGet(Api.Location.GetLocations)]
+        public async Task<ActionResult<IEnumerable<LocationsDetailViewModel>>> GetLocations(string citySlug)
         {
             var applicationDbContext = await _context.Location
                .Include(l => l.Hours)
@@ -43,7 +43,7 @@ namespace TripBlazrConsole.Controllers
                .Include(l => l.LocationTags)
                      .ThenInclude(c => c.Tag)
                .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true)
-               .Select(l => new LocationsPublicViewModel()
+               .Select(l => new LocationsDetailViewModel()
                {
                    Location = l,
                    Tags = l.LocationTags.Select(t => t.Tag).ToList(),
@@ -56,83 +56,106 @@ namespace TripBlazrConsole.Controllers
 
         // GET: CONSOLE: PRIVATE: api/Locations/Account/{id}?search/category/tag={params}
         
-        [HttpGet("ByAccount/{id}")]
-        public async Task<ActionResult<IEnumerable<LocationsPublicViewModel>>> GetLocations(int id, string search, string category, string tag, bool? isActive)
+        [HttpGet(Api.Location.GetConsoleLocations)]
+        public async Task<ActionResult<IEnumerable<LocationsDetailViewModel>>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive)
         {
-            var userId = HttpContext.GetUserId();
-            //initial query restricting by account
-            var query = await _context.Location
-             .Include(l => l.Hours)
-             .Include(l => l.LocationCategories)
-                  .ThenInclude(lc => lc.Category)
-             .Include(l => l.LocationTags)
-                   .ThenInclude(c => c.Tag)
-             .Where(q => q.AccountId == id && q.IsDeleted != true)
-             //verify user has access to this account
-             .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
-
-            //parameter filters
-            if (search != null)
+            try
             {
-            query = query.Where(q => q.Name.Contains(search)).ToList();
-            };
+                var userId = HttpContext.GetUserId();
 
-            if (category != null)
+                //initial query restricting by account
+                var query = await _context.Location
+                 .Include(l => l.Hours)
+                 .Include(l => l.LocationCategories)
+                      .ThenInclude(lc => lc.Category)
+                 .Include(l => l.LocationTags)
+                       .ThenInclude(c => c.Tag)
+                 .Where(q => q.AccountId == id && q.IsDeleted != true)
+                 //verify user has access to this account
+                 .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
+
+                //parameter filters
+                if (search != null)
+                {
+                    query = query.Where(q => q.Name.Contains(search)).ToList();
+                };
+
+                if (category != null)
+                {
+                    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
+                };
+
+                if (tag != null)
+                {
+                    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
+                };
+
+                if (isActive == false)
+                {
+                    query = query.Where(q => q.Inactive == true).ToList();
+                };
+
+                if (isActive == true)
+                {
+                    query = query.Where(q => q.Inactive == false).ToList();
+                };
+
+                //create location object after filtering
+                var locations = query
+               .Select(l => new LocationsDetailViewModel()
+               {
+                   Location = l,
+                   Tags = l.LocationTags.Select(t => t.Tag).ToList(),
+                   Categories = l.LocationCategories.Select(c => c.Category).ToList(),
+                   Hours = l.Hours.ToList()
+               });
+
+                return Ok(locations);
+            } catch
             {
-                query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
-            };
-
-            if (tag != null)
-            {
-                query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
-            };
-
-            if (isActive == false)
-            {
-                query = query.Where(q => q.Inactive == true).ToList();
-            };
-
-            if (isActive == true)
-            {
-                query = query.Where(q => q.Inactive == false).ToList();
-            };
-
-            //create location object after filtering
-            var locations = query
-           .Select(l => new LocationsPublicViewModel()
-           {
-               Location = l,
-               Tags = l.LocationTags.Select(t => t.Tag).ToList(),
-               Categories = l.LocationCategories.Select(c => c.Category).ToList(),
-               Hours = l.Hours.ToList()
-           });
-                
-            return Ok(locations);
+                return BadRequest("You must be logged in");
+            }
         }
 
         // GET: CONSOLE: PRIVATE api/Locations/by Id
        
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Location>> GetLocation(int id)
+        [HttpGet(Api.Location.GetLocation)]
+        public async Task<ActionResult<LocationsDetailViewModel>> GetLocation(int id)
         {
-            var userId = HttpContext.GetUserId();
-
-            var location = await _context.Location
-                .Include(l => l.Hours)
-                .Include(l => l.LocationCategories)
-                    .ThenInclude(lc => lc.Category)
-                .Include(l => l.LocationTags)
-                    .ThenInclude(lt => lt.Tag)
-                .Include(l => l.Account.AccountUsers)
-                .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                .FirstOrDefaultAsync(l => l.LocationId == id);
-
-            if (location == null)
+            try
             {
-                return NotFound($"No Location found with the ID of {id}");
-            }
+                var userId = HttpContext.GetUserId();
 
-            return Ok(location);
+                var location = await _context.Location
+                    .Include(l => l.Hours)
+                    .Include(l => l.LocationCategories)
+                        .ThenInclude(lc => lc.Category)
+                    .Include(l => l.LocationTags)
+                        .ThenInclude(lt => lt.Tag)
+                    .Include(l => l.Account.AccountUsers)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .FirstOrDefaultAsync(l => l.LocationId == id);
+                
+                if (location == null)
+                {
+                    return NotFound($"No Location found with the ID of {id}");
+                }
+
+                var JsonLocation = new LocationsDetailViewModel()
+                    {
+                        Location = location,
+                        Tags = location.LocationTags.Select(t => t.Tag).ToList(),
+                        Categories = location.LocationCategories.Select(c => c.Category).ToList(),
+                        Hours = location.Hours.ToList()
+                    };
+
+                
+
+                return Ok(JsonLocation);
+            } catch
+            {
+                return BadRequest("You must be logged in");
+            }
         }
 
        
@@ -141,8 +164,8 @@ namespace TripBlazrConsole.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
        
-        [HttpPost]
-        public async Task<ActionResult<Location>> PostLocation([FromForm]CreateLocationViewModel viewModel)
+        [HttpPost(Api.Location.PostLocation)]
+        public async Task<ActionResult<CreateLocationViewModel>> PostLocation([FromForm]CreateLocationViewModel viewModel)
         //public async Task<ActionResult<Location>> PostLocation([FromBody]CreateLocationViewModel viewModel, IFormFile file)
         {
             var location = new Location()
@@ -205,8 +228,8 @@ namespace TripBlazrConsole.Controllers
 
         //PUT for IMAGE update only /uploadImage/{id} of location
         
-        [HttpPut("uploadImage/{id}")]
-        public async Task<ActionResult<Location>> Upload(IFormFile file, [FromRoute]int id)
+        [HttpPut(Api.Location.UploadImage)]
+        public async Task<ActionResult<Location>> UploadImage(IFormFile file, [FromRoute]int id)
         {
             if (id > 0 && file != null && file.Length > 0)
             {
@@ -257,8 +280,8 @@ namespace TripBlazrConsole.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
        
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLocation(int id, Location location)
+        [HttpPut(Api.Location.EditLocation)]
+        public async Task<IActionResult> EditLocation(int id, Location location)
         {
             if (id != location.LocationId)
             {
@@ -289,7 +312,7 @@ namespace TripBlazrConsole.Controllers
 
         // SOFTDELETE: api/Locations/5
         
-        [HttpDelete("{id}")]
+        [HttpDelete(Api.Location.DeleteLocation)]
         public async Task<ActionResult<Location>> DeleteLocation(int id)
         {
             var location = await _context.Location.FindAsync(id);
@@ -323,7 +346,7 @@ namespace TripBlazrConsole.Controllers
         }
 
         //ADD TAGS TO Location
-        [HttpPost("{locationId}/AddTag/{tagId}")]
+        [HttpPost(Api.Location.AddTag)]
         public async Task<ActionResult<LocationTag>> AddTag([FromRoute] int locationId, [FromRoute] int tagId)
         {
             try
@@ -354,7 +377,7 @@ namespace TripBlazrConsole.Controllers
         }
 
         //REMOVE: TAG FROM LOCATION
-      [HttpDelete("{locationId}/RemoveTag/{tagId}")]
+      [HttpDelete(Api.Location.DeleteTag)]
         public async Task<ActionResult<LocationTag>> DeleteTag([FromRoute] int locationId, [FromRoute] int tagId)
         {
             var tagToDelete = await _context.LocationTag.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
@@ -379,7 +402,7 @@ namespace TripBlazrConsole.Controllers
         }
 
         //ADD CATS TO LOCATION
-        [HttpPost("{locationId}/AddCategory/{categoryId}")]
+        [HttpPost(Api.Location.AddCategory)]
         public async Task<ActionResult<LocationCategory>> AddCategory([FromRoute] int locationId, [FromRoute] int categoryId)
         {
             try
@@ -410,7 +433,7 @@ namespace TripBlazrConsole.Controllers
         }
 
         //REMOVE: CATS FROM LOCATION
-        [HttpDelete("{locationId}/RemoveCategory/{categoryId}")]
+        [HttpDelete(Api.Location.DeleteCategory)]
         public async Task<ActionResult<LocationCategory>> DeleteCategory([FromRoute] int locationId, [FromRoute] int categoryId)
         {
             var catToDelete = await _context.LocationCategory.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.CategoryId == categoryId);

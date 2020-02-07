@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripBlazrConsole.Data;
 using TripBlazrConsole.Models;
+using TripBlazrConsole.Models.ViewModels.HoursViewModels;
 
 namespace TripBlazrConsole.Controllers
 {
@@ -22,10 +23,12 @@ namespace TripBlazrConsole.Controllers
         }
 
         // GET: api/Hours
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hours>>> GetHours()
+        [HttpGet("ByLocation/{id}")]
+        public async Task<ActionResult<IEnumerable<Hours>>> GetHoursByLocation(int id)
         {
-            return await _context.Hours.ToListAsync();
+            return await _context.Hours
+                .Where(h => h.LocationId == id)
+                .ToListAsync();
         }
 
         // GET: api/Hours/5
@@ -40,6 +43,33 @@ namespace TripBlazrConsole.Controllers
             }
 
             return hours;
+        }
+
+        // POST: api/Hours
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
+        [HttpPost]
+        public async Task<ActionResult<HoursViewModel>> PostHours(HoursViewModel viewModel)
+        {
+            try
+            {
+                var hours = new Hours()
+                {
+                    LocationId = viewModel.LocationId,
+                    DayCode = viewModel.DayCode,
+                    Open = viewModel.Open,
+                    Close = viewModel.Close
+                };
+                _context.Hours.Add(hours);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetHours", new { id = hours.HoursId }, hours);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("bad request");
+            }
+
         }
 
         // PUT: api/Hours/5
@@ -74,17 +104,7 @@ namespace TripBlazrConsole.Controllers
             return NoContent();
         }
 
-        // POST: api/Hours
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<Hours>> PostHours(Hours hours)
-        {
-            _context.Hours.Add(hours);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetHours", new { id = hours.HoursId }, hours);
-        }
+        
 
         // DELETE: api/Hours/5
         [HttpDelete("{id}")]
