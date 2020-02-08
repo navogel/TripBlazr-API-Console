@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { createAuthHeaders } from '../API/userManager';
 import AccountManager from '../API/accountManager';
-
+import Mapper from '../components/Map/map';
+import 'leaflet/dist/leaflet.css';
 class Home extends Component {
     state = {
         values: [],
@@ -31,7 +32,16 @@ class Home extends Component {
                 <h1>Welcome to my app</h1>
                 <ul>
                     {this.state.accounts.map(account => (
-                        <li>{account.city}</li>
+                        <div key={account.accountId}>
+                            <li>{account.city}</li>
+                            <div className={'mapWrapper'}>
+                                <Mapper
+                                    className={'map'}
+                                    latitude={account.latitude}
+                                    longitude={account.longitude}
+                                />
+                            </div>
+                        </div>
                     ))}
                 </ul>
             </>
