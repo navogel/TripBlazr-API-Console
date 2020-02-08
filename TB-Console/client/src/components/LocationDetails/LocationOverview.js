@@ -3,10 +3,8 @@ import { createAuthHeaders } from '../API/userManager';
 import AccountManager from '../API/accountManager';
 import Mapper from './Map/AccountMapper';
 import 'leaflet/dist/leaflet.css';
-class Home extends Component {
+class LocationOverview extends Component {
     state = {
-        values: [],
-        accounts: [],
         address: '',
         tempAddress: ''
     };
@@ -26,19 +24,6 @@ class Home extends Component {
 
     componentDidMount() {
         //creat auth header for every request
-        const authHeader = createAuthHeaders();
-        //ralative path
-        fetch('/api/v1/values', {
-            headers: authHeader
-        })
-            .then(response => response.json())
-            .then(values => {
-                this.setState({ values: values });
-            });
-        AccountManager.getAllAccounts().then(data => {
-            this.setState({ accounts: data });
-            console.log(data);
-        });
     }
 
     render() {
@@ -68,7 +53,7 @@ class Home extends Component {
                     </fieldset>
                 </form>
                 <ul>
-                    {this.state.accounts.map(account => (
+                    {this.state.locations.map(account => (
                         <div key={account.accountId}>
                             <li>{account.city}</li>
                             <div className={'mapWrapper'}>
