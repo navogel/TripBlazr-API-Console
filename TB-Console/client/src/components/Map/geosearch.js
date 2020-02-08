@@ -7,9 +7,9 @@ class GeoSearch extends MapControl {
     createLeafletElement(props) {}
 
     componentDidMount() {
-        //console.log('props geosearch', this.props.tripDetails.lng);
+        console.log('props geosearch', this.props);
         var myIcon4 = L.icon({
-            iconUrl: '/images/markers/icon4.png',
+            iconUrl: '/images/markers/icon1.png',
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             tooltipAnchor: [15, -30],
@@ -21,12 +21,13 @@ class GeoSearch extends MapControl {
             geocoder: new L.Control.Geocoder.Mapbox(Token.MB, {
                 geocodingQueryParams: {
                     proximity: {
-                        lat: this.props.tripDetails.lat,
-                        lng: this.props.tripDetails.lng
+                        lat: this.props.props.latitude,
+                        lng: this.props.props.longitude
                     },
                     language: 'en'
                 }
             }),
+
             collapsed: false,
             // showResultIcons: true,
             defaultMarkGeocode: false,
@@ -48,7 +49,7 @@ class GeoSearch extends MapControl {
                 .addTo(this.props.leaflet.map)
                 .on('click', e => {
                     this.props.storeGeocode(e, result);
-                    this.props.leaflet.map.removeLayer(this._geocodeMarker);
+                    //this.props.leaflet.map.removeLayer(this._geocodeMarker);
                 });
 
             return this;

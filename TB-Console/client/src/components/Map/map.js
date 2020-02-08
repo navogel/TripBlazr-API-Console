@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
-import { Map, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
+import {
+    Map,
+    TileLayer,
+    Marker,
+    Popup,
+    Tooltip,
+    FeatureGroup
+} from 'react-leaflet';
 import Token from '../../Token';
 import L from 'leaflet';
-import Geosearch from '../Map/Geosearch';
+import GeoSearch from '../Map/Geosearch';
 
 const myIcon = L.icon({
     iconUrl: '/images/markers/icon1.png',
@@ -26,8 +33,8 @@ export default class Mapper extends Component {
         console.log('yaya got dem O-B-Js', obj);
     };
 
-    markerFocus = (e, obj) => {
-        console.log('got the deets', obj);
+    markerFocus = e => {
+        console.log('got the deets', e);
     };
 
     componentDidMount() {
@@ -76,7 +83,7 @@ export default class Mapper extends Component {
     };
 
     render() {
-        const Atoken = `https://api.mapbox.com/styles/v1/jerodis/cjslgf0z045tb1fqdutmd3q71/tiles/256/{z}/{x}/{y}@2x?access_token=${Token.MB}`;
+        const Atoken = `https://api.mapbox.com/styles/v1/jerodis/ck24x2b5a12ro1cnzdopvyw08/tiles/256/{z}/{x}/{y}@2x?access_token=${Token.MB}`;
         const position = [this.state.lat, this.state.lng];
         console.log('psoition', position);
         return (
@@ -90,20 +97,34 @@ export default class Mapper extends Component {
                 }}
                 onClick={this.getCoord}
             >
+                <GeoSearch
+                    ref={m => {
+                        this.leafletGeo = m;
+                    }}
+                    storeGeocode={this.storeGeocode}
+                    props={this.props}
+                />
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url={Atoken}
                 />
-
+                {/* <FeatureGroup
+                    ref='features'
+                    onAdd={this.onFeatureGroupAdd}
+                    // onClick={e => this.storeGeocode(e)}
+                > */}
                 <Marker
                     position={position}
                     anchor='bottom'
                     icon={myIcon}
+                    draggable={true}
                     // onMouseEnter={this.onMarkerClick.bind(this, location)}s
                     // onMouseLeave={this.onMarkerLeave}
+                    onClick={e => this.markerFocus(e)}
                 >
                     <Tooltip>{'hiya'}</Tooltip>
                 </Marker>
+                {/* </FeatureGroup> */}
             </Map>
         );
     }

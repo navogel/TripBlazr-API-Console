@@ -43,5 +43,10 @@
 
 .map {
     height: 500px;
-    width: 500px;
+    width: 900px;
+}
+
+.leaflet-control-geocoder-alternatives li a,
+.leaflet-control-geocoder-alternatives li a:hover {
+    line-height: 30px !important;
 }
