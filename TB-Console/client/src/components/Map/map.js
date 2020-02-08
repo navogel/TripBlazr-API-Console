@@ -10,6 +10,7 @@ import {
 import Token from '../../Token';
 import L from 'leaflet';
 import GeoSearch from '../Map/Geosearch';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 const myIcon = L.icon({
     iconUrl: '/images/markers/icon1.png',
@@ -23,8 +24,8 @@ const myIcon = L.icon({
 
 export default class Mapper extends Component {
     state = {
-        lat: 0,
-        lng: 0,
+        lat: '',
+        lng: '',
         zoom: 13
     };
 
@@ -39,13 +40,60 @@ export default class Mapper extends Component {
 
     componentDidMount() {
         console.log(this.props);
-        this.setState({
-            lat: this.props.latitude,
-            lng: this.props.longitude
-        });
+        // this.setState({
+        //     lat: this.props.latitude,
+        //     lng: this.props.longitude
+        // });
         const map = this.leafletMap.leafletElement;
         const geocoder = L.Control.Geocoder.mapbox(Token.MB);
         let marker;
+
+        var query_addr = 'Nashville tn';
+        // Get the provider, in this case the OpenStreetMap (OSM) provider. For some reason, this is the "wrong" way to instanciate it. Instead, we should be using an import "leaflet-geosearch" but I coulnd't make that work
+        const provider = new OpenStreetMapProvider();
+        var query_promise = provider.search({
+            query: query_addr
+        });
+        // It's a promise because we have to wait for the geosearch results. It may be more than one. Be careful.
+        // These results have the following properties:
+        // const result = {
+        //   x: Number,                      // lon,
+        //   y: Number,                      // lat,
+        //   label: String,                  // formatted address
+        //   bounds: [
+        //     [Number, Number],             // s, w - lat, lon
+        //     [Number, Number],             // n, e - lat, lon
+        //   ],
+        //   raw: {},                        // raw provider result
+        // }
+
+        query_promise.then(
+            value => {
+                for (var i = 0; i < value.length; i++) {
+                    // Success!
+                    var x_coor = value[i].x;
+                    var y_coor = value[i].y;
+                    var label = value[i].label;
+                    console.log('value', value);
+                    var marker = L.marker([y_coor, x_coor], {
+                        icon: myIcon,
+                        draggable: true
+                    })
+                        .on('dragend', function(e) {
+                            console.log(marker.getLatLng().lat);
+                            console.log(marker.getLatLng().lng);
+                        })
+                        .addTo(map); // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
+                    marker
+                        .bindPopup('<b>Found location</b><br>' + label)
+                        .openPopup();
+                    map.fitBounds(value[i].bounds);
+                }
+            },
+            reason => {
+                console.log(reason); // Error!
+            }
+        );
 
         map.on('click', e => {
             geocoder.reverse(
@@ -61,10 +109,17 @@ export default class Mapper extends Component {
                                 .setPopupContent(r.html || r.name);
                             // .openPopup();
                         } else {
-                            marker = L.marker(r.center, { icon: myIcon })
+                            marker = L.marker(r.center, {
+                                icon: myIcon,
+                                draggable: true
+                            })
                                 .bindTooltip(r.name, { className: 'toolTip' })
                                 .addTo(map)
-                                .on('click', e => this.storeGeocode(e, r));
+                                //.on('click', e => this.storeGeocode(e, r));
+                                .on('dragend', function(e) {
+                                    console.log(marker.getLatLng().lat);
+                                    console.log(marker.getLatLng().lng);
+                                });
                             // .openPopup();
                         }
                     }
@@ -113,7 +168,7 @@ export default class Mapper extends Component {
                     onAdd={this.onFeatureGroupAdd}
                     // onClick={e => this.storeGeocode(e)}
                 > */}
-                <Marker
+                {/* <Marker
                     position={position}
                     anchor='bottom'
                     icon={myIcon}
@@ -123,7 +178,7 @@ export default class Mapper extends Component {
                     onClick={e => this.markerFocus(e)}
                 >
                     <Tooltip>{'hiya'}</Tooltip>
-                </Marker>
+                </Marker> */}
                 {/* </FeatureGroup> */}
             </Map>
         );
