@@ -75,17 +75,17 @@ namespace TripBlazrConsole.Controllers
                  .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
 
                 //parameter filters
-                if (search != null)
+                if (!string.IsNullOrWhiteSpace(search))
                 {
                     query = query.Where(q => q.Name.Contains(search)).ToList();
                 };
 
-                if (category != null)
+                if (!string.IsNullOrWhiteSpace(category))
                 {
                     query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
                 };
 
-                if (tag != null)
+                if (!string.IsNullOrWhiteSpace(tag))
                 {
                     query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
                 };
