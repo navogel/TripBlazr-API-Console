@@ -65,7 +65,7 @@ namespace TripBlazrConsole.Controllers
 
                 return CreatedAtAction("GetHours", new { id = hours.HoursId }, hours);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 return BadRequest("bad request");
             }
