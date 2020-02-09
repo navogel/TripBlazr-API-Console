@@ -61,7 +61,7 @@ export default function LocationTable(props) {
                                 <TableCell
                                     component='th'
                                     scope='row'
-                                    className='iconCell'
+                                    className='imageCell'
                                 >
                                     <div className='tableIcons'>
                                         <Avatar
@@ -72,13 +72,16 @@ export default function LocationTable(props) {
                                         />
                                     </div>
                                 </TableCell>
-                                <TableCell align='left'>
+                                <TableCell
+                                    align='left'
+                                    className='locationNameCell'
+                                >
                                     {location.location.name}
                                 </TableCell>
                                 <TableCell align='left'>
                                     {location.location.name}
                                 </TableCell>
-                                <TableCell align='right' className='iconCell'>
+                                <TableCell align='right' className='switchCell'>
                                     <FormGroup row>
                                         <FormControlLabel
                                             control={

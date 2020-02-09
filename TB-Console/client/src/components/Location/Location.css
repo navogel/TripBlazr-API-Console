@@ -157,9 +157,23 @@ h3 {
 }
 
 .iconCell {
-    width: 200px;
+    width: 175px;
+}
+
+.imageCell {
+    width: 150px;
+}
+
+.switchCell {
+    width: 100px;
 }
 
 .activeText {
     padding-right: 2.2em !important;
+}
+
+.locationNameCell {
+    font-weight: bolder !important;
+    font-size: large !important;
+    margin-top: 2px !important;
 }
