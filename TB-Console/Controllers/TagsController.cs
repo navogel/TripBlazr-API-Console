@@ -12,7 +12,7 @@ using TripBlazrConsole.Models.ViewModels.TagViewModels;
 
 namespace TripBlazrConsole.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TagsController : ControllerBase
@@ -25,25 +25,15 @@ namespace TripBlazrConsole.Controllers
         }
 
         // GET: api/Tags
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MenuTagsDetailViewModel>>> GetTag()
+        [HttpGet("ByAccount/{id}")]
+        public async Task<ActionResult<IEnumerable<MenuTagsDetailViewModel>>> GetTagsByAccount(int id)
         {
-            var applicationDbContext = await _context.Tag
-
-            //   .Include(l => l.TagMenuGroups)
-            //        .ThenInclude(lc => lc.MenuGroup)
-                    
-               
-            //   .ForEachAsync(l.MenuGroup => new MenuTagsViewModel()
-            //   {
-            //       MenuGroupId = l.TagMenuGroups.MenuGroup,
-            //       Tags = l.LocationTags.Select(t => t.Tag).ToList(),
-                   
-            //   })
-            .ToListAsync();
+            var tags = await _context.Tag
+                .Where(t => t.AccountId == id)
+                .ToListAsync();
 
 
-           return Ok(applicationDbContext);
+           return Ok(tags);
         }
 
         // GET: api/Tags/5
