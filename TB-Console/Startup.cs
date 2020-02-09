@@ -15,6 +15,8 @@ using System.Text;
 using TripBlazrConsole.Interfaces;
 using TripBlazrConsole.Services;
 using TripBlazrConsole.Models.Data;
+using AutoMapper;
+using TripBlazrConsole.MapperConfigurations;
 
 namespace TripBlazrConsole
 {
@@ -67,6 +69,10 @@ namespace TripBlazrConsole
                 x.SaveToken = true;
                 x.TokenValidationParameters = tokenValidationParams;
             });
+
+            services.AddSingleton<IMapper>(new Mapper(new MapperConfiguration( options => {
+                options.AddProfile<LocationMapping>();
+            })));
 
             services.AddScoped<IUserService, UserService>();
 

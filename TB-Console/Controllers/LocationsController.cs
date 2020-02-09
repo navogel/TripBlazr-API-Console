@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,16 +26,19 @@ namespace TripBlazrConsole.Controllers
 
         private static IWebHostEnvironment _environment;
 
-        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment)
+        private readonly IMapper _mapper;
+
+        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper)
         {
             _context = context;
             _environment = environment;
+            _mapper = mapper;
         }
 
         // GET: CLIENT: ANON: api/Locations/citySlug
         [AllowAnonymous]
         [HttpGet(Api.Location.GetLocations)]
-        public async Task<ActionResult<IEnumerable<LocationsDetailViewModel>>> GetLocations(string citySlug)
+        public async Task<ActionResult<IEnumerable<LocationViewModel>>> GetLocations(string citySlug)
         {
             var applicationDbContext = await _context.Location
                .Include(l => l.Hours)
@@ -43,13 +47,7 @@ namespace TripBlazrConsole.Controllers
                .Include(l => l.LocationTags)
                      .ThenInclude(c => c.Tag)
                .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true)
-               .Select(l => new LocationsDetailViewModel()
-               {
-                   Location = l,
-                   Tags = l.LocationTags.Select(t => t.Tag).ToList(),
-                   Categories = l.LocationCategories.Select(c => c.Category).ToList(),
-                   Hours = l.Hours.ToList()
-               }).ToListAsync();
+               .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
 
             return Ok(applicationDbContext);
         }
