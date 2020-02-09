@@ -8,16 +8,22 @@ import LocationTable from './LocationTable';
 class LocationList extends Component {
     state = {
         locations: [],
-        cardView: true
+        cardView: true,
+        search: '',
+        tag: '',
+        category: ''
     };
 
     getLocations = () => {
-        LocationManager.getAllLocationsByAccount(this.props.accountId).then(
-            data => {
-                this.setState({ locations: data });
-                console.log(data);
-            }
-        );
+        LocationManager.getAllLocationsByAccount(
+            this.props.accountId,
+            this.state.search,
+            this.state.category,
+            this.state.tag
+        ).then(data => {
+            this.setState({ locations: data });
+            console.log(data);
+        });
     };
 
     changeView = () => {
