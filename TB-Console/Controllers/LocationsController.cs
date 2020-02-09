@@ -76,7 +76,7 @@ namespace TripBlazrConsole.Controllers
                 //parameter filters
                 if (!string.IsNullOrWhiteSpace(search))
                 {
-                    query = query.Where(q => q.Name.Contains(search)).ToList();
+                    query = query.Where(q => EF.Functions.Like(q.Name, $"%{search}%")).ToList();
                 };
 
                 if (!string.IsNullOrWhiteSpace(category))
