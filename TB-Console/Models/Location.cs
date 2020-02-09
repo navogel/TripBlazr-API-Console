@@ -74,11 +74,11 @@ namespace TripBlazrConsole.Models
 
         public string City { get; set; }
 
+        public string State { get; set; }
+
         public int? Zipcode { get; set; }
 
         //hours
-
-        public bool? Is24Hours { get; set; }
 
         public bool? SeeWebsite { get; set; } 
 

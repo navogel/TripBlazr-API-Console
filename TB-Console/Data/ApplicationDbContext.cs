@@ -169,7 +169,18 @@ namespace TripBlazrConsole.Data
                .HasIndex(u => u.CitySlug)
                .IsUnique();
 
-
+            modelBuilder.Entity<Account>().HasData(
+                new Account
+                {
+                    AccountId = 1,
+                    Name = "NCVC",
+                    City = "Nashville",
+                    Latitude = 36.1627,
+                    Longitude = 86.7816,
+                    Inactive = false,
+                    IsDeleted = false,
+                    CitySlug = "this-is-nashville-slug"
+                });
 
         }
     }
