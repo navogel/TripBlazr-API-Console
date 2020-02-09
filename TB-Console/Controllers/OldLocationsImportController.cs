@@ -63,7 +63,7 @@ namespace TripBlazrConsole.Controllers
                             VideoStartTime = legacyPlace.VideoStartTime,
                             VideoEndTime = legacyPlace.VideoEndTime,
                             ImageUrl = legacyPlace.ImageUrl,
-                            Inactive = legacyPlace.IsLive,
+                            IsActive = legacyPlace.IsLive,
                             IsDeleted = false
                         };
                         

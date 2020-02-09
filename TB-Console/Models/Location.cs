@@ -61,7 +61,7 @@ namespace TripBlazrConsole.Models
 
         //City Controls 
 
-        public bool? Inactive { get; set; } 
+        public bool? IsActive { get; set; } 
 
         public bool? IsDeleted { get; set; } 
 

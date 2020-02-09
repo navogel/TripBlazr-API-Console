@@ -46,7 +46,7 @@ namespace TripBlazrConsole.Controllers
                     .ThenInclude(lc => lc.Category)
                .Include(l => l.LocationTags)
                      .ThenInclude(c => c.Tag)
-               .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true)
+               .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true && l.IsActive == true)
                .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
 
             return Ok(applicationDbContext);
@@ -55,7 +55,7 @@ namespace TripBlazrConsole.Controllers
         // GET: CONSOLE: PRIVATE: api/Locations/Account/{id}?search/category/tag={params}
         
         [HttpGet(Api.Location.GetConsoleLocations)]
-        public async Task<ActionResult<IEnumerable<LocationsDetailViewModel>>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive)
+        public async Task<ActionResult<IEnumerable<LocationViewModel>>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive)
         {
             try
             {
@@ -69,6 +69,7 @@ namespace TripBlazrConsole.Controllers
                  .Include(l => l.LocationTags)
                        .ThenInclude(c => c.Tag)
                  .Where(q => q.AccountId == id && q.IsDeleted != true)
+                 .Where(q => q.LocationCategories.Any(lc => lc.CategoryId != 9))
                  //verify user has access to this account
                  .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
 
@@ -90,23 +91,24 @@ namespace TripBlazrConsole.Controllers
 
                 if (isActive == false)
                 {
-                    query = query.Where(q => q.Inactive == true).ToList();
+                    query = query.Where(q => q.IsActive == false).ToList();
                 };
 
                 if (isActive == true)
                 {
-                    query = query.Where(q => q.Inactive == false).ToList();
+                    query = query.Where(q => q.IsActive == true).ToList();
                 };
 
                 //create location object after filtering
                 var locations = query
-               .Select(l => new LocationsDetailViewModel()
-               {
-                   Location = l,
-                   Tags = l.LocationTags.Select(t => t.Tag).ToList(),
-                   Categories = l.LocationCategories.Select(c => c.Category).ToList(),
-                   Hours = l.Hours.ToList()
-               });
+                    .Select(l => _mapper.Map<LocationViewModel>(l)).ToList();
+                //.Select(l => new LocationsDetailViewModel()
+                //{
+                //    Location = l,
+                //    Tags = l.LocationTags.Select(t => t.Tag).ToList(),
+                //    Categories = l.LocationCategories.Select(c => c.Category).ToList(),
+                //    Hours = l.Hours.ToList()
+                //});
 
                 return Ok(locations);
             } catch
@@ -184,7 +186,7 @@ namespace TripBlazrConsole.Controllers
                 City = viewModel.City,
                 Zipcode = viewModel.Zipcode,
                 IsDeleted = false,
-                Inactive = false
+                IsActive = true
             };
            
             //create new location
