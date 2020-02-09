@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { createAuthHeaders } from '../API/userManager';
-import AccountManager from '../API/accountManager';
-import Mapper from './Map/AccountMapper';
-import 'leaflet/dist/leaflet.css';
-class LocationOverview extends Component {
+import { createAuthHeaders } from '../../API/userManager';
+import AccountManager from '../../API/accountManager';
+import Mapper from '../map/AccountMapper';
+
+class LocationDetails extends Component {
     state = {
         address: '',
         tempAddress: ''
@@ -23,7 +23,7 @@ class LocationOverview extends Component {
     };
 
     componentDidMount() {
-        //creat auth header for every request
+        console.log('im locations deets page', this.props);
     }
 
     render() {
@@ -72,4 +72,4 @@ class LocationOverview extends Component {
     }
 }
 
-export default Home;
+export default LocationDetails;

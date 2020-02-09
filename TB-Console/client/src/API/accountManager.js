@@ -1,6 +1,6 @@
 import { createAuthHeaders } from '../API/userManager';
 
-const baseUrl = '/api/';
+const baseUrl = '/api';
 
 const authHeader = createAuthHeaders();
 

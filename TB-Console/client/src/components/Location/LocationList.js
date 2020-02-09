@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { createAuthHeaders } from '../API/userManager';
-import AccountManager from '../API/accountManager';
-import Mapper from './map/AccountMapper';
-import 'leaflet/dist/leaflet.css';
-class Home extends Component {
+import { createAuthHeaders } from '../../API/userManager';
+import LocationManager from '../../API/LocationManager';
+import Mapper from '../map/LocationMapper';
+
+class LocationList extends Component {
     state = {
         values: [],
-        accounts: [],
+        locations: [],
         address: '',
         tempAddress: ''
     };
@@ -25,20 +25,16 @@ class Home extends Component {
     };
 
     componentDidMount() {
-        //creat auth header for every request
-        const authHeader = createAuthHeaders();
+        console.log('im locations list page', this.props);
+
         //ralative path
-        fetch('/api/v1/values', {
-            headers: authHeader
-        })
-            .then(response => response.json())
-            .then(values => {
-                this.setState({ values: values });
-            });
-        AccountManager.getAllAccounts().then(data => {
-            this.setState({ accounts: data });
-            console.log(data);
-        });
+
+        LocationManager.getAllLocationsByAccount(this.props.accountId).then(
+            data => {
+                this.setState({ locations: data });
+                console.log(data);
+            }
+        );
     }
 
     render() {
@@ -67,24 +63,28 @@ class Home extends Component {
                         </div>
                     </fieldset>
                 </form>
-                <ul>
-                    {this.state.accounts.map(account => (
-                        <div key={account.accountId}>
-                            <li>{account.city}</li>
+                <div>
+                    {this.state.locations.map(location => (
+                        <div key={location.locationId}>
+                            <img
+                                src={`https://localhost:5001${location.location.imageUrl}`}
+                                alt='location image'
+                            />
+                            <div>{location.location.name}</div>
                             <div className={'mapWrapper'}>
                                 <Mapper
                                     className={'map'}
-                                    latitude={account.latitude}
-                                    longitude={account.longitude}
+                                    latitude={location.location.latitude}
+                                    longitude={location.location.longitude}
                                     address={this.state.address}
                                 />
                             </div>
                         </div>
                     ))}
-                </ul>
+                </div>
             </>
         );
     }
 }
 
-export default Home;
+export default LocationList;

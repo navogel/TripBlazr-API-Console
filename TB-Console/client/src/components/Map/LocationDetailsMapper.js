@@ -8,9 +8,9 @@ import {
     FeatureGroup
 } from 'react-leaflet';
 import Token from '../../Token';
-import L from '../../../node_modules/leaflet';
+import L from 'leaflet';
 import GeoSearch from './Geosearch';
-import { OpenStreetMapProvider } from '../../../node_modules/leaflet-geosearch';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 const myIcon = L.icon({
     iconUrl: '/images/markers/icon1.png',
@@ -23,7 +23,7 @@ const myIcon = L.icon({
     popupAnchor: [0, -45]
 });
 
-export default class AccountMapper extends Component {
+export default class LocationDetailsMapper extends Component {
     state = {
         lat: '',
         lng: '',

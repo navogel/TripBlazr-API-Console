@@ -1,12 +1,17 @@
-import { createAuthHeaders } from '../API/userManager';
+import { createAuthHeaders } from './userManager';
 
 const baseUrl = '/api/';
 
 const authHeader = createAuthHeaders();
 
 export default {
-    getAllLocations(id) {
-        return fetch(`${baseUrl}/Locations/${id}`, {
+    getAllLocationsByAccount(id) {
+        return fetch(`${baseUrl}v1/Locations/byAccount/${id}`, {
+            headers: authHeader
+        }).then(response => response.json());
+    },
+    getLocation(id) {
+        return fetch(`${baseUrl}v1/Locations/${id}`, {
             headers: authHeader
         }).then(response => response.json());
     }

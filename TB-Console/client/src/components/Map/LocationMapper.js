@@ -27,7 +27,7 @@ export default class LocationMapper extends Component {
     state = {
         lat: '',
         lng: '',
-        zoom: 13
+        zoom: 8
     };
 
     //function for storing click events on geosearch and click to add markers
@@ -37,6 +37,11 @@ export default class LocationMapper extends Component {
 
     markerFocus = e => {
         console.log('got the deets', e);
+    };
+
+    dragEnd = e => {
+        console.log(e.target.getLatLng().lat);
+        console.log(e.target.getLatLng().lng);
     };
 
     handleFieldChange = evt => {
@@ -49,34 +54,15 @@ export default class LocationMapper extends Component {
         // Typical usage (don't forget to compare props):
         if (this.props.address !== prevProps.address) {
             console.log(this.props);
-            // this.setState({
-            //     lat: this.props.latitude,
-            //     lng: this.props.longitude
-            // });
+
             const map = this.leafletMap.leafletElement;
-            //const geocoder = L.Control.Geocoder.mapbox(Token.MB);
-            // let marker;
 
             var query_addr = this.props.address;
-            //var query_addr = 'nashville tn';
 
-            // Get the provider, in this case the OpenStreetMap (OSM) provider. For some reason, this is the "wrong" way to instanciate it. Instead, we should be using an import "leaflet-geosearch" but I coulnd't make that work
             const provider = new OpenStreetMapProvider();
             var query_promise = provider.search({
                 query: query_addr
             });
-            // It's a promise because we have to wait for the geosearch results. It may be more than one. Be careful.
-            // These results have the following properties:
-            // const result = {
-            //   x: Number,                      // lon,
-            //   y: Number,                      // lat,
-            //   label: String,                  // formatted address
-            //   bounds: [
-            //     [Number, Number],             // s, w - lat, lon
-            //     [Number, Number],             // n, e - lat, lon
-            //   ],
-            //   raw: {},                        // raw provider result
-            // }
 
             query_promise.then(
                 value => {
@@ -181,17 +167,18 @@ export default class LocationMapper extends Component {
                     onAdd={this.onFeatureGroupAdd}
                     // onClick={e => this.storeGeocode(e)}
                 > */}
-                    {/* <Marker
-                    position={position}
-                    anchor='bottom'
-                    icon={myIcon}
-                    draggable={true}
-                    // onMouseEnter={this.onMarkerClick.bind(this, location)}s
-                    // onMouseLeave={this.onMarkerLeave}
-                    onClick={e => this.markerFocus(e)}
-                >
-                    <Tooltip>{'hiya'}</Tooltip>
-                </Marker> */}
+                    <Marker
+                        position={position}
+                        anchor='bottom'
+                        icon={myIcon}
+                        draggable={true}
+                        // onMouseEnter={this.onMarkerClick.bind(this, location)}s
+                        // onMouseLeave={this.onMarkerLeave}
+                        onClick={e => this.markerFocus(e)}
+                        ondragend={e => this.dragEnd(e)}
+                    >
+                        <Tooltip>{'hiya'}</Tooltip>
+                    </Marker>
                     {/* </FeatureGroup> */}
                 </Map>
             </>
