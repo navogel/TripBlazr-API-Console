@@ -7,6 +7,7 @@ import Home from './components/Home';
 import { getUser, removeUser } from './API/userManager';
 import ApplicationViews from './components/ApplicationViews';
 import './App.css';
+import './TB-Console.css';
 
 class App extends Component {
     state = {

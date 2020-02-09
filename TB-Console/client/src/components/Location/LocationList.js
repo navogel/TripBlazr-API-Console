@@ -1,90 +1,94 @@
 import React, { Component } from 'react';
-import { createAuthHeaders } from '../../API/userManager';
 import LocationManager from '../../API/LocationManager';
-import Mapper from '../map/LocationMapper';
+import './Location.css';
+import SwitchView from './SwitchView';
+import LocationCard from './LocationCard';
+import LocationTable from './LocationTable';
 
 class LocationList extends Component {
     state = {
-        values: [],
         locations: [],
-        address: '',
-        tempAddress: ''
+        cardView: true
     };
 
-    handleFieldChange = evt => {
-        const stateToChange = {};
-        stateToChange[evt.target.id] = evt.target.value;
-        this.setState(stateToChange);
-    };
-
-    submitAddress = () => {
-        //console.log(value);
-        this.setState({
-            address: this.state.tempAddress
-        });
-    };
-
-    componentDidMount() {
-        console.log('im locations list page', this.props);
-
-        //ralative path
-
+    getLocations = () => {
         LocationManager.getAllLocationsByAccount(this.props.accountId).then(
             data => {
                 this.setState({ locations: data });
                 console.log(data);
             }
         );
+    };
+
+    changeView = () => {
+        if (this.state.cardView === true) {
+            this.setState({
+                cardView: false
+            });
+        } else {
+            this.setState({
+                cardView: true
+            });
+        }
+    };
+
+    componentDidMount() {
+        // console.log('im locations list page', this.props);
+
+        this.getLocations();
     }
 
     render() {
         return (
             <>
-                <h1>Welcome to my app</h1>
-                <form className='modalContainer'>
-                    <fieldset>
-                        <div className='formgrid'>
-                            <input
-                                type='text'
-                                required
-                                onChange={this.handleFieldChange}
-                                id='tempAddress'
-                                placeholder='tempAddress'
+                <section className='section-content'>
+                    <div className='addViewRow'>
+                        {/* <FormDialog {...this.props} getData={this.getData} /> */}
+                        <SwitchView changeView={this.changeView} />
+                    </div>
+                </section>
+                {this.state.cardView ? (
+                    <div className='container-cards'>
+                        {this.state.locations.map(locationDetails => (
+                            <LocationCard
+                                key={locationDetails.location.id}
+                                locationDetails={locationDetails}
+                                getData={this.getData}
+                                {...this.props}
+                                cardView={this.state.cardView}
                             />
-                            <label htmlFor='animalName'>Name</label>
-
-                            <button
-                                type='button'
-                                //disabled={this.state.loadingStatus}
-                                onClick={this.submitAddress}
-                            >
-                                Submit
-                            </button>
-                        </div>
-                    </fieldset>
-                </form>
-                <div>
-                    {this.state.locations.map(location => (
-                        <div key={location.locationId}>
-                            <img
-                                src={`https://localhost:5001${location.location.imageUrl}`}
-                                alt='location image'
-                            />
-                            <div>{location.location.name}</div>
-                            <div className={'mapWrapper'}>
-                                <Mapper
-                                    className={'map'}
-                                    latitude={location.location.latitude}
-                                    longitude={location.location.longitude}
-                                    address={this.state.address}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className='container-table'>
+                        <LocationTable
+                            locations={this.state.locations}
+                            getData={this.getData}
+                            {...this.props}
+                        />
+                    </div>
+                )}
             </>
         );
     }
 }
 
 export default LocationList;
+
+// {this.state.locations.map(location => (
+//     <div key={location.locationId}>
+//         <img
+//             src={`https://localhost:5001${location.location.imageUrl}`}
+//             alt='location image'
+//         />
+//         <div>{location.location.name}</div>
+//         <div className={'mapWrapper'}>
+//             <Mapper
+//                 className={'map'}
+//                 latitude={location.location.latitude}
+//                 longitude={location.location.longitude}
+//                 address={this.state.address}
+//             />
+//         </div>
+//     </div>
+// ))}

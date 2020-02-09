@@ -1,0 +1,46 @@
+/* Import the google web fonts to use */
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+
+/*Typography
+--------------------------------------------------------------*/
+body,
+button,
+input,
+select,
+textarea {
+    color: #404040;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 2px;
+}
+
+p {
+    margin-bottom: 1.5em;
+    color: #d6fcff;
+    color: darkslateblue;
+}
+
+strong {
+    font-weight: bold;
+}
+
+img {
+    display: block;
+    border: 0;
+    width: 10vh;
+    height: auto;
+}
+
+.section-content {
+    padding: 1.4em;
+}

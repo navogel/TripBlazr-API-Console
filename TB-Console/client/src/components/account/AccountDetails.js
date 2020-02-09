@@ -40,7 +40,7 @@ class AccountDetails extends Component {
                                 id='tempAddress'
                                 placeholder='tempAddress'
                             />
-                            <label htmlFor='animalName'>Name</label>
+                            <label htmlFor='Name'>Name</label>
 
                             <button
                                 type='button'

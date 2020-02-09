@@ -216,7 +216,7 @@ namespace TripBlazrConsole.Controllers
                 
                 // update location with new filename
 
-                location.ImageUrl = "\\Upload\\" + fileName + currentFile.Extension;
+                location.ImageUrl = fileName + currentFile.Extension;
                 _context.Entry(location).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
@@ -249,7 +249,7 @@ namespace TripBlazrConsole.Controllers
 
                 var location = await _context.Location.FirstOrDefaultAsync(l => l.LocationId == id);
 
-                location.ImageUrl = "\\Upload\\" + id + currentFile.Extension;
+                location.ImageUrl = id + currentFile.Extension;
 
                _context.Entry(location).State = EntityState.Modified;
 
