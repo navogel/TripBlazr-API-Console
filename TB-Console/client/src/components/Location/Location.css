@@ -103,7 +103,7 @@ a {
 }
 
 .MuiCardActions-root .MuiButtonBase-root:hover {
-    background-color: rgb(117, 61, 61);
+    background-color: #4d5566;
     color: rgb(255, 255, 255);
 }
 
@@ -132,7 +132,7 @@ a {
 }
 
 h3 {
-    font-size: 30px;
+    font-size: 20px;
 }
 
 .tableWrapper {
@@ -169,7 +169,7 @@ h3 {
 }
 
 .activeText {
-    padding-right: 2.2em !important;
+    padding-right: 2em !important;
 }
 
 .locationNameCell {

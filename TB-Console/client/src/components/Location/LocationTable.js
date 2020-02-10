@@ -15,6 +15,7 @@ import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import EditIcon from '@material-ui/icons/EditOutlined';
+import Checkbox from '@material-ui/core/Checkbox';
 
 // import EditLocationModalTable from '../location/editlocationModalTable';
 
@@ -64,12 +65,21 @@ export default function LocationTable(props) {
                                     className='imageCell'
                                 >
                                     <div className='tableIcons'>
-                                        <Avatar
-                                            variant='rounded'
-                                            alt='location image'
-                                            src={`https://localhost:5001/upload/${location.imageUrl}`}
-                                            className={classes.large}
-                                        />
+                                        {location.imageUrl ? (
+                                            <Avatar
+                                                variant='rounded'
+                                                alt='location image'
+                                                src={`https://localhost:5001/upload/${location.imageUrl}`}
+                                                className={classes.large}
+                                            />
+                                        ) : (
+                                            <Avatar
+                                                variant='rounded'
+                                                alt='location image'
+                                                src={`https://localhost:5001/upload/logo.png`}
+                                                className={classes.large}
+                                            />
+                                        )}
                                     </div>
                                 </TableCell>
                                 <TableCell
@@ -85,14 +95,22 @@ export default function LocationTable(props) {
                                     <FormGroup row>
                                         <FormControlLabel
                                             control={
-                                                <Switch
-                                                    checked={location.isActive}
+                                                <Checkbox
+                                                    checked={!location.isActive}
                                                     // onChange={handleChange(
                                                     //     'checkedB'
                                                     // )}
-                                                    value={true}
+                                                    value='isActive'
                                                     color='primary'
                                                 />
+                                                // <Switch
+                                                //     checked={!location.isActive}
+                                                //     // onChange={handleChange(
+                                                //     //     'checkedB'
+                                                //     // )}
+                                                //     value={false}
+                                                //     color='primary'
+                                                // />
                                             }
                                             // label='Toggle View'
                                         />

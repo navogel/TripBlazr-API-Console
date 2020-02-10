@@ -8,7 +8,7 @@ import LocationTable from './LocationTable';
 class LocationList extends Component {
     state = {
         locations: [],
-        cardView: true,
+        cardView: false,
         search: '',
         tag: '',
         category: '',
@@ -21,7 +21,7 @@ class LocationList extends Component {
             this.state.search,
             this.state.category,
             this.state.tag,
-            true
+            this.state.isActive
         ).then(data => {
             this.setState({ locations: data });
             console.log(data);

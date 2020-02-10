@@ -23,11 +23,19 @@ class LocationCard extends Component {
                 <Card className='locationCard'>
                     <CardActionArea className='cardActionArea'>
                         <Link to={`/locations/${this.props.location.id}`}>
-                            <CardMedia
-                                className='locationCardMedia'
-                                image={`https://localhost:5001/upload/${this.props.locationDetails.imageUrl}`}
-                                alt='my dog'
-                            />
+                            {this.props.locationDetails.imageUrl ? (
+                                <CardMedia
+                                    className='locationCardMedia'
+                                    image={`https://localhost:5001/upload/${this.props.locationDetails.imageUrl}`}
+                                    alt='my dog'
+                                />
+                            ) : (
+                                <CardMedia
+                                    className='locationCardMedia'
+                                    image={`https://localhost:5001/upload/logo.png`}
+                                    alt='my dog'
+                                />
+                            )}
                             <CardContent className='cardContent'>
                                 <h3>
                                     <span className='card-petname'>
@@ -36,7 +44,7 @@ class LocationCard extends Component {
                                         )}
                                     </span>
                                 </h3>
-                                <p>{this.props.locationDetails.name}</p>
+                                <p>{this.props.locationDetails.description}</p>
                             </CardContent>
                         </Link>
                     </CardActionArea>
