@@ -187,7 +187,8 @@ namespace TripBlazrConsole.Controllers
                 City = viewModel.City,
                 Zipcode = viewModel.Zipcode,
                 IsDeleted = false,
-                IsActive = true
+                IsActive = true,
+                ImageUrl = "logo.png"
             };
            
             //create new location

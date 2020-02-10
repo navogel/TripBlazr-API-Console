@@ -89,14 +89,14 @@ export default function LocationTable(props) {
                                     {location.name}
                                 </TableCell>
                                 <TableCell align='left'>
-                                    {location.shortSummary}
+                                    {location.description}
                                 </TableCell>
                                 <TableCell align='right' className='switchCell'>
                                     <FormGroup row>
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
-                                                    checked={!location.isActive}
+                                                    checked={location.isActive}
                                                     // onChange={handleChange(
                                                     //     'checkedB'
                                                     // )}

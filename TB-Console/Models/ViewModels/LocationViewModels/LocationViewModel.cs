@@ -6,7 +6,6 @@ namespace TripBlazrConsole.Models.ViewModels.LocationViewModels
     {
         public int LocationId { get; set; }
         public int AccountId { get; set; }
-        public Account Account { get; set; }
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
         public string Website { get; set; }
@@ -19,7 +18,7 @@ namespace TripBlazrConsole.Models.ViewModels.LocationViewModels
         public int? VideoStartTime { get; set; }
         public int? VideoEndTime { get; set; }
         public string ImageUrl { get; set; }
-        public bool? Inactive { get; set; } 
+        public bool? IsActive { get; set; } 
         public bool? IsDeleted { get; set; } 
         public string Address1 { get; set; }
         public string Address2 { get; set; }
