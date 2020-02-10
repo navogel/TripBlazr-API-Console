@@ -57,7 +57,7 @@ export default function LocationTable(props) {
                     </TableHead>
                     <TableBody>
                         {props.locations.map(location => (
-                            <TableRow key={location.location.name}>
+                            <TableRow key={location.name}>
                                 <TableCell
                                     component='th'
                                     scope='row'
@@ -67,7 +67,7 @@ export default function LocationTable(props) {
                                         <Avatar
                                             variant='rounded'
                                             alt='location image'
-                                            src={`https://localhost:5001/upload/${location.location.imageUrl}`}
+                                            src={`https://localhost:5001/upload/${location.imageUrl}`}
                                             className={classes.large}
                                         />
                                     </div>
@@ -76,20 +76,17 @@ export default function LocationTable(props) {
                                     align='left'
                                     className='locationNameCell'
                                 >
-                                    {location.location.name}
+                                    {location.name}
                                 </TableCell>
                                 <TableCell align='left'>
-                                    {location.location.name}
+                                    {location.shortSummary}
                                 </TableCell>
                                 <TableCell align='right' className='switchCell'>
                                     <FormGroup row>
                                         <FormControlLabel
                                             control={
                                                 <Switch
-                                                    checked={
-                                                        !location.location
-                                                            .inactive
-                                                    }
+                                                    checked={location.isActive}
                                                     // onChange={handleChange(
                                                     //     'checkedB'
                                                     // )}

@@ -60,7 +60,7 @@ namespace TripBlazrConsole.Controllers
             try
             {
                 var userId = HttpContext.GetUserId();
-
+                string excludeId = "8A__mpnWBT8";
                 //initial query restricting by account
                 var query = await _context.Location
                  .Include(l => l.Hours)
@@ -69,7 +69,8 @@ namespace TripBlazrConsole.Controllers
                  .Include(l => l.LocationTags)
                        .ThenInclude(c => c.Tag)
                  .Where(q => q.AccountId == id && q.IsDeleted != true)
-                 .Where(q => q.LocationCategories.Any(lc => lc.CategoryId != 9))
+                 //.Where(q => q.LocationCategories.Any(lc => lc.CategoryId != 9))
+                 .Where(q => q.VideoId != excludeId)
                  //verify user has access to this account
                  .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
 

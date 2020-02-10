@@ -5,9 +5,9 @@ const baseUrl = '/api/v1/';
 const authHeader = createAuthHeaders();
 
 export default {
-    getAllLocationsByAccount(id, search, tag, category) {
+    getAllLocationsByAccount(id, search, tag, category, active) {
         return fetch(
-            `${baseUrl}Locations/byAccount/${id}?search=${search}&tag=${tag}&category=${category}`,
+            `${baseUrl}Locations/byAccount/${id}?search=${search}&tag=${tag}&category=${category}&isActive=${active}`,
             {
                 headers: authHeader
             }

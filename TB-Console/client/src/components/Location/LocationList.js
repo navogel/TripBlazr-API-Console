@@ -11,7 +11,8 @@ class LocationList extends Component {
         cardView: true,
         search: '',
         tag: '',
-        category: ''
+        category: '',
+        isActive: true
     };
 
     getLocations = () => {
@@ -19,7 +20,8 @@ class LocationList extends Component {
             this.props.accountId,
             this.state.search,
             this.state.category,
-            this.state.tag
+            this.state.tag,
+            true
         ).then(data => {
             this.setState({ locations: data });
             console.log(data);
@@ -57,7 +59,7 @@ class LocationList extends Component {
                     <div className='container-cards'>
                         {this.state.locations.map(locationDetails => (
                             <LocationCard
-                                key={locationDetails.location.id}
+                                key={locationDetails.locationId}
                                 locationDetails={locationDetails}
                                 getData={this.getData}
                                 {...this.props}
