@@ -12,7 +12,6 @@ export const createAuthHeadersForm = () => {
     const token = localStorage.getItem('token');
     return {
         Authorization: `bearer ${token}`
-        // 'Content-Type': 'form-data'
     };
 };
 

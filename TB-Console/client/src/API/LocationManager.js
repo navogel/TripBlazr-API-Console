@@ -2,12 +2,9 @@ import { createAuthHeaders, createAuthHeadersForm } from './userManager';
 
 const baseUrl = '/api/v1/';
 
-const authHeader = createAuthHeaders();
-
-const authHeaderForm = createAuthHeadersForm();
-
 export default {
     getAllLocationsByAccount(id, search, tag, category, active) {
+        const authHeader = createAuthHeaders();
         const start = Date.now();
         console.log('start fetch', start);
         return fetch(
@@ -21,18 +18,21 @@ export default {
         });
     },
     getLocationById(id) {
+        const authHeader = createAuthHeaders();
         return fetch(`${baseUrl}Locations/${id}`, {
             headers: authHeader
         }).then(response => response.json());
     },
     createLocation(location) {
+        const authHeader = createAuthHeadersForm();
         const options = {
             method: 'POST',
-            body: location
+            body: location,
+            headers: authHeader
         };
-        if (options && options.headers) {
-            delete options.headers['Content-Type'];
-        }
+        // if (options && options.headers) {
+        //     delete options.headers['Content-Type'];
+        // }
         return fetch(`${baseUrl}Locations`, options).then(response =>
             response.json()
         );

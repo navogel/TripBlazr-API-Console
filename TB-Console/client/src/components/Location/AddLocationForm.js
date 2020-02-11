@@ -82,10 +82,28 @@ class AddLocationForm extends Component {
         this.setState({ [name]: event.target.value });
     };
 
+    //pass to the map
+
     submitAddress = () => {
         //console.log(value);
         this.setState({
             mapAddress: `${this.state.name} ${this.state.address1} ${this.state.city}`
+        });
+    };
+
+    grabCoordsFromPin = (lat, lng) => {
+        this.setState({
+            latitude: lat,
+            longitude: lng
+        });
+    };
+
+    UpdateLatLng = e => {
+        console.log(e.target);
+        let position = e.target.getLatLng();
+        this.setState({
+            latitude: position.lat,
+            longitude: position.lng
         });
     };
 
@@ -162,6 +180,7 @@ class AddLocationForm extends Component {
     }
 
     render() {
+        console.log('latlng state', this.state.latitude, this.state.longitude);
         const { classes } = this.props;
 
         return (
@@ -265,6 +284,8 @@ class AddLocationForm extends Component {
                                 cityLat={this.props.cityLat}
                                 cityLng={this.props.cityLng}
                                 mapAddress={this.state.mapAddress}
+                                grabCoordsFromPin={this.grabCoordsFromPin}
+                                updateLatLng={this.updateLatLng}
                             />
 
                             <input

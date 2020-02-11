@@ -181,17 +181,17 @@ export default class AccountMapper extends Component {
                     onAdd={this.onFeatureGroupAdd}
                     // onClick={e => this.storeGeocode(e)}
                 > */}
-                    {/* <Marker
-                    position={position}
-                    anchor='bottom'
-                    icon={myIcon}
-                    draggable={true}
-                    // onMouseEnter={this.onMarkerClick.bind(this, location)}s
-                    // onMouseLeave={this.onMarkerLeave}
-                    onClick={e => this.markerFocus(e)}
-                >
-                    <Tooltip>{'hiya'}</Tooltip>
-                </Marker> */}
+                    <Marker
+                        position={position}
+                        anchor='bottom'
+                        icon={myIcon}
+                        draggable={true}
+                        // onMouseEnter={this.onMarkerClick.bind(this, location)}s
+                        // onMouseLeave={this.onMarkerLeave}
+                        onClick={e => this.markerFocus(e)}
+                    >
+                        <Tooltip>{'hiya'}</Tooltip>
+                    </Marker>
                     {/* </FeatureGroup> */}
                 </Map>
             </>
