@@ -112,10 +112,11 @@ class AddLocationForm extends Component {
         if (
             this.state.name === '' ||
             this.state.latitude === '' ||
-            this.state.longitude === ''
+            this.state.longitude === '' ||
+            this.state.primaryCategory === ''
         ) {
             window.alert(
-                'Well this is awkward...  you have to enter a name and address and then get the location coordinated.'
+                'Well this is awkward...  you need to fill out these items to create a category!.'
             );
         } else {
             this.setState({ loadingStatus: true });
@@ -140,7 +141,16 @@ class AddLocationForm extends Component {
             formData.append('isActive', this.state.isActive);
             formData.append('file', fileInput.files[0]);
 
-            LocationManager.createLocation(formData).then(() => {
+            LocationManager.createLocation(formData).then(data => {
+                // console.log(
+                //     'return from post',
+                //     data.locationId,
+                //     this.state.primaryCategory
+                // );
+                LocationManager.createPrimaryCategory(
+                    data.locationId,
+                    parseInt(this.state.primaryCategory)
+                );
                 this.props.getLocations();
                 this.setState({
                     loadingStatus: false,
@@ -161,7 +171,8 @@ class AddLocationForm extends Component {
                     city: '',
                     zipcode: '',
                     state: '',
-                    isActive: ''
+                    isActive: '',
+                    primaryCategory: ''
                 });
                 fileInput.value = '';
             });
@@ -169,7 +180,7 @@ class AddLocationForm extends Component {
     };
     componentDidMount() {
         this.setState({
-            // labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
         });
         console.log('add location props', this.props);
         //add some logic here to manage the obj that is passed
@@ -207,7 +218,7 @@ class AddLocationForm extends Component {
                                     placeholder='Enter the place name'
                                 />
 
-                                {/* <FormControl
+                                <FormControl
                                     variant='outlined'
                                     margin='dense'
                                     className={classes.formControl}
@@ -221,9 +232,9 @@ class AddLocationForm extends Component {
                                         Primary Type
                                     </InputLabel>
                                     <NativeSelect
-                                        value={this.state.locationTypeId}
+                                        value={this.state.primaryCategory}
                                         onChange={this.handleChange(
-                                            'locationTypeId'
+                                            'primaryCategory'
                                         )}
                                         input={
                                             <OutlinedInput
@@ -244,7 +255,7 @@ class AddLocationForm extends Component {
                                         <option value={6}>See</option>
                                         <option value={7}>Shop</option>
                                     </NativeSelect>
-                                </FormControl> */}
+                                </FormControl>
 
                                 {/* <div className='midFormText'>
                                     <p> Optional:</p>

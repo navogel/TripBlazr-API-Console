@@ -36,5 +36,15 @@ export default {
         return fetch(`${baseUrl}Locations`, options).then(response =>
             response.json()
         );
+    },
+    createPrimaryCategory(locationId, categoryId) {
+        const authHeader = createAuthHeaders();
+        return fetch(
+            `${baseUrl}Locations/${locationId}/AddCategory/${categoryId}?isPrimary=true`,
+            {
+                method: 'POST',
+                headers: authHeader
+            }
+        ).then(response => response.json());
     }
 };

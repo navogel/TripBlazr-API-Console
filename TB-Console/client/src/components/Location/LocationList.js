@@ -16,7 +16,7 @@ class LocationList extends Component {
         search: '',
         tag: '',
         category: '',
-        isActive: true,
+        isActive: '',
         //account info
         city: '',
         cityLat: '',

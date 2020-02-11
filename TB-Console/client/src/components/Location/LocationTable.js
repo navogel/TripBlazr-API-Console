@@ -65,7 +65,7 @@ export default function LocationTable(props) {
                             {props.locations
                                 .slice(0, itemsShown)
                                 .map(location => (
-                                    <TableRow key={location.name}>
+                                    <TableRow key={location.locationId}>
                                         <TableCell
                                             component='th'
                                             scope='row'

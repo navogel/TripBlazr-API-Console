@@ -72,7 +72,9 @@ namespace TripBlazrConsole.Controllers
                  //.Where(q => q.LocationCategories.Any(lc => lc.CategoryId != 9))
                  .Where(q => q.VideoId != excludeId)
                  //verify user has access to this account
-                 .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId)).ToListAsync();
+                 .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                 .OrderByDescending(l => l.DateCreated)
+                 .ToListAsync();
 
                 //parameter filters
                 if (!string.IsNullOrWhiteSpace(search))
@@ -432,14 +434,15 @@ namespace TripBlazrConsole.Controllers
 
         //ADD CATS TO LOCATION
         [HttpPost(Api.Location.AddCategory)]
-        public async Task<ActionResult<LocationCategory>> AddCategory([FromRoute] int locationId, [FromRoute] int categoryId)
+        public async Task<ActionResult<LocationCategory>> AddCategory([FromRoute] int locationId, [FromRoute] int categoryId, bool isPrimary)
         {
             try
             {
                 var newCat = new LocationCategory()
                 {
                     CategoryId = categoryId,
-                    LocationId = locationId
+                    LocationId = locationId,
+                    IsPrimary = isPrimary
                 };
 
                 _context.LocationCategory.Add(newCat);
