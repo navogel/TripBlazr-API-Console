@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -16,6 +16,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
 
 // import EditLocationModalTable from '../location/editlocationModalTable';
 
@@ -35,118 +36,146 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LocationTable(props) {
+    const [itemsShown, setItemsShown] = useState(20);
+
     const classes = useStyles();
+
     const handleDelete = id => {
         LocationManager.delete(id).then(() => props.getData());
     };
     return (
-        <div className={'tableWrapper'}>
-            <Paper className={classes.root}>
-                <Table stickyHeader className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align='right'></TableCell>
-                            <TableCell align='left'>Name</TableCell>
-                            <TableCell align='left'>Details</TableCell>
-                            <TableCell align='right' className='activeText'>
-                                Active
-                            </TableCell>
-                            <TableCell className='editDeleteIcons'>
-                                Edit - Details - Delete{' '}
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {props.locations.map(location => (
-                            <TableRow key={location.name}>
-                                <TableCell
-                                    component='th'
-                                    scope='row'
-                                    className='imageCell'
-                                >
-                                    <div className='tableIcons'>
-                                        {location.imageUrl ? (
-                                            <Avatar
-                                                variant='rounded'
-                                                alt='location image'
-                                                src={`https://localhost:5001/upload/${location.imageUrl}`}
-                                                className={classes.large}
-                                            />
-                                        ) : (
-                                            <Avatar
-                                                variant='rounded'
-                                                alt='location image'
-                                                src={`https://localhost:5001/upload/logo.png`}
-                                                className={classes.large}
-                                            />
-                                        )}
-                                    </div>
+        <>
+            <div className={'tableWrapper'}>
+                <Paper className={classes.root}>
+                    <Table stickyHeader className={classes.table}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align='right'></TableCell>
+                                <TableCell align='left'>Name</TableCell>
+                                <TableCell align='left'>Details</TableCell>
+                                <TableCell align='right' className='activeText'>
+                                    Active
                                 </TableCell>
-                                <TableCell
-                                    align='left'
-                                    className='locationNameCell'
-                                >
-                                    {location.name}
-                                </TableCell>
-                                <TableCell align='left'>
-                                    {location.description}
-                                </TableCell>
-                                <TableCell align='right' className='switchCell'>
-                                    <FormGroup row>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={location.isActive}
-                                                    // onChange={handleChange(
-                                                    //     'checkedB'
-                                                    // )}
-                                                    value='isActive'
-                                                    color='primary'
-                                                />
-                                                // <Switch
-                                                //     checked={!location.isActive}
-                                                //     // onChange={handleChange(
-                                                //     //     'checkedB'
-                                                //     // )}
-                                                //     value={false}
-                                                //     color='primary'
-                                                // />
-                                            }
-                                            // label='Toggle View'
-                                        />
-                                    </FormGroup>
-                                </TableCell>
-                                <TableCell align='right' className='iconCell'>
-                                    <IconButton
-                                        aria-label='delete'
-                                        onClick={() =>
-                                            handleDelete(location.id)
-                                        }
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        aria-label='details'
-                                        onClick={() => {
-                                            props.history.push(
-                                                `/locations/${location.id}`
-                                            );
-                                        }}
-                                    >
-                                        <AssignmentIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        aria-label='delete'
-                                        //onClick={() => handleDelete(animal.id)}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
+                                <TableCell className='editDeleteIcons'>
+                                    Edit - Details - Delete{' '}
                                 </TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Paper>
-        </div>
+                        </TableHead>
+                        <TableBody>
+                            {props.locations
+                                .slice(0, itemsShown)
+                                .map(location => (
+                                    <TableRow key={location.name}>
+                                        <TableCell
+                                            component='th'
+                                            scope='row'
+                                            className='imageCell'
+                                        >
+                                            <div className='tableIcons'>
+                                                {location.imageUrl ? (
+                                                    <Avatar
+                                                        variant='rounded'
+                                                        alt='location image'
+                                                        src={`https://localhost:5001/upload/${location.imageUrl}`}
+                                                        className={
+                                                            classes.large
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <Avatar
+                                                        variant='rounded'
+                                                        alt='location image'
+                                                        src={`https://localhost:5001/upload/logo.png`}
+                                                        className={
+                                                            classes.large
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell
+                                            align='left'
+                                            className='locationNameCell'
+                                        >
+                                            {location.name}
+                                        </TableCell>
+                                        <TableCell align='left'>
+                                            {location.description}
+                                        </TableCell>
+                                        <TableCell
+                                            align='right'
+                                            className='switchCell'
+                                        >
+                                            <FormGroup row>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={
+                                                                location.isActive
+                                                            }
+                                                            // onChange={handleChange(
+                                                            //     'checkedB'
+                                                            // )}
+                                                            value='isActive'
+                                                            color='primary'
+                                                        />
+                                                        // <Switch
+                                                        //     checked={!location.isActive}
+                                                        //     // onChange={handleChange(
+                                                        //     //     'checkedB'
+                                                        //     // )}
+                                                        //     value={false}
+                                                        //     color='primary'
+                                                        // />
+                                                    }
+                                                    // label='Toggle View'
+                                                />
+                                            </FormGroup>
+                                        </TableCell>
+                                        <TableCell
+                                            align='right'
+                                            className='iconCell'
+                                        >
+                                            <IconButton
+                                                aria-label='delete'
+                                                onClick={() =>
+                                                    handleDelete(location.id)
+                                                }
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                aria-label='details'
+                                                onClick={() => {
+                                                    props.history.push(
+                                                        `/locations/${location.id}`
+                                                    );
+                                                }}
+                                            >
+                                                <AssignmentIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                aria-label='delete'
+                                                //onClick={() => handleDelete(animal.id)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                </Paper>
+            </div>
+            <div className='loadMoreButton'>
+                <Button
+                    onClick={() => setItemsShown(itemsShown + 20)}
+                    variant='contained'
+                    color='primary'
+                >
+                    Load More
+                </Button>
+            </div>
+        </>
     );
 }

@@ -102,13 +102,31 @@ namespace TripBlazrConsole.Controllers
 
                 //create location object after filtering
                 var locations = query
-                    .Select(l => _mapper.Map<LocationViewModel>(l)).ToList();
-                //.Select(l => new LocationsDetailViewModel()
+                .Select(l => _mapper.Map<LocationViewModel>(l)).ToList();
+                //.Select(viewModel => new LocationViewModel()
                 //{
-                //    Location = l,
-                //    Tags = l.LocationTags.Select(t => t.Tag).ToList(),
-                //    Categories = l.LocationCategories.Select(c => c.Category).ToList(),
-                //    Hours = l.Hours.ToList()
+                //    LocationId = viewModel.LocationId,
+                //    AccountId = viewModel.AccountId,
+                //    Name = viewModel.Name,
+                //    PhoneNumber = viewModel.PhoneNumber,
+                //    Website = viewModel.Website,
+                //    ShortSummary = viewModel.ShortSummary,
+                //    Description = viewModel.Description,
+                //    Latitude = viewModel.Latitude,
+                //    Longitude = viewModel.Longitude,
+                //    VideoId = viewModel.VideoId,
+                //    VideoStartTime = viewModel.VideoStartTime,
+                //    VideoEndTime = viewModel.VideoEndTime,
+                //    Address1 = viewModel.Address1,
+                //    Address2 = viewModel.Address2,
+                //    City = viewModel.City,
+                //    Zipcode = viewModel.Zipcode,
+                //    IsDeleted = viewModel.IsDeleted,
+                //    IsActive = viewModel.IsActive,
+                //    ImageUrl = viewModel.ImageUrl,
+                //    Tags = viewModel.LocationTags.Select(t => t.Tag).ToList(),
+                //   // Categories = viewModel.LocationCategories.Select(c => c.Category).ToList(),
+                //    Hours = viewModel.Hours.ToList()
                 //});
 
                 return Ok(locations);
@@ -137,6 +155,11 @@ namespace TripBlazrConsole.Controllers
                     .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
                     .FirstOrDefaultAsync(l => l.LocationId == id);
                 
+                    //.Where(l => l.LocationId == id)
+                    //.Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    //.Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
+
+
                 if (location == null)
                 {
                     return NotFound($"No Location found with the ID of {id}");
@@ -185,9 +208,10 @@ namespace TripBlazrConsole.Controllers
                 Address1 = viewModel.Address1,
                 Address2 = viewModel.Address2,
                 City = viewModel.City,
+                State = viewModel.State,
                 Zipcode = viewModel.Zipcode,
                 IsDeleted = false,
-                IsActive = true,
+                IsActive = viewModel.IsActive,
                 ImageUrl = "logo.png"
             };
            

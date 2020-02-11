@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using TripBlazrConsole.Models.ViewModels.ConsoleViewModels;
 
 namespace TripBlazrConsole.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -31,7 +33,7 @@ namespace TripBlazrConsole.Controllers
             {
                 var userId = HttpContext.GetUserId();
 
-                return await _context.Account
+                var accounts = await _context.Account
                     .Include(a => a.AccountUsers)
                     .Where(a => a.AccountUsers.Any(au => au.ApplicationUserId == userId))
                     .Select(a => new AccountViewModel()
@@ -42,6 +44,8 @@ namespace TripBlazrConsole.Controllers
                         Latitude = a.Latitude,
                         Longitude = a.Longitude
                     }).ToListAsync();
+
+                return Ok(accounts);
                     
             }
             catch
@@ -52,16 +56,39 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/Accounts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Account>> GetAccount(int id)
+        public async Task<ActionResult<AccountViewModel>> GetAccount(int id)
         {
-            var account = await _context.Account.FindAsync(id);
-
-            if (account == null)
+            try
             {
-                return NotFound();
-            }
+                var userId = HttpContext.GetUserId();
 
-            return account;
+                var account = await _context.Account
+                        .Include(a => a.AccountUsers)
+
+                        .Where(a => a.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                        .FirstOrDefaultAsync(a => a.AccountId == id);
+
+                var accountToSend = new AccountViewModel()
+                {
+                    AccountId = account.AccountId,
+                    Name = account.Name,
+                    City = account.City,
+                    Latitude = account.Latitude,
+                    Longitude = account.Longitude
+                };
+
+                // var account = await _context.Account.FindAsync(id);
+
+                if (account == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(accountToSend);
+            } catch
+            {
+                return BadRequest();
+            }
         }
 
         // PUT: api/Accounts/5

@@ -64,14 +64,18 @@ namespace TripBlazrConsole.Models.ViewModels.LocationViewModels
 
         public string City { get; set; }
 
+        public string State { get; set; }
+
         public int? Zipcode { get; set; }
 
         //hours
 
-        public bool? Is24Hours { get; set; }
+        
 
         public bool? SeeWebsite { get; set; }
 
         public string HoursNotes { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

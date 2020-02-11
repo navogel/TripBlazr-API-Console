@@ -27,7 +27,12 @@ class ApplicationViews extends Component {
                     path='/'
                     render={props => {
                         if (this.props.user) {
-                            return <AccountList {...props} />;
+                            return (
+                                <AccountList
+                                    user={this.props.user}
+                                    {...props}
+                                />
+                            );
                         } else {
                             return <Redirect to='/login' />;
                         }

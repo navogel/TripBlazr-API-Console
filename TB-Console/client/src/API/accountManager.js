@@ -9,5 +9,10 @@ export default {
         return fetch(`${baseUrl}/Accounts`, {
             headers: authHeader
         }).then(response => response.json());
+    },
+    getAccountById(id) {
+        return fetch(`${baseUrl}/Accounts/${id}`, {
+            headers: authHeader
+        }).then(response => response.json());
     }
 };

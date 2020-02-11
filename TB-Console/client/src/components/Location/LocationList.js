@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import LocationManager from '../../API/LocationManager';
+import accountManager from '../../API/accountManager';
 import './Location.css';
 import SwitchView from './SwitchView';
 import LocationCard from './LocationCard';
 import LocationTable from './LocationTable';
+import AddLocationForm from './AddLocationForm';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class LocationList extends Component {
     state = {
@@ -12,7 +16,14 @@ class LocationList extends Component {
         search: '',
         tag: '',
         category: '',
-        isActive: true
+        isActive: true,
+        //account info
+        city: '',
+        cityLat: '',
+        cityLng: '',
+        accountName: '',
+        accountId: '',
+        loading: true
     };
 
     getLocations = () => {
@@ -23,8 +34,8 @@ class LocationList extends Component {
             this.state.tag,
             this.state.isActive
         ).then(data => {
-            this.setState({ locations: data });
-            console.log(data);
+            this.setState({ locations: data, loading: false });
+            //console.log(data);
         });
     };
 
@@ -42,6 +53,16 @@ class LocationList extends Component {
 
     componentDidMount() {
         // console.log('im locations list page', this.props);
+        accountManager.getAccountById(this.props.accountId).then(data => {
+            this.setState({
+                accountId: data.accountId,
+                city: data.city,
+                accountName: data.name,
+                cityLat: data.latitude,
+                cityLng: data.Longitude
+            });
+            console.log('account info', data);
+        });
 
         this.getLocations();
     }
@@ -55,26 +76,55 @@ class LocationList extends Component {
                         <SwitchView changeView={this.changeView} />
                     </div>
                 </section>
-                {this.state.cardView ? (
-                    <div className='container-cards'>
-                        {this.state.locations.map(locationDetails => (
-                            <LocationCard
-                                key={locationDetails.locationId}
-                                locationDetails={locationDetails}
-                                getData={this.getData}
-                                {...this.props}
-                                cardView={this.state.cardView}
-                            />
-                        ))}
+                {this.state.loading && (
+                    <div className='spinner'>
+                        <CircularProgress />
                     </div>
-                ) : (
-                    <div className='container-table'>
-                        <LocationTable
-                            locations={this.state.locations}
-                            getData={this.getData}
-                            {...this.props}
+                )}
+
+                {this.state.loading == false &&
+                    this.state.locations.length == 0 && (
+                        <DialogTitle className='modalTitle'>
+                            {
+                                'Sorry, you are not authorized to view this account'
+                            }
+                        </DialogTitle>
+                    )}
+
+                {this.state.accountId && this.state.loading == false && (
+                    <>
+                        <AddLocationForm
+                            accountId={this.state.accountId}
+                            city={this.state.city}
+                            cityLat={this.state.cityLat}
+                            cityLng={this.state.cityLng}
                         />
-                    </div>
+                        <DialogTitle className='modalTitle'>
+                            {"Nashville's Locations"}
+                        </DialogTitle>
+
+                        {this.state.cardView ? (
+                            <div className='container-cards'>
+                                {this.state.locations.map(locationDetails => (
+                                    <LocationCard
+                                        key={locationDetails.locationId}
+                                        locationDetails={locationDetails}
+                                        getData={this.getData}
+                                        {...this.props}
+                                        cardView={this.state.cardView}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className='container-table'>
+                                <LocationTable
+                                    locations={this.state.locations}
+                                    getData={this.getData}
+                                    {...this.props}
+                                />
+                            </div>
+                        )}
+                    </>
                 )}
             </>
         );

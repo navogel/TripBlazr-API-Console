@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { createAuthHeaders } from '../../API/userManager';
 import AccountManager from '../../API/accountManager';
-import Mapper from '../map/AccountMapper';
+import AccountMapper from '../map/AccountMapper';
+import { Link } from 'react-router-dom';
 
 class AccountList extends Component {
     state = {
@@ -30,7 +31,7 @@ class AccountList extends Component {
 
         AccountManager.getAllAccounts().then(data => {
             this.setState({ accounts: data });
-            console.log(data);
+            console.log('im the account data', data);
         });
     }
 
@@ -38,43 +39,52 @@ class AccountList extends Component {
         return (
             <>
                 <h1>Welcome to my app</h1>
-                <form className='modalContainer'>
-                    <fieldset>
-                        <div className='formgrid'>
-                            <input
-                                type='text'
-                                required
-                                onChange={this.handleFieldChange}
-                                id='tempAddress'
-                                placeholder='tempAddress'
-                            />
-                            <label htmlFor='animalName'>Name</label>
+                {this.state.accounts && (
+                    <>
+                        <form className='modalContainer'>
+                            <fieldset>
+                                <div className='formgrid'>
+                                    <input
+                                        type='text'
+                                        required
+                                        onChange={this.handleFieldChange}
+                                        id='tempAddress'
+                                        placeholder='tempAddress'
+                                    />
+                                    <label htmlFor='animalName'>Name</label>
 
-                            <button
-                                type='button'
-                                //disabled={this.state.loadingStatus}
-                                onClick={this.submitAddress}
-                            >
-                                Submit
-                            </button>
+                                    <button
+                                        type='button'
+                                        //disabled={this.state.loadingStatus}
+                                        onClick={this.submitAddress}
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </fieldset>
+                        </form>
+                        <div>
+                            {this.state.accounts.map(account => (
+                                <div key={account.accountId}>
+                                    <li>{account.city}</li>
+                                    <div className={'mapWrapper'}>
+                                        <AccountMapper
+                                            className={'map'}
+                                            latitude={account.latitude}
+                                            longitude={account.longitude}
+                                            address={this.state.address}
+                                        />
+                                    </div>
+                                    <Link
+                                        to={`/accounts/${account.accountId}/locations`}
+                                    >
+                                        <button>Locations</button>
+                                    </Link>
+                                </div>
+                            ))}
                         </div>
-                    </fieldset>
-                </form>
-                <ul>
-                    {this.state.accounts.map(account => (
-                        <div key={account.accountId}>
-                            <li>{account.city}</li>
-                            <div className={'mapWrapper'}>
-                                <Mapper
-                                    className={'map'}
-                                    latitude={account.latitude}
-                                    longitude={account.longitude}
-                                    address={this.state.address}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </ul>
+                    </>
+                )}
             </>
         );
     }

@@ -16,10 +16,10 @@ namespace TripBlazrConsole.Models.ViewModels.ConsoleViewModels
 
         public string City { get; set; }
 
-        [Required]
+       
         public double Latitude { get; set; }
 
-        [Required]
+       
         public double Longitude { get; set; }
 
         //public bool? Inactive { get; set; }

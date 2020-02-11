@@ -1,3 +1,12 @@
+/* spinner */
+
+.spinner {
+    margin: auto;
+    margin-top: 30%;
+}
+
+/* card css */
+
 .card {
     /* Add shadows to create the "card" effect */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -135,6 +144,8 @@ h3 {
     font-size: 20px;
 }
 
+/* locationListTable */
+
 .tableWrapper {
     padding: 0em 8em 0em 8em;
 }
@@ -175,4 +186,31 @@ h3 {
 .locationNameCell {
     font-weight: bolder !important;
     margin-top: 2px !important;
+}
+
+.loadMoreButton {
+    padding: 1em;
+}
+
+/* addform */
+
+.formContainer {
+    display: flex;
+    align-self: center;
+    padding: 5em;
+    flex-direction: column;
+}
+
+.infoWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.locationInputWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.formSubmit {
+    padding-top: 2em;
 }
