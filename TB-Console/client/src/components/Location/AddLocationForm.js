@@ -13,6 +13,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
+import LocationMapper from '../map/LocationMapper';
 
 const styles = theme => ({
     container: {
@@ -57,7 +58,10 @@ class AddLocationForm extends Component {
         zipcode: '',
         state: '',
         isActive: '',
-        inputImageValue: '',
+        //file: '',
+
+        //mapping
+        mapAddress: '',
 
         //category
         primaryCategory: '',
@@ -78,11 +82,13 @@ class AddLocationForm extends Component {
         this.setState({ [name]: event.target.value });
     };
 
-    handleImageChange(event) {
-        this.setState({ inputImageValue: event.target.files[0] });
-    }
-    /*  Local method for validation, set loadingStatus, create animal object, invoke the AnimalManager post method, and redirect to the full animal list
-     */
+    submitAddress = () => {
+        //console.log(value);
+        this.setState({
+            mapAddress: `${this.state.name} ${this.state.address1} ${this.state.city}`
+        });
+    };
+
     constructNewLocation = evt => {
         evt.preventDefault();
         if (
@@ -91,11 +97,12 @@ class AddLocationForm extends Component {
             this.state.longitude === ''
         ) {
             window.alert(
-                'Well this is awkward...  you have to enter a name and address to get location coordinated.'
+                'Well this is awkward...  you have to enter a name and address and then get the location coordinated.'
             );
         } else {
             this.setState({ loadingStatus: true });
-
+            const fileInput = document.querySelector('#fileInput');
+            console.log('image data', fileInput);
             let formData = new FormData();
 
             formData.append('accountId', this.state.accountId);
@@ -113,41 +120,38 @@ class AddLocationForm extends Component {
             formData.append('zipcode', this.state.zipcode);
             formData.append('state', this.state.state);
             formData.append('isActive', this.state.isActive);
-            formData.append('file', this.state.inputImageValue);
+            formData.append('file', fileInput.files[0]);
 
-            LocationManager.postLocation(formData).then(() => {
-                this.props.getData();
-                this.setState({ loadingStatus: false });
+            LocationManager.createLocation(formData).then(() => {
+                this.props.getLocations();
+                this.setState({
+                    loadingStatus: false,
+
+                    name: '',
+                    phoneNumber: '',
+                    website: '',
+                    shortSummary: '',
+                    description: '',
+                    latitude: '',
+                    longitude: '',
+                    sortId: '',
+                    videoId: '',
+                    videoStartTime: '',
+                    videoEndTime: '',
+                    address1: '',
+                    address2: '',
+                    city: '',
+                    zipcode: '',
+                    state: '',
+                    isActive: ''
+                });
+                fileInput.value = '';
             });
-
-            //location model for submission without image
-
-            // const location = {
-            //     accountId: this.state.accountId,
-            //     name: this.state.name,
-            //     phoneNumber: this.state.phoneNumber,
-            //     website: this.state.website,
-            //     shortSummary: this.state.shortSummary,
-            //     description: this.state.description,
-            //     latitude: this.state.latitude,
-            //     longitude: this.state.longitude,
-            //     sortId: this.state.sortId,
-            //     videoId: this.state.videoId,
-            //     videoStartTime: this.state.videoStartTime,
-            //     videoEndTime: this.state.videoEndTime,
-            //     address1: this.state.address1,
-            //     address2: this.state.address2,
-            //     city: this.state.city,
-            //     zipcode: this.state.zipcode,
-            //     state: this.state.state,
-            //     isActive: this.state.isActive,
-            //     file: this.state.image
-            // };
         }
     };
     componentDidMount() {
         this.setState({
-            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+            // labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
         });
         console.log('add location props', this.props);
         //add some logic here to manage the obj that is passed
@@ -184,7 +188,7 @@ class AddLocationForm extends Component {
                                     placeholder='Enter the place name'
                                 />
 
-                                <FormControl
+                                {/* <FormControl
                                     variant='outlined'
                                     margin='dense'
                                     className={classes.formControl}
@@ -221,7 +225,7 @@ class AddLocationForm extends Component {
                                         <option value={6}>See</option>
                                         <option value={7}>Shop</option>
                                     </NativeSelect>
-                                </FormControl>
+                                </FormControl> */}
 
                                 {/* <div className='midFormText'>
                                     <p> Optional:</p>
@@ -248,6 +252,29 @@ class AddLocationForm extends Component {
                                     placeholder='Enter City'
                                 />
                             </div>
+                            <Button
+                                variant='contained'
+                                // size='small'
+                                color='primary'
+                                //disabled={this.state.loadingStatus}
+                                onClick={this.submitAddress}
+                            >
+                                Get Pin From Address
+                            </Button>
+                            <LocationMapper
+                                cityLat={this.props.cityLat}
+                                cityLng={this.props.cityLng}
+                                mapAddress={this.state.mapAddress}
+                            />
+
+                            <input
+                                type='file'
+                                name='file'
+                                id='fileInput'
+                                accept='.png, .jpg'
+                                onChange={this.fileSelectHandler}
+                            />
+                            <br />
 
                             <div className='formSubmit'>
                                 <Button

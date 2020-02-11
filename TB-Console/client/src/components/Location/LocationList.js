@@ -59,7 +59,7 @@ class LocationList extends Component {
                 city: data.city,
                 accountName: data.name,
                 cityLat: data.latitude,
-                cityLng: data.Longitude
+                cityLng: data.longitude
             });
             console.log('account info', data);
         });
@@ -98,6 +98,7 @@ class LocationList extends Component {
                             city={this.state.city}
                             cityLat={this.state.cityLat}
                             cityLng={this.state.cityLng}
+                            getLocations={this.getLocations}
                         />
                         <DialogTitle className='modalTitle'>
                             {"Nashville's Locations"}

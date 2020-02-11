@@ -12,6 +12,8 @@ import L from 'leaflet';
 import GeoSearch from './Geosearch';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
+let marker = L.marker();
+
 const myIcon = L.icon({
     iconUrl: '/images/markers/icon1.png',
     iconSize: [25, 41],
@@ -27,7 +29,9 @@ export default class LocationMapper extends Component {
     state = {
         lat: '',
         lng: '',
-        zoom: 8
+        zoom: 8,
+        cityLat: '',
+        cityLng: ''
     };
 
     //function for storing click events on geosearch and click to add markers
@@ -50,14 +54,20 @@ export default class LocationMapper extends Component {
         this.setState(stateToChange);
     };
 
+    componentDidMount() {
+        this.setState({
+            lat: this.props.cityLat,
+            lng: this.props.cityLng
+        });
+        console.log('props from add location', this.props);
+    }
+
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
-        if (this.props.address !== prevProps.address) {
-            console.log(this.props);
-
+        if (this.props.mapAddress !== prevProps.mapAddress) {
             const map = this.leafletMap.leafletElement;
-
-            var query_addr = this.props.address;
+            console.log('mapAddress props update', this.props.mapAddress);
+            var query_addr = this.props.mapAddress;
 
             const provider = new OpenStreetMapProvider();
             var query_promise = provider.search({
@@ -66,13 +76,15 @@ export default class LocationMapper extends Component {
 
             query_promise.then(
                 value => {
-                    for (var i = 0; i < 1; i++) {
-                        // Success!
-                        var x_coor = value[i].x;
-                        var y_coor = value[i].y;
-                        var label = value[i].label;
-                        console.log('value', value);
-                        var marker = L.marker([y_coor, x_coor], {
+                    console.log('search results', value);
+                    if (value.length != 0) {
+                        var x_coor = value[0].x;
+                        var y_coor = value[0].y;
+                        var label = value[0].label;
+                        if (marker != undefined) {
+                            map.removeLayer(marker);
+                        }
+                        marker = L.marker([y_coor, x_coor], {
                             icon: myIcon,
                             draggable: true
                         })
@@ -84,12 +96,15 @@ export default class LocationMapper extends Component {
                         marker
                             .bindPopup('<b>Found location</b><br>' + label)
                             .openPopup();
-                        map.fitBounds(value[i].bounds);
+                        map.fitBounds(value[0].bounds);
+                        return value;
+                    } else {
+                        return value;
                     }
-                },
-                reason => {
-                    console.log(reason); // Error!
                 }
+                // reason => {
+                //     console.log(reason); // Error!
+                // }
             );
 
             // map.on('click', e => {
@@ -137,8 +152,8 @@ export default class LocationMapper extends Component {
 
     render() {
         const Atoken = `https://api.mapbox.com/styles/v1/jerodis/ck24x2b5a12ro1cnzdopvyw08/tiles/256/{z}/{x}/{y}@2x?access_token=${Token.MB}`;
-        const position = [this.props.latitude, this.props.longitude];
-        console.log('psoition', position);
+        const position = [this.props.cityLat, this.props.cityLng];
+        console.log('position: props of citylat/lng', position);
         return (
             <>
                 <Map
@@ -167,7 +182,7 @@ export default class LocationMapper extends Component {
                     onAdd={this.onFeatureGroupAdd}
                     // onClick={e => this.storeGeocode(e)}
                 > */}
-                    <Marker
+                    {/* <Marker
                         position={position}
                         anchor='bottom'
                         icon={myIcon}
@@ -178,7 +193,7 @@ export default class LocationMapper extends Component {
                         ondragend={e => this.dragEnd(e)}
                     >
                         <Tooltip>{'hiya'}</Tooltip>
-                    </Marker>
+                    </Marker> */}
                     {/* </FeatureGroup> */}
                 </Map>
             </>

@@ -76,6 +76,6 @@ namespace TripBlazrConsole.Models.ViewModels.LocationViewModels
 
         public string HoursNotes { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

@@ -1,8 +1,10 @@
-import { createAuthHeaders } from './userManager';
+import { createAuthHeaders, createAuthHeadersForm } from './userManager';
 
 const baseUrl = '/api/v1/';
 
 const authHeader = createAuthHeaders();
+
+const authHeaderForm = createAuthHeadersForm();
 
 export default {
     getAllLocationsByAccount(id, search, tag, category, active) {
@@ -22,5 +24,17 @@ export default {
         return fetch(`${baseUrl}Locations/${id}`, {
             headers: authHeader
         }).then(response => response.json());
+    },
+    createLocation(location) {
+        const options = {
+            method: 'POST',
+            body: location
+        };
+        if (options && options.headers) {
+            delete options.headers['Content-Type'];
+        }
+        return fetch(`${baseUrl}Locations`, options).then(response =>
+            response.json()
+        );
     }
 };
