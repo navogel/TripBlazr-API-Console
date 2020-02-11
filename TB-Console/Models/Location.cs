@@ -15,6 +15,15 @@ namespace TripBlazrConsole.Models
         [Key]
         public int LocationId { get; set; }
 
+        [DataType(DataType.Date)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        
+        public DateTime DateCreated { get; set; }
+
+        [DataType(DataType.Date)]
+
+        public DateTime? DateEdited { get; set; }
+
         [Required]
 
         [JsonIgnore]

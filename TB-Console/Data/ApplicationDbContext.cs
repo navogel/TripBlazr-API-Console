@@ -43,7 +43,11 @@ namespace TripBlazrConsole.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            
+            modelBuilder.Entity<Location>()
+               .Property(b => b.DateCreated)
+               .HasDefaultValueSql("GETDATE()");
+
+
             modelBuilder.Entity<LocationTag>()
                 .HasKey(bc => new { bc.LocationId, bc.TagId });
 

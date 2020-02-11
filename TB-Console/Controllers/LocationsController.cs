@@ -276,6 +276,7 @@ namespace TripBlazrConsole.Controllers
                 var location = await _context.Location.FirstOrDefaultAsync(l => l.LocationId == id);
 
                 location.ImageUrl = id + currentFile.Extension;
+                location.DateEdited = DateTime.Now;
 
                _context.Entry(location).State = EntityState.Modified;
 
@@ -313,6 +314,8 @@ namespace TripBlazrConsole.Controllers
             {
                 return BadRequest();
             }
+
+            location.DateEdited = DateTime.Now;
 
             _context.Entry(location).State = EntityState.Modified;
 
