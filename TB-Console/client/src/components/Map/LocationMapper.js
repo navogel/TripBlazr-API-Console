@@ -106,7 +106,7 @@ export default class LocationMapper extends Component {
     render() {
         const Atoken = `https://api.mapbox.com/styles/v1/jerodis/ck24x2b5a12ro1cnzdopvyw08/tiles/256/{z}/{x}/{y}@2x?access_token=${Token.MB}`;
         const position = [this.props.cityLat, this.props.cityLng];
-        console.log('snack', this.state.snackOpen);
+        // console.log('snack', this.state.snackOpen);
         return (
             <>
                 <Map

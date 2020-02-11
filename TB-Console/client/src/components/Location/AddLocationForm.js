@@ -297,6 +297,9 @@ class AddLocationForm extends Component {
                                 mapAddress={this.state.mapAddress}
                                 grabCoordsFromPin={this.grabCoordsFromPin}
                                 updateLatLng={this.updateLatLng}
+                                address={this.state.address1}
+                                name={this.state.name}
+                                city={this.state.city}
                             />
 
                             <input

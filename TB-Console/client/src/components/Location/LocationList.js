@@ -26,6 +26,14 @@ class LocationList extends Component {
         loading: true
     };
 
+    updateActiveLocation = (pos, location) => {
+        const newState = [...this.state.locations];
+        newState.splice(pos, 1, location);
+        this.setState({
+            locations: newState
+        });
+    };
+
     getLocations = () => {
         LocationManager.getAllLocationsByAccount(
             this.props.accountId,
@@ -122,6 +130,9 @@ class LocationList extends Component {
                                     locations={this.state.locations}
                                     getData={this.getData}
                                     {...this.props}
+                                    updateActiveLocation={
+                                        this.updateActiveLocation
+                                    }
                                 />
                             </div>
                         )}

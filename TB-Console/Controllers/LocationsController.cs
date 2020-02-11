@@ -312,7 +312,17 @@ namespace TripBlazrConsole.Controllers
         [HttpPut(Api.Location.EditLocation)]
         public async Task<IActionResult> EditLocation(int id, Location location)
         {
-            if (id != location.LocationId)
+            var userId = HttpContext.GetUserId();
+
+            var locationFromDb = await _context.Location
+                    .Include(l => l.Account.AccountUsers)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .FirstOrDefaultAsync(l => l.LocationId == id);
+
+
+
+
+            if (id != location.LocationId || locationFromDb == null)
             {
                 return BadRequest();
             }
@@ -341,8 +351,56 @@ namespace TripBlazrConsole.Controllers
             return Ok(location);
         }
 
+        [HttpPut(Api.Location.EditLocationIsActive)]
+        public async Task<IActionResult> EditLocationIsActive(int id)
+        {
+            var userId = HttpContext.GetUserId();
+
+            var location = await _context.Location
+                    .Include(l => l.Account.AccountUsers)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .FirstOrDefaultAsync(l => l.LocationId == id);
+
+
+
+
+            if (location == null)
+            {
+                return BadRequest();
+            }
+
+            if (location.IsActive == false)
+            {
+                location.IsActive = true;
+            } else
+            {
+                location.IsActive = false;
+            }
+
+            _context.Entry(location).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LocationExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(location);
+        }
+
         // SOFTDELETE: api/Locations/5
-        
+
         [HttpDelete(Api.Location.DeleteLocation)]
         public async Task<ActionResult<Location>> DeleteLocation(int id)
         {

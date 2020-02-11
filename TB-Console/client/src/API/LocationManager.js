@@ -46,5 +46,12 @@ export default {
                 headers: authHeader
             }
         ).then(response => response.json());
+    },
+    toggleInactive(id) {
+        const authHeader = createAuthHeaders();
+        return fetch(`${baseUrl}Locations/${id}/isActive`, {
+            method: 'PUT',
+            headers: authHeader
+        }).then(response => response.json());
     }
 };

@@ -43,6 +43,13 @@ export default function LocationTable(props) {
     const handleDelete = id => {
         LocationManager.delete(id).then(() => props.getData());
     };
+
+    const handleUpdate = (index, location) => {
+        LocationManager.toggleInactive(location.locationId);
+        location.isActive = !location.isActive;
+        props.updateActiveLocation(index, location);
+    };
+
     return (
         <>
             <div className={'tableWrapper'}>
@@ -64,7 +71,7 @@ export default function LocationTable(props) {
                         <TableBody>
                             {props.locations
                                 .slice(0, itemsShown)
-                                .map(location => (
+                                .map((location, index) => (
                                     <TableRow key={location.locationId}>
                                         <TableCell
                                             component='th'
@@ -113,9 +120,12 @@ export default function LocationTable(props) {
                                                             checked={
                                                                 location.isActive
                                                             }
-                                                            // onChange={handleChange(
-                                                            //     'checkedB'
-                                                            // )}
+                                                            onChange={e => {
+                                                                handleUpdate(
+                                                                    index,
+                                                                    location
+                                                                );
+                                                            }}
                                                             value='isActive'
                                                             color='primary'
                                                         />
