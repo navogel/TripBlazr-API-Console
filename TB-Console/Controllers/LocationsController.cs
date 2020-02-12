@@ -154,12 +154,12 @@ namespace TripBlazrConsole.Controllers
                     .Include(l => l.LocationTags)
                         .ThenInclude(lt => lt.Tag)
                     .Include(l => l.Account.AccountUsers)
-                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                    .FirstOrDefaultAsync(l => l.LocationId == id);
-                
-                    //.Where(l => l.LocationId == id)
                     //.Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                    //.Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
+                    //.FirstOrDefaultAsync(l => l.LocationId == id);
+                
+                    .Where(l => l.LocationId == id)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .Select(l => _mapper.Map<LocationViewModel>(l)).FirstOrDefaultAsync();
 
 
                 if (location == null)
@@ -167,17 +167,17 @@ namespace TripBlazrConsole.Controllers
                     return NotFound($"No Location found with the ID of {id}");
                 }
 
-                var JsonLocation = new LocationsDetailViewModel()
-                    {
-                        Location = location,
-                        Tags = location.LocationTags.Select(t => t.Tag).ToList(),
-                        Categories = location.LocationCategories.Select(c => c.Category).ToList(),
-                        Hours = location.Hours.ToList()
-                    };
+                //var JsonLocation = new LocationsDetailViewModel()
+                //    {
+                //        Location = location,
+                //        Tags = location.LocationTags.Select(t => t.Tag).ToList(),
+                //        Categories = location.LocationCategories.Select(c => c.Category).ToList(),
+                //        Hours = location.Hours.ToList()
+                //    };
 
                 
 
-                return Ok(JsonLocation);
+                return Ok(location);
             } catch
             {
                 return BadRequest("You must be logged in");

@@ -98,15 +98,6 @@ class AddLocationForm extends Component {
         });
     };
 
-    UpdateLatLng = e => {
-        console.log(e.target);
-        let position = e.target.getLatLng();
-        this.setState({
-            latitude: position.lat,
-            longitude: position.lng
-        });
-    };
-
     constructNewLocation = evt => {
         evt.preventDefault();
         if (

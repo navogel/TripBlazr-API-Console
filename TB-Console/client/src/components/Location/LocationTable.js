@@ -146,19 +146,14 @@ export default function LocationTable(props) {
                                             align='right'
                                             className='iconCell'
                                         >
-                                            <IconButton
-                                                aria-label='delete'
-                                                onClick={() =>
-                                                    handleDelete(location.id)
-                                                }
-                                            >
+                                            <IconButton>
                                                 <EditIcon />
                                             </IconButton>
                                             <IconButton
                                                 aria-label='details'
                                                 onClick={() => {
                                                     props.history.push(
-                                                        `/locations/${location.id}`
+                                                        `${location.locationId}`
                                                     );
                                                 }}
                                             >

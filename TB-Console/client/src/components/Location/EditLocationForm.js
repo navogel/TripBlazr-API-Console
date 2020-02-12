@@ -13,7 +13,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
-import LocationMapper from '../map/LocationMapper';
+import LocationDetailsMapper from '../map/LocationDetailsMapper';
 
 const styles = theme => ({
     container: {
@@ -98,15 +98,6 @@ class EditLocationForm extends Component {
         });
     };
 
-    UpdateLatLng = e => {
-        console.log(e.target);
-        let position = e.target.getLatLng();
-        this.setState({
-            latitude: position.lat,
-            longitude: position.lng
-        });
-    };
-
     constructNewLocation = evt => {
         evt.preventDefault();
         if (
@@ -179,15 +170,43 @@ class EditLocationForm extends Component {
         }
     };
     componentDidMount() {
-        this.setState({
-            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+        console.log('props to edit form', this.props);
+        // this.setState({
+        //     labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+        // });
+        LocationManager.getLocationById(this.props.locationId).then(data => {
+            console.log('grab location by id', data);
+            this.setState({
+                accountId: this.props.accountId,
+                labelWidth: ReactDOM.findDOMNode(this.InputLabelRef)
+                    .offsetWidth,
+                name: data.name,
+                phoneNumber: data.phonenumber,
+                website: data.website,
+                shortSummary: data.shortSummary,
+                description: data.description,
+                latitude: data.latitude,
+                longitude: data.longitude,
+                sortId: data.sortId,
+                videoId: data.videoId,
+                videoStartTime: data.videoStartTime,
+                videoEndTime: data.videoEndTime,
+                address1: data.address1,
+                address2: data.address2,
+                city: data.city,
+                zipcode: data.zipcode,
+                state: data.state,
+                isActive: data.isActive,
+                primaryCategory: data.categories.find(c => c.isPrimary == true)
+            });
+            console.log('primary cat', this.state.primaryCategory);
         });
-        console.log('add location props', this.props);
+
         //add some logic here to manage the obj that is passed
 
-        this.setState({
-            accountId: this.props.accountId
-        });
+        // this.setState({
+        //     accountId: this.props.accountId
+        // });
     }
 
     render() {
@@ -204,7 +223,7 @@ class EditLocationForm extends Component {
                     >
                         <div className='infoWrapper'>
                             <DialogTitle className='modalTitle'>
-                                {'OK, lets start with the name and address:'}
+                                {'OK, here is everything you can edit:'}
                             </DialogTitle>
                             <div className='locationInputWrapper'>
                                 <TextField
@@ -229,7 +248,7 @@ class EditLocationForm extends Component {
                                         }}
                                         htmlFor='outlined-type-native-simple'
                                     >
-                                        Primary Type
+                                        Primary Category
                                     </InputLabel>
                                     <NativeSelect
                                         value={this.state.primaryCategory}
@@ -238,7 +257,7 @@ class EditLocationForm extends Component {
                                         )}
                                         input={
                                             <OutlinedInput
-                                                name='Primary Category'
+                                                name='primaryCategory'
                                                 labelWidth={
                                                     this.state.labelWidth
                                                 }
@@ -246,7 +265,6 @@ class EditLocationForm extends Component {
                                             />
                                         }
                                     >
-                                        <option value='' />
                                         <option value={1}>Stay</option>
                                         <option value={2}>Eat</option>
                                         <option value={3}>Drink</option>
@@ -291,15 +309,15 @@ class EditLocationForm extends Component {
                             >
                                 Get Pin From Address
                             </Button>
-                            <LocationMapper
-                                cityLat={this.props.cityLat}
-                                cityLng={this.props.cityLng}
+                            <LocationDetailsMapper
+                                cityLat={this.state.latitude}
+                                cityLng={this.state.longitude}
                                 mapAddress={this.state.mapAddress}
                                 grabCoordsFromPin={this.grabCoordsFromPin}
-                                updateLatLng={this.updateLatLng}
-                                address={this.state.address1}
-                                name={this.state.name}
-                                city={this.state.city}
+
+                                // address={this.state.address1}
+                                // name={this.state.name}
+                                // city={this.state.city}
                             />
 
                             <input

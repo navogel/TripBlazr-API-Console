@@ -11,6 +11,13 @@ import Token from '../../Token';
 import L from 'leaflet';
 import GeoSearch from './Geosearch';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import ErrorIcon from '@material-ui/icons/Error';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+
+let marker = L.marker();
 
 const myIcon = L.icon({
     iconUrl: '/images/markers/icon1.png',
@@ -27,132 +34,83 @@ export default class LocationDetailsMapper extends Component {
     state = {
         lat: '',
         lng: '',
-        zoom: 13
+        zoom: 17,
+        cityLat: '',
+        cityLng: '',
+        snackOpen: false
     };
 
-    //function for storing click events on geosearch and click to add markers
-    storeGeocode = (e, obj) => {
-        console.log('yaya got dem O-B-Js', obj);
+    handleSnackClick = () => {
+        this.setState({ snackOpen: true });
+        //console.log('snackery');
     };
 
-    markerFocus = e => {
-        console.log('got the deets', e);
+    handleSnackClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ snackOpen: false });
     };
 
-    handleFieldChange = evt => {
-        const stateToChange = {};
-        stateToChange[evt.target.id] = evt.target.value;
-        this.setState(stateToChange);
+    dragEnd = e => {
+        console.log(e.target.getLatLng().lat);
+        console.log(e.target.getLatLng().lng);
     };
 
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
-        if (this.props.address !== prevProps.address) {
-            console.log(this.props);
-            // this.setState({
-            //     lat: this.props.latitude,
-            //     lng: this.props.longitude
-            // });
+        if (this.props.mapAddress !== prevProps.mapAddress) {
             const map = this.leafletMap.leafletElement;
-            //const geocoder = L.Control.Geocoder.mapbox(Token.MB);
-            // let marker;
+            //console.log('mapAddress props update', this.props.mapAddress);
+            var query_addr = this.props.mapAddress;
 
-            var query_addr = this.props.address;
-            //var query_addr = 'nashville tn';
-
-            // Get the provider, in this case the OpenStreetMap (OSM) provider. For some reason, this is the "wrong" way to instanciate it. Instead, we should be using an import "leaflet-geosearch" but I coulnd't make that work
             const provider = new OpenStreetMapProvider();
             var query_promise = provider.search({
                 query: query_addr
             });
-            // It's a promise because we have to wait for the geosearch results. It may be more than one. Be careful.
-            // These results have the following properties:
-            // const result = {
-            //   x: Number,                      // lon,
-            //   y: Number,                      // lat,
-            //   label: String,                  // formatted address
-            //   bounds: [
-            //     [Number, Number],             // s, w - lat, lon
-            //     [Number, Number],             // n, e - lat, lon
-            //   ],
-            //   raw: {},                        // raw provider result
-            // }
 
-            query_promise.then(
-                value => {
-                    for (var i = 0; i < 1; i++) {
-                        // Success!
-                        var x_coor = value[i].x;
-                        var y_coor = value[i].y;
-                        var label = value[i].label;
-                        console.log('value', value);
-                        var marker = L.marker([y_coor, x_coor], {
-                            icon: myIcon,
-                            draggable: true
-                        })
-                            .on('dragend', function(e) {
-                                console.log(marker.getLatLng().lat);
-                                console.log(marker.getLatLng().lng);
-                            })
-                            .addTo(map); // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
-                        marker
-                            .bindPopup('<b>Found location</b><br>' + label)
-                            .openPopup();
-                        map.fitBounds(value[i].bounds);
+            query_promise.then(value => {
+                // console.log('search results', value);
+                if (value.length != 0) {
+                    let posLat;
+                    let posLng;
+                    var x_coor = value[0].x;
+                    var y_coor = value[0].y;
+                    var label = value[0].label;
+                    this.props.grabCoordsFromPin(y_coor, x_coor);
+                    if (marker != undefined) {
+                        map.removeLayer(marker);
                     }
-                },
-                reason => {
-                    console.log(reason); // Error!
-                }
-            );
+                    marker = L.marker([y_coor, x_coor], {
+                        icon: myIcon,
+                        draggable: true
+                    })
+                        .on('dragend', e => {
+                            posLat = e.target.getLatLng().lat;
+                            posLng = e.target.getLatLng().lng;
+                            //console.log('changed', posLat, posLng);
 
-            // map.on('click', e => {
-            //     geocoder.reverse(
-            //         e.latlng,
-            //         map.options.crs.scale(map.getZoom()),
-            //         results => {
-            //             var r = results[0];
-            //             console.log('reverse geocode results', r);
-            //             if (r) {
-            //                 if (marker) {
-            //                     marker
-            //                         .setLatLng(r.center)
-            //                         .setPopupContent(r.html || r.name);
-            //                     // .openPopup();
-            //                 } else {
-            //                     marker = L.marker(r.center, {
-            //                         icon: myIcon,
-            //                         draggable: true
-            //                     })
-            //                         .bindTooltip(r.name, { className: 'toolTip' })
-            //                         .addTo(map)
-            //                         //.on('click', e => this.storeGeocode(e, r));
-            //                         .on('dragend', function(e) {
-            //                             console.log(marker.getLatLng().lat);
-            //                             console.log(marker.getLatLng().lng);
-            //                         });
-            //                     // .openPopup();
-            //                 }
-            //             }
-            //         }
-            //     );
-            // });
+                            this.props.grabCoordsFromPin(posLat, posLng);
+                        })
+                        .addTo(map); // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
+                    marker
+                        .bindPopup('<b>Found location</b><br>' + label)
+                        .openPopup();
+                    map.fitBounds(value[0].bounds);
+
+                    return value;
+                } else {
+                    this.handleSnackClick();
+                    return value;
+                }
+            });
         }
     }
 
-    getCoord = e => {
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
-        // L.marker([lat, lng])
-        // 	.bindPopup('this is a smashing place')
-        // 	.addTo(this.map);
-        console.log(lat, lng);
-    };
-
     render() {
         const Atoken = `https://api.mapbox.com/styles/v1/jerodis/ck24x2b5a12ro1cnzdopvyw08/tiles/256/{z}/{x}/{y}@2x?access_token=${Token.MB}`;
-        const position = [this.props.latitude, this.props.longitude];
-        console.log('psoition', position);
+        const position = [this.props.cityLat, this.props.cityLng];
+        // console.log('snack', this.state.snackOpen);
         return (
             <>
                 <Map
@@ -165,35 +123,70 @@ export default class LocationDetailsMapper extends Component {
                     }}
                     onClick={this.getCoord}
                 >
-                    {/* <GeoSearch
-                    ref={m => {
-                        this.leafletGeo = m;
-                    }}
-                    storeGeocode={this.storeGeocode}
-                    props={this.props}
-                /> */}
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url={Atoken}
                     />
-                    {/* <FeatureGroup
-                    ref='features'
-                    onAdd={this.onFeatureGroupAdd}
-                    // onClick={e => this.storeGeocode(e)}
-                > */}
-                    {/* <Marker
-                    position={position}
-                    anchor='bottom'
-                    icon={myIcon}
-                    draggable={true}
-                    // onMouseEnter={this.onMarkerClick.bind(this, location)}s
-                    // onMouseLeave={this.onMarkerLeave}
-                    onClick={e => this.markerFocus(e)}
-                >
-                    <Tooltip>{'hiya'}</Tooltip>
-                </Marker> */}
-                    {/* </FeatureGroup> */}
+                    <Marker
+                        position={position}
+                        anchor='bottom'
+                        icon={myIcon}
+                        draggable={true}
+                        // onMouseEnter={this.onMarkerClick.bind(this, location)}s
+                        // onMouseLeave={this.onMarkerLeave}
+                        ondragend={e => this.dragEnd(e)}
+                    >
+                        <Tooltip>{'hiya'}</Tooltip>
+                    </Marker>
                 </Map>
+
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left'
+                    }}
+                    open={this.state.snackOpen}
+                    autoHideDuration={5000}
+                    onClose={this.handleSnackClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id'
+                    }}
+
+                    //className='snackWarning'
+                >
+                    <SnackbarContent
+                        style={{
+                            backgroundColor: '#c71c3e'
+                        }}
+                        message={
+                            <span id='message-id'>
+                                <IconButton
+                                    key='close'
+                                    aria-label='Close'
+                                    color='inherit'
+                                >
+                                    <ErrorIcon />
+                                </IconButton>
+                                <b>
+                                    Oops there were no results from that name +
+                                    address. Try a different search or choose a
+                                    nearby location and drag the marker!
+                                </b>
+                            </span>
+                        }
+                        action={[
+                            <IconButton
+                                key='close'
+                                aria-label='Close'
+                                color='inherit'
+                                //className={classes.close}
+                                onClick={this.handleSnackClose}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        ]}
+                    />
+                </Snackbar>
             </>
         );
     }

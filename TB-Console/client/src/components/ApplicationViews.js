@@ -2,7 +2,7 @@ import { Route, Redirect } from 'react-router-dom';
 import React, { Component } from 'react';
 import Home from './Home';
 import LocationList from './location/LocationList';
-import LocationDetails from './location/LocationDetails';
+import EditLocationForm from './location/EditLocationForm';
 import Login from '../components/Login';
 import AccountDetails from './account/AccountDetails';
 import AccountList from './account/AccountList';
@@ -76,16 +76,16 @@ class ApplicationViews extends Component {
                 />
                 <Route
                     exact
-                    path='/accounts/:accountId(\d+)/Locations/:LocationId(\d+)'
+                    path='/accounts/:accountId(\d+)/Locations/:locationId(\d+)'
                     render={props => {
                         if (this.props.user) {
                             return (
-                                <LocationDetails
-                                    AccountId={parseInt(
+                                <EditLocationForm
+                                    accountId={parseInt(
                                         props.match.params.accountId
                                     )}
-                                    LocationId={parseInt(
-                                        props.match.params.accountId
+                                    locationId={parseInt(
+                                        props.match.params.locationId
                                     )}
                                     {...props}
                                 />
