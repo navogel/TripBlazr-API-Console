@@ -153,7 +153,7 @@ export default function LocationTable(props) {
                                                 aria-label='details'
                                                 onClick={() => {
                                                     props.history.push(
-                                                        `locations/${location.locationId}`
+                                                        `${location.locationId}`
                                                     );
                                                 }}
                                             >

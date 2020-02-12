@@ -446,13 +446,15 @@ class EditLocationForm extends Component {
                                     name='file'
                                     id='fileInput'
                                     accept='.png, .jpg'
-                                    style={{ display: 'none' }}
+                                    onChange={this.fileSelectHandler}
                                 />
                             </Button>
-                            <img
-                                className='locationImage'
-                                src={`https://localhost:5001/upload/${this.state.imageUrl}`}
-                            />
+                            {this.state.imageUrl && (
+                                <img
+                                    className='locationImage'
+                                    src={`https://localhost:5001/upload/${this.state.imageUrl}`}
+                                />
+                            )}
                         </div>
                     </div>
                     <div className='mediaContainer'>
