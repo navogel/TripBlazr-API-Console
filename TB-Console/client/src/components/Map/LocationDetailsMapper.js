@@ -117,7 +117,7 @@ export default class LocationDetailsMapper extends Component {
                     center={position}
                     zoom={this.state.zoom}
                     maxZoom={18}
-                    className='map'
+                    className='locationMap'
                     ref={m => {
                         this.leafletMap = m;
                     }}

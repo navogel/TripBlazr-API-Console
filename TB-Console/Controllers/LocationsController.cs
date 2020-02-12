@@ -327,41 +327,37 @@ namespace TripBlazrConsole.Controllers
                 return BadRequest();
             }
 
-            var location = new Location()
-            {
-                LocationId = locationFromDb.LocationId,
-                AccountId = viewModel.AccountId,
-                Name = viewModel.Name,
-                PhoneNumber = viewModel.PhoneNumber,
-                Website = viewModel.Website,
-                ShortSummary = viewModel.ShortSummary,
-                Description = viewModel.Description,
-                Latitude = viewModel.Latitude,
-                Longitude = viewModel.Longitude,
-                SortId = viewModel.SortId,
-                VideoId = viewModel.VideoId,
-                VideoStartTime = viewModel.VideoStartTime,
-                VideoEndTime = viewModel.VideoEndTime,
-                Address1 = viewModel.Address1,
-                Address2 = viewModel.Address2,
-                City = viewModel.City,
-                State = viewModel.State,
-                Zipcode = viewModel.Zipcode,
-                IsDeleted = false,
-                IsActive = viewModel.IsActive,
-                ImageUrl = viewModel.ImageUrl,
-                DateEdited = DateTime.Now,
-                DateCreated = locationFromDb.DateCreated,
-                SeeWebsite = locationFromDb.SeeWebsite,
-                HoursNotes = locationFromDb.HoursNotes
-            };
+
+            locationFromDb.Name = viewModel.Name;
+            locationFromDb.PhoneNumber = viewModel.PhoneNumber;
+            locationFromDb.Website = viewModel.Website;
+            locationFromDb.ShortSummary = viewModel.ShortSummary;
+            locationFromDb.Description = viewModel.Description;
+            locationFromDb.Latitude = viewModel.Latitude;
+            locationFromDb.Longitude = viewModel.Longitude;
+            locationFromDb.SortId = viewModel.SortId;
+            locationFromDb.VideoId = viewModel.VideoId;
+            locationFromDb.VideoStartTime = viewModel.VideoStartTime;
+            locationFromDb.VideoEndTime = viewModel.VideoEndTime;
+            locationFromDb.Address1 = viewModel.Address1;
+            locationFromDb.Address2 = viewModel.Address2;
+            locationFromDb.City = viewModel.City;
+            locationFromDb.State = viewModel.State;
+            locationFromDb.Zipcode = viewModel.Zipcode;
+            locationFromDb.IsDeleted = false;
+            locationFromDb.IsActive = viewModel.IsActive;
+            locationFromDb.ImageUrl = viewModel.ImageUrl;
+            locationFromDb.DateEdited = DateTime.Now;
+            locationFromDb.SeeWebsite = locationFromDb.SeeWebsite;
+            locationFromDb.HoursNotes = locationFromDb.HoursNotes;
+            
 
 
             if (viewModel.File != null && viewModel.File.Length > 0)
             {
 
                 //create filname based on created location ID
-                int fileName = location.LocationId;
+                int fileName = locationFromDb.LocationId;
 
                 //create path and insert image with original filename
 
@@ -378,36 +374,41 @@ namespace TripBlazrConsole.Controllers
 
                 // update location with new filename
 
-                location.ImageUrl = fileName + currentFile.Extension;
+                locationFromDb.ImageUrl = fileName + currentFile.Extension;
 
-                _context.Entry(location).State = EntityState.Modified;
+
+                
+                
+
                 try
                 {
+                    _context.Entry(locationFromDb).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                 }
-                catch
+                catch (Exception ex)
                 {
                     return BadRequest();
                 }
                 
 
-                return Ok(location);
+                return Ok(locationFromDb);
             }
 
-            _context.Update(location);
+            
 
-            try
+            try 
             {
+                _context.Entry(locationFromDb).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-            } catch (DbUpdateConcurrencyException)
+            } catch (Exception ex)
             {
                 return BadRequest();
             }
             
            
 
-            return Ok(location);
+            return Ok(locationFromDb);
         }
         //public async Task<IActionResult> EditLocation(int id, Location location)
         //{

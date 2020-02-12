@@ -185,6 +185,7 @@ class EditLocationForm extends Component {
                         data.locationId,
                         parseInt(this.state.primaryCategory)
                     ).then(data => this.getData());
+                    this.setState({ loadingStatus: false });
                 }
             );
         }
@@ -199,7 +200,6 @@ class EditLocationForm extends Component {
 
     getData = () => {
         LocationManager.getLocationById(this.props.locationId).then(data => {
-            //console.log('grab location by id', data);
             this.setState({
                 accountId: this.props.accountId,
                 labelWidth: ReactDOM.findDOMNode(this.InputLabelRef)
@@ -223,11 +223,17 @@ class EditLocationForm extends Component {
                 isActive: data.isActive || '',
                 imageUrl: data.imageUrl || '',
                 tags: data.tags || '',
-                primaryCategory:
-                    data.categories.find(c => c.isPrimary == true).categoryId ||
-                    ''
+                primaryCategory: ''
             });
-            //console.log('primary cat', this.state.tags);
+            let primaryCategory = data.categories.find(
+                c => c.isPrimary == true
+            );
+            if (primaryCategory) {
+                this.setState({
+                    primaryCategory: primaryCategory.categoryId
+                });
+            }
+            console.log('primary cat', primaryCategory);
         });
 
         //add some logic here to manage the obj that is passed
@@ -263,18 +269,20 @@ class EditLocationForm extends Component {
                 <DialogTitle className='modalTitle'>
                     {'OK, here is everything you can edit:'}
                 </DialogTitle>
-                <Paper className={classes.root}>
-                    {this.state.tags.map((tag, index) => (
-                        <Chip
-                            color='primary'
-                            key={tag.tagId}
-                            icon={null}
-                            label={tag.name}
-                            onDelete={this.handleDelete(index, tag)}
-                            className={classes.chip}
-                        />
-                    ))}
-                </Paper>
+                <div className='tagWrapper'>
+                    <Paper className={classes.root}>
+                        {this.state.tags.map((tag, index) => (
+                            <Chip
+                                color='primary'
+                                key={tag.tagId}
+                                icon={null}
+                                label={tag.name}
+                                onDelete={this.handleDelete(index, tag)}
+                                className={classes.chip}
+                            />
+                        ))}
+                    </Paper>
+                </div>
                 <div className='editPageWrapper'>
                     <div className='formContainer'>
                         <div className='infoWrapper'>
@@ -327,7 +335,7 @@ class EditLocationForm extends Component {
                                                     />
                                                 }
                                             >
-                                                <option value='' />
+                                                <option value={undefined} />
                                                 <option value={1}>Stay</option>
                                                 <option value={2}>Eat</option>
                                                 <option value={3}>Drink</option>

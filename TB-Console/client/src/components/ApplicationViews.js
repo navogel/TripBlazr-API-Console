@@ -105,6 +105,7 @@ class ApplicationViews extends Component {
                         );
                     }}
                 />
+                {/* <Route render={() => <h1>404 Error</h1>} /> */}
             </React.Fragment>
         );
     }

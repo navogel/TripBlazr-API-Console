@@ -17,6 +17,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
 
 // import EditLocationModalTable from '../location/editlocationModalTable';
 
@@ -146,22 +147,27 @@ export default function LocationTable(props) {
                                             align='right'
                                             className='iconCell'
                                         >
-                                            <IconButton>
-                                                <EditIcon />
-                                            </IconButton>
+                                            <Link
+                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                            >
+                                                <IconButton>
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </Link>
                                             <IconButton
                                                 aria-label='details'
-                                                onClick={() => {
-                                                    props.history.push(
-                                                        `${location.locationId}`
-                                                    );
-                                                }}
+                                                // onClick={() => {
+                                                //     props.history.push(
+                                                //         `/locations/${location.locationId}`
+                                                //     );
+                                                // }}
                                             >
                                                 <AssignmentIcon />
                                             </IconButton>
+
                                             <IconButton
                                                 aria-label='delete'
-                                                //onClick={() => handleDelete(animal.id)}
+                                                //onClick={() => handleDelete(location.locationId)}
                                             >
                                                 <DeleteIcon />
                                             </IconButton>

@@ -166,9 +166,9 @@ v .mediaContainer {
     background-color: rgba(117, 61, 61, 0.438);
 }
 
-.MuiTableCell-root .MuiButtonBase-root {
+/* .MuiTableCell-root .MuiButtonBase-root {
     color: white;
-}
+} */
 
 .MuiTableCell-root .MuiFormGroup-root {
     justify-content: flex-end !important;
@@ -225,7 +225,7 @@ v .mediaContainer {
 .editPageWrapper {
     display: flex;
     flex-direction: column;
-    margin: 1em 5em 2em 5em;
+    margin: 1em 2em 2em 2em;
 }
 
 /* top row */
@@ -242,8 +242,8 @@ v .mediaContainer {
 .infoWrapper {
     display: flex;
     flex-direction: column;
-    padding: 3em;
-    flex: 0 1 800px;
+    padding: 2em;
+    flex: 2 0.5 500px;
 }
 
 /* top right */
@@ -251,8 +251,8 @@ v .mediaContainer {
 .imageWrapper {
     display: flex;
     flex-direction: column;
-    padding: 3em;
-    flex: 0 1 400px;
+    padding: 2em;
+    flex: 0.5 1 300px;
 }
 
 /* bottom row */
@@ -269,8 +269,8 @@ v .mediaContainer {
 .videoWrapper {
     display: flex;
     flex-direction: column;
-    padding: 3em;
-    flex: 0 1 800px;
+    padding: 2em;
+    flex: 2 1 500px;
 }
 
 .videoWrapper .MuiFormControl-root {
@@ -283,8 +283,8 @@ v .mediaContainer {
 .mapWrapper {
     display: flex;
     flex-direction: column;
-    padding: 3em;
-    flex: 0 1 400px;
+    padding: 2em;
+    flex: 1 2 300px;
 }
 
 /* misc */
@@ -320,7 +320,17 @@ v .mediaContainer {
 }
 
 .map {
-    height: 430px;
+    height: 90%;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.locationMap {
+    height: 90%;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.map {
+    height: 350px;
     border-radius: 0px 0px 10px 10px;
 }
 
@@ -374,11 +384,11 @@ v .mediaContainer {
     position: absolute;
 }
 
-.MuiPaper-root {
-    margin: auto !important;
+.tagWrapper .MuiPaper-root {
+    margin: auto;
     background-color: rgba(55, 66, 104, 0.507) !important;
 }
 
-.MuiTableCell-root {
+/* .MuiTableCell-root {
     color: white !important;
-}
+} */
