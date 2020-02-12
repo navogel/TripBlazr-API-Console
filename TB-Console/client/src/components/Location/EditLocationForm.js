@@ -142,30 +142,6 @@ class EditLocationForm extends Component {
                     data.locationId,
                     parseInt(this.state.primaryCategory)
                 );
-                this.props.getLocations();
-                this.setState({
-                    loadingStatus: false,
-
-                    name: '',
-                    phoneNumber: '',
-                    website: '',
-                    shortSummary: '',
-                    description: '',
-                    latitude: '',
-                    longitude: '',
-                    sortId: '',
-                    videoId: '',
-                    videoStartTime: '',
-                    videoEndTime: '',
-                    address1: '',
-                    address2: '',
-                    city: '',
-                    zipcode: '',
-                    state: '',
-                    isActive: '',
-                    primaryCategory: ''
-                });
-                fileInput.value = '';
             });
         }
     };
@@ -180,24 +156,26 @@ class EditLocationForm extends Component {
                 accountId: this.props.accountId,
                 labelWidth: ReactDOM.findDOMNode(this.InputLabelRef)
                     .offsetWidth,
-                name: data.name,
-                phoneNumber: data.phonenumber,
-                website: data.website,
-                shortSummary: data.shortSummary,
-                description: data.description,
-                latitude: data.latitude,
-                longitude: data.longitude,
-                sortId: data.sortId,
-                videoId: data.videoId,
-                videoStartTime: data.videoStartTime,
-                videoEndTime: data.videoEndTime,
-                address1: data.address1,
-                address2: data.address2,
-                city: data.city,
-                zipcode: data.zipcode,
-                state: data.state,
-                isActive: data.isActive,
-                primaryCategory: data.categories.find(c => c.isPrimary == true)
+                name: data.name || '',
+                phoneNumber: data.phonenumber || '',
+                website: data.website || '',
+                shortSummary: data.shortSummary || '',
+                description: data.description || '',
+                latitude: data.latitude || '',
+                longitude: data.longitude || '',
+                sortId: data.sortId || '',
+                videoId: data.videoId || '',
+                videoStartTime: data.videoStartTime || '',
+                videoEndTime: data.videoEndTime || '',
+                address1: data.address1 || '',
+                address2: data.address2 || '',
+                city: data.city || '',
+                zipcode: data.zipcode || '',
+                state: data.state || '',
+                isActive: data.isActive || '',
+                primaryCategory:
+                    data.categories.find(c => c.isPrimary == true).categoryId ||
+                    ''
             });
             console.log('primary cat', this.state.primaryCategory);
         });
@@ -210,7 +188,7 @@ class EditLocationForm extends Component {
     }
 
     render() {
-        console.log('latlng state', this.state.latitude, this.state.longitude);
+        console.log('primary cat', this.state.primaryCategory);
         const { classes } = this.props;
 
         return (
@@ -225,89 +203,159 @@ class EditLocationForm extends Component {
                             <DialogTitle className='modalTitle'>
                                 {'OK, here is everything you can edit:'}
                             </DialogTitle>
-                            <div className='locationInputWrapper'>
-                                <TextField
-                                    id='name'
-                                    label='Name'
-                                    className={classes.textField}
-                                    value={this.state.name}
-                                    onChange={this.handleFieldChange}
-                                    margin='dense'
-                                    variant='outlined'
-                                    placeholder='Enter the place name'
-                                />
+                            <div className='editInputWrapper'>
+                                <div className='doubleFormRow'>
+                                    <TextField
+                                        id='name'
+                                        label='Name'
+                                        className={classes.textField}
+                                        value={this.state.name}
+                                        onChange={this.handleFieldChange}
+                                        margin='dense'
+                                        variant='outlined'
+                                        placeholder='Enter the place name'
+                                    />
 
-                                <FormControl
-                                    variant='outlined'
-                                    margin='dense'
-                                    className={classes.formControl}
-                                >
-                                    <InputLabel
-                                        ref={ref => {
-                                            this.InputLabelRef = ref;
-                                        }}
-                                        htmlFor='outlined-type-native-simple'
+                                    <FormControl
+                                        variant='outlined'
+                                        margin='dense'
+                                        className={classes.formControl}
                                     >
-                                        Primary Category
-                                    </InputLabel>
-                                    <NativeSelect
-                                        value={this.state.primaryCategory}
-                                        onChange={this.handleChange(
-                                            'primaryCategory'
-                                        )}
-                                        input={
-                                            <OutlinedInput
-                                                name='primaryCategory'
-                                                labelWidth={
-                                                    this.state.labelWidth
-                                                }
-                                                id='primaryCategory'
-                                            />
-                                        }
-                                    >
-                                        <option value={1}>Stay</option>
-                                        <option value={2}>Eat</option>
-                                        <option value={3}>Drink</option>
-                                        <option value={4}>Hear</option>
-                                        <option value={5}>Play</option>
-                                        <option value={6}>See</option>
-                                        <option value={7}>Shop</option>
-                                    </NativeSelect>
-                                </FormControl>
-
+                                        <InputLabel
+                                            ref={ref => {
+                                                this.InputLabelRef = ref;
+                                            }}
+                                            htmlFor='outlined-type-native-simple'
+                                        >
+                                            Primary Category
+                                        </InputLabel>
+                                        <NativeSelect
+                                            value={this.state.primaryCategory}
+                                            onChange={this.handleChange(
+                                                'primaryCategory'
+                                            )}
+                                            input={
+                                                <OutlinedInput
+                                                    name='primaryCategory'
+                                                    labelWidth={
+                                                        this.state.labelWidth
+                                                    }
+                                                    id='primaryCategory'
+                                                />
+                                            }
+                                        >
+                                            <option value='' />
+                                            <option value={1}>Stay</option>
+                                            <option value={2}>Eat</option>
+                                            <option value={3}>Drink</option>
+                                            <option value={4}>Hear</option>
+                                            <option value={5}>Play</option>
+                                            <option value={6}>See</option>
+                                            <option value={7}>Shop</option>
+                                        </NativeSelect>
+                                    </FormControl>
+                                </div>
                                 {/* <div className='midFormText'>
                                     <p> Optional:</p>
                                 </div> */}
 
                                 <TextField
-                                    id='address1'
-                                    label='Address'
+                                    id='description'
+                                    label='Blurb'
                                     className={classes.textField}
-                                    value={this.state.address1}
+                                    value={this.state.description}
                                     onChange={this.handleFieldChange}
                                     margin='dense'
                                     variant='outlined'
-                                    placeholder='Enter Address'
+                                    placeholder='a few words in summary'
                                 />
                                 <TextField
-                                    id='city'
-                                    label='City'
+                                    id='shortSummary'
+                                    label='Short Summary'
                                     className={classes.textField}
-                                    value={this.state.city}
+                                    value={this.state.shortSummary}
                                     onChange={this.handleFieldChange}
                                     margin='dense'
                                     variant='outlined'
-                                    placeholder='Enter City'
+                                    placeholder='A paragraph about the location'
+                                    multiline
+                                    rows='3'
                                 />
+                                <div className='doubleFormRow'>
+                                    <TextField
+                                        id='website'
+                                        label='Website'
+                                        className={classes.textField}
+                                        value={this.state.website}
+                                        onChange={this.handleFieldChange}
+                                        margin='dense'
+                                        variant='outlined'
+                                        placeholder='Their online home'
+                                    />
+                                    <TextField
+                                        id='phoneNumber'
+                                        label='Phone Number'
+                                        className={classes.textField}
+                                        value={this.state.phoneNumber}
+                                        onChange={this.handleFieldChange}
+                                        margin='dense'
+                                        variant='outlined'
+                                        placeholder="Let guest's give them a call"
+                                    />
+                                </div>
+                                <div className='doubleFormRow'>
+                                    <TextField
+                                        id='address1'
+                                        label='Address'
+                                        className={classes.textField}
+                                        value={this.state.address1}
+                                        onChange={this.handleFieldChange}
+                                        margin='dense'
+                                        variant='outlined'
+                                        placeholder='Enter Address'
+                                    />
+                                    <TextField
+                                        id='city'
+                                        label='City'
+                                        className={classes.textField}
+                                        value={this.state.city}
+                                        onChange={this.handleFieldChange}
+                                        margin='dense'
+                                        variant='outlined'
+                                        placeholder='Enter City'
+                                    />
+                                </div>
+                                <div className='doubleFormRow'>
+                                    <TextField
+                                        id='state'
+                                        label='State'
+                                        className={classes.textField}
+                                        value={this.state.state}
+                                        onChange={this.handleFieldChange}
+                                        margin='dense'
+                                        variant='outlined'
+                                        placeholder='Enter State'
+                                    />
+                                    <TextField
+                                        id='zipcode'
+                                        label='Zipcode'
+                                        className={classes.textField}
+                                        value={this.state.zipcode}
+                                        onChange={this.handleFieldChange}
+                                        margin='dense'
+                                        variant='outlined'
+                                        placeholder='Enter Zip'
+                                    />
+                                </div>
                             </div>
                             <Button
                                 variant='contained'
-                                // size='small'
+                                //size='large'
                                 color='primary'
                                 //disabled={this.state.loadingStatus}
                                 onClick={this.submitAddress}
                             >
-                                Get Pin From Address
+                                Drag pin, or click here to update from address
                             </Button>
                             <LocationDetailsMapper
                                 cityLat={this.state.latitude}

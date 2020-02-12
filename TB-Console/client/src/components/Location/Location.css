@@ -220,3 +220,25 @@ h3 {
 .formSubmit {
     padding-top: 2em;
 }
+
+/* edit form */
+
+.editInputWrapper {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2em;
+}
+
+.doubleFormRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.doubleFormRow .MuiTextField-root {
+    flex: 1 !important;
+}
+
+.MuiTextField-root {
+    margin: 0.6em !important;
+}

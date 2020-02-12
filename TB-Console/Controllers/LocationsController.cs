@@ -503,6 +503,18 @@ namespace TripBlazrConsole.Controllers
                     IsPrimary = isPrimary
                 };
 
+                if (newCat.IsPrimary == true)
+                {
+                    var catToDelete = await _context.LocationCategory
+                        .FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.IsPrimary == true);
+
+                    if (catToDelete != null)
+                    {
+                        _context.LocationCategory.Remove(catToDelete);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
                 _context.LocationCategory.Add(newCat);
 
                 try
