@@ -22,6 +22,7 @@ namespace TripBlazrConsole.MapperConfigurations
 
             CreateMap<LocationCategory, CategoryViewModel>()
                 .ForMember(c => c.Name, opt => opt.MapFrom(lc => lc.Category.Name))
+                .ForMember(c => c.Image, opt => opt.MapFrom(lc => lc.Category.Image))
                 .ForMember(c => c.IsPrimary, opt => opt.MapFrom(lc => lc.IsPrimary));
         }
     }
