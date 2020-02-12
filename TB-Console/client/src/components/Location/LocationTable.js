@@ -42,7 +42,7 @@ export default function LocationTable(props) {
     const classes = useStyles();
 
     const handleDelete = id => {
-        LocationManager.delete(id).then(() => props.getData());
+        LocationManager.deleteLocation(id).then(() => props.getData());
     };
 
     const handleUpdate = (index, location) => {
@@ -154,20 +154,28 @@ export default function LocationTable(props) {
                                                     <EditIcon />
                                                 </IconButton>
                                             </Link>
-                                            <IconButton
-                                                aria-label='details'
-                                                // onClick={() => {
-                                                //     props.history.push(
-                                                //         `/locations/${location.locationId}`
-                                                //     );
-                                                // }}
+                                            <Link
+                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
                                             >
-                                                <AssignmentIcon />
-                                            </IconButton>
+                                                <IconButton
+                                                    aria-label='details'
+                                                    // onClick={() => {
+                                                    //     props.history.push(
+                                                    //         `/locations/${location.locationId}`
+                                                    //     );
+                                                    // }}
+                                                >
+                                                    <AssignmentIcon />
+                                                </IconButton>
+                                            </Link>
 
                                             <IconButton
                                                 aria-label='delete'
-                                                //onClick={() => handleDelete(location.locationId)}
+                                                onClick={() =>
+                                                    handleDelete(
+                                                        location.locationId
+                                                    )
+                                                }
                                             >
                                                 <DeleteIcon />
                                             </IconButton>

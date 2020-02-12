@@ -8,6 +8,8 @@ import LocationTable from './LocationTable';
 import AddLocationForm from './AddLocationForm';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 class LocationList extends Component {
     state = {
@@ -23,7 +25,8 @@ class LocationList extends Component {
         cityLng: '',
         accountName: '',
         accountId: '',
-        loading: true
+        loading: true,
+        addElOpen: false
     };
 
     updateActiveLocation = (pos, location) => {
@@ -32,6 +35,18 @@ class LocationList extends Component {
         this.setState({
             locations: newState
         });
+    };
+
+    openAddForm = () => {
+        if (this.state.addElOpen === false) {
+            this.setState({ addElOpen: true });
+        } else {
+            this.setState({ addElOpen: false });
+        }
+    };
+
+    closeAddForm = () => {
+        this.setState({ addElOpen: false });
     };
 
     getLocations = () => {
@@ -80,6 +95,13 @@ class LocationList extends Component {
             <>
                 <section className='section-content'>
                     <div className='addViewRow'>
+                        <Fab
+                            color='primary'
+                            aria-label='add'
+                            onClick={() => this.openAddForm()}
+                        >
+                            <AddIcon />
+                        </Fab>
                         {/* <FormDialog {...this.props} getData={this.getData} /> */}
                         <SwitchView changeView={this.changeView} />
                     </div>
@@ -98,16 +120,21 @@ class LocationList extends Component {
                             }
                         </DialogTitle>
                     )}
-
-                {this.state.accountId && this.state.loading == false && (
-                    <>
+                {this.state.accountId &&
+                    this.state.loading == false &&
+                    this.state.addElOpen && (
                         <AddLocationForm
                             accountId={this.state.accountId}
                             city={this.state.city}
                             cityLat={this.state.cityLat}
                             cityLng={this.state.cityLng}
                             getLocations={this.getLocations}
+                            closeAddForm={this.closeAddForm}
                         />
+                    )}
+
+                {this.state.accountId && this.state.loading == false && (
+                    <>
                         <DialogTitle className='modalTitle'>
                             {"Nashville's Locations"}
                         </DialogTitle>
@@ -128,7 +155,7 @@ class LocationList extends Component {
                             <div className='container-table'>
                                 <LocationTable
                                     locations={this.state.locations}
-                                    getData={this.getData}
+                                    getData={this.getLocations}
                                     {...this.props}
                                     updateActiveLocation={
                                         this.updateActiveLocation

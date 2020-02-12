@@ -1,7 +1,7 @@
 /* spinner */
 
 .spinner {
-    margin: auto;
+    /* margin: auto; */
     margin-top: 30%;
 }
 
@@ -123,7 +123,7 @@ a {
 
 .addViewRow {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 .tableIcons {
@@ -391,4 +391,8 @@ v .mediaContainer {
 
 /* .MuiTableCell-root {
     color: white !important;
+} */
+
+/* .locationExit {
+    height: 20px;
 } */

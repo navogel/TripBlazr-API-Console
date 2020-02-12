@@ -75,5 +75,12 @@ export default {
         return fetch(`${baseUrl}Locations/${id}`, options).then(response =>
             response.json()
         );
+    },
+    deleteLocation(id) {
+        const authHeadersForm = createAuthHeadersForm();
+        return fetch(`${baseUrl}/Locations/${id}`, {
+            method: 'DELETE',
+            headers: authHeadersForm
+        }).then(response => response.json());
     }
 };

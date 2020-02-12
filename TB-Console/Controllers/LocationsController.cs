@@ -410,46 +410,7 @@ namespace TripBlazrConsole.Controllers
 
             return Ok(locationFromDb);
         }
-        //public async Task<IActionResult> EditLocation(int id, Location location)
-        //{
-        //    var userId = HttpContext.GetUserId();
-
-        //    var locationFromDb = await _context.Location
-        //            .Include(l => l.Account.AccountUsers)
-        //            .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-        //            .FirstOrDefaultAsync(l => l.LocationId == id);
-
-
-
-
-        //    if (id != location.LocationId || locationFromDb == null)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    location.DateEdited = DateTime.Now;
-
-        //    _context.Entry(location).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!LocationExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return Ok(location);
-        //}
+       
 
         [HttpPut(Api.Location.EditLocationIsActive)]
         public async Task<IActionResult> EditLocationIsActive(int id)
@@ -504,7 +465,12 @@ namespace TripBlazrConsole.Controllers
         [HttpDelete(Api.Location.DeleteLocation)]
         public async Task<ActionResult<Location>> DeleteLocation(int id)
         {
-            var location = await _context.Location.FindAsync(id);
+            var userId = HttpContext.GetUserId();
+
+            var location = await _context.Location
+                    .Include(l => l.Account.AccountUsers)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .FirstOrDefaultAsync(l => l.LocationId == id);
 
             if (location == null)
             {

@@ -143,6 +143,7 @@ class AddLocationForm extends Component {
                     parseInt(this.state.primaryCategory)
                 );
                 this.props.getLocations();
+                this.props.closeAddForm();
                 this.setState({
                     loadingStatus: false,
 

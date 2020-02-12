@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
     container: {
@@ -250,6 +251,13 @@ class EditLocationForm extends Component {
         return (
             <>
                 <div className='locationHeader'>
+                    <Link to={`/accounts/${this.props.accountId}/locations/`}>
+                        <HighlightOffIcon
+                            color='primary'
+                            className='locationExit'
+                            fontSize='large'
+                        />
+                    </Link>
                     <h1>{this.state.name}</h1>
                     <div className='formSubmit'>
                         <Button

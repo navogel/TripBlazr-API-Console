@@ -5,7 +5,7 @@ const baseUrl = '/api';
 const authHeader = createAuthHeaders();
 
 export default {
-    getAllAccounts(id) {
+    getAllTags(id) {
         const authHeader = createAuthHeaders();
         return fetch(`${baseUrl}/Tags/ByAccount`, {
             headers: authHeader
