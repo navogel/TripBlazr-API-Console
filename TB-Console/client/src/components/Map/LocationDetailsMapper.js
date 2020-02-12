@@ -123,10 +123,7 @@ export default class LocationDetailsMapper extends Component {
                     }}
                     onClick={this.getCoord}
                 >
-                    <TileLayer
-                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url={Atoken}
-                    />
+                    <TileLayer url={Atoken} />
                     <Marker
                         position={position}
                         anchor='bottom'

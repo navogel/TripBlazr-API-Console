@@ -53,5 +53,19 @@ export default {
             method: 'PUT',
             headers: authHeader
         }).then(response => response.json());
+    },
+    addTag(locationId, tagId) {
+        const authHeader = createAuthHeaders();
+        return fetch(`${baseUrl}/Locations/${locationId}/AddTag/${tagId}`, {
+            method: 'POST',
+            headers: authHeader
+        }).then(response => response.json());
+    },
+    deleteTag(locationId, tagId) {
+        const authHeadersForm = createAuthHeadersForm();
+        return fetch(`${baseUrl}/Locations/${locationId}/DeleteTag/${tagId}`, {
+            method: 'DELETE',
+            headers: authHeadersForm
+        }).then(response => response.json());
     }
 };

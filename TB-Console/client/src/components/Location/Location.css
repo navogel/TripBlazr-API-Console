@@ -146,6 +146,9 @@ h3 {
 
 /* locationListTable */
 
+v .mediaContainer {
+}
+
 .tableWrapper {
     padding: 0em 8em 0em 8em;
 }
@@ -161,6 +164,10 @@ h3 {
 
 .MuiTableCell-root .MuiButtonBase-root:hover {
     background-color: rgba(117, 61, 61, 0.438);
+}
+
+.MuiTableCell-root .MuiButtonBase-root {
+    color: white;
 }
 
 .MuiTableCell-root .MuiFormGroup-root {
@@ -199,16 +206,10 @@ h3 {
 
 /* addform */
 
-.formContainer {
-    display: flex;
-    align-self: center;
-    padding: 5em;
-    flex-direction: column;
-}
-
-.infoWrapper {
+.editInputWrapper {
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .locationInputWrapper {
@@ -217,22 +218,121 @@ h3 {
     padding-bottom: 2em;
 }
 
-.formSubmit {
-    padding-top: 2em;
-}
+/* edit form */ /* edit form */ /* edit form */
 
-/* edit form */
+/* page structure */
 
-.editInputWrapper {
+.editPageWrapper {
     display: flex;
     flex-direction: column;
-    padding-bottom: 2em;
+    margin: 1em 5em 2em 5em;
+}
+
+/* top row */
+
+.formContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* top left */
+
+.infoWrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 3em;
+    flex: 0 1 800px;
+}
+
+/* top right */
+
+.imageWrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 3em;
+    flex: 0 1 400px;
+}
+
+/* bottom row */
+
+.mediaContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* bottom left */
+
+.videoWrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 3em;
+    flex: 0 1 800px;
+}
+
+.videoWrapper .MuiFormControl-root {
+    width: 30%;
+    align-self: center;
+}
+
+/* bottom right */
+
+.mapWrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 3em;
+    flex: 0 1 400px;
+}
+
+/* misc */
+
+.locationHeader {
+    font-size: 3em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.locationHeader h1 {
+    margin-bottom: 0px;
+}
+
+.formSubmit {
+    display: flex;
+    padding-left: 0.5em;
+    padding-top: 1.2em;
+    align-items: center;
+    justify-content: center;
+}
+
+.formSubmit .MuiButtonBase-root {
+    height: 5em;
+}
+
+.mapWrapper .MuiButtonBase-root {
+    border-radius: 10px 10px 0px 0px;
+}
+
+.map {
+    height: 430px;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.imageWrapper .MuiButtonBase-root {
+    border-radius: 10px 10px 0px 0px;
 }
 
 .doubleFormRow {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .doubleFormRow .MuiTextField-root {
@@ -241,4 +341,44 @@ h3 {
 
 .MuiTextField-root {
     margin: 0.6em !important;
+}
+
+/* image section */
+
+.locationImage {
+    height: 100%;
+    width: 100%;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.uploadButton {
+    flex: 0.5;
+}
+
+/* video */
+
+.video-responsive {
+    overflow: hidden;
+    padding-bottom: 56.25%;
+    position: relative;
+    height: 0;
+    margin: 0.6em;
+    border-radius: 10px;
+    margin-bottom: 1em;
+}
+.video-responsive iframe {
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.MuiPaper-root {
+    margin: auto !important;
+    background-color: rgba(55, 66, 104, 0.507) !important;
+}
+
+.MuiTableCell-root {
+    color: white !important;
 }

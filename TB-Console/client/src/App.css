@@ -39,14 +39,14 @@
     color: #09d3ac;
 }
 
-.mapWrapper {
+/* .mapWrapper {
     height: 500px;
 }
 
 .map {
     height: 500px;
     width: 500px;
-}
+} */
 
 .leaflet-control-geocoder-alternatives li a,
 .leaflet-control-geocoder-alternatives li a:hover {

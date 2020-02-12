@@ -431,7 +431,7 @@ namespace TripBlazrConsole.Controllers
                 }
             } 
 
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
+            return Ok(location);
         }
 
         //ADD TAGS TO Location
@@ -487,7 +487,7 @@ namespace TripBlazrConsole.Controllers
                 throw;
             }
 
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
+            return Ok(tagToDelete);
         }
 
         //ADD CATS TO LOCATION
@@ -556,7 +556,7 @@ namespace TripBlazrConsole.Controllers
                 throw;
             }
 
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
+            return Ok(catToDelete);
         }
 
         private bool LocationExists(int id)
