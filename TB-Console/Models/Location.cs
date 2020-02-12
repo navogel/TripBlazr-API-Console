@@ -65,8 +65,8 @@ namespace TripBlazrConsole.Models
 
         public string ImageUrl { get; set; }
 
-        [NotMapped]
-        public IFormFile File { get; set; }
+        //[NotMapped]
+        //public IFormFile File { get; set; }
 
         //City Controls 
 

@@ -164,31 +164,40 @@ class EditLocationForm extends Component {
             formData.append('longitude', this.state.longitude);
             formData.append('sortId', this.state.sortId);
             formData.append('videoId', this.state.videoId);
+            formData.append('videoStartTime', this.state.videoStartTime);
+            formData.append('videoEndTime', this.state.videoEndTime);
             formData.append('address1', this.state.address1);
+            formData.append('address2', this.state.address2);
             formData.append('city', this.state.city);
             formData.append('zipcode', this.state.zipcode);
             formData.append('state', this.state.state);
             formData.append('isActive', this.state.isActive);
             formData.append('file', fileInput.files[0]);
 
-            LocationManager.createLocation(formData).then(data => {
-                // console.log(
-                //     'return from post',
-                //     data.locationId,
-                //     this.state.primaryCategory
-                // );
-                LocationManager.createPrimaryCategory(
-                    data.locationId,
-                    parseInt(this.state.primaryCategory)
-                );
-            });
+            LocationManager.editLocation(this.props.locationId, formData).then(
+                data => {
+                    // console.log(
+                    //     'return from post',
+                    //     data.locationId,
+                    //     this.state.primaryCategory
+                    // );
+                    LocationManager.createPrimaryCategory(
+                        data.locationId,
+                        parseInt(this.state.primaryCategory)
+                    ).then(data => this.getData());
+                }
+            );
         }
     };
     componentDidMount() {
+        this.getData();
         // console.log('props to edit form', this.props);
         // this.setState({
         //     labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
         // });
+    }
+
+    getData = () => {
         LocationManager.getLocationById(this.props.locationId).then(data => {
             //console.log('grab location by id', data);
             this.setState({
@@ -226,7 +235,7 @@ class EditLocationForm extends Component {
         // this.setState({
         //     accountId: this.props.accountId
         // });
-    }
+    };
 
     render() {
         //console.log('primary cat', this.state.primaryCategory);

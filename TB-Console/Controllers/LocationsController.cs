@@ -310,8 +310,11 @@ namespace TripBlazrConsole.Controllers
         // more details see https://aka.ms/RazorPagesCRUD.
        
         [HttpPut(Api.Location.EditLocation)]
-        public async Task<IActionResult> EditLocation(int id, Location location)
+
+        public async Task<ActionResult<CreateLocationViewModel>> EditLocation([FromForm]CreateLocationViewModel viewModel, int id)
+        //public async Task<ActionResult<Location>> PostLocation([FromBody]CreateLocationViewModel viewModel, IFormFile file)
         {
+
             var userId = HttpContext.GetUserId();
 
             var locationFromDb = await _context.Location
@@ -319,37 +322,133 @@ namespace TripBlazrConsole.Controllers
                     .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
                     .FirstOrDefaultAsync(l => l.LocationId == id);
 
-
-
-
-            if (id != location.LocationId || locationFromDb == null)
+            if (locationFromDb == null)
             {
                 return BadRequest();
             }
 
-            location.DateEdited = DateTime.Now;
+            var location = new Location()
+            {
+                LocationId = locationFromDb.LocationId,
+                AccountId = viewModel.AccountId,
+                Name = viewModel.Name,
+                PhoneNumber = viewModel.PhoneNumber,
+                Website = viewModel.Website,
+                ShortSummary = viewModel.ShortSummary,
+                Description = viewModel.Description,
+                Latitude = viewModel.Latitude,
+                Longitude = viewModel.Longitude,
+                SortId = viewModel.SortId,
+                VideoId = viewModel.VideoId,
+                VideoStartTime = viewModel.VideoStartTime,
+                VideoEndTime = viewModel.VideoEndTime,
+                Address1 = viewModel.Address1,
+                Address2 = viewModel.Address2,
+                City = viewModel.City,
+                State = viewModel.State,
+                Zipcode = viewModel.Zipcode,
+                IsDeleted = false,
+                IsActive = viewModel.IsActive,
+                ImageUrl = viewModel.ImageUrl,
+                DateEdited = DateTime.Now,
+                DateCreated = locationFromDb.DateCreated,
+                SeeWebsite = locationFromDb.SeeWebsite,
+                HoursNotes = locationFromDb.HoursNotes
+            };
 
-            _context.Entry(location).State = EntityState.Modified;
+
+            if (viewModel.File != null && viewModel.File.Length > 0)
+            {
+
+                //create filname based on created location ID
+                int fileName = location.LocationId;
+
+                //create path and insert image with original filename
+
+                using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
+                {
+                    viewModel.File.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+
+                //replace original filename with location ID filename, keeping extension
+
+                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
+                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension, true);
+
+                // update location with new filename
+
+                location.ImageUrl = fileName + currentFile.Extension;
+
+                _context.Entry(location).State = EntityState.Modified;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return BadRequest();
+                }
+                
+
+                return Ok(location);
+            }
+
+            _context.Update(location);
 
             try
             {
                 await _context.SaveChangesAsync();
-                
-            }
-            catch (DbUpdateConcurrencyException)
+
+            } catch (DbUpdateConcurrencyException)
             {
-                if (!LocationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
+            
+           
 
             return Ok(location);
         }
+        //public async Task<IActionResult> EditLocation(int id, Location location)
+        //{
+        //    var userId = HttpContext.GetUserId();
+
+        //    var locationFromDb = await _context.Location
+        //            .Include(l => l.Account.AccountUsers)
+        //            .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+        //            .FirstOrDefaultAsync(l => l.LocationId == id);
+
+
+
+
+        //    if (id != location.LocationId || locationFromDb == null)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    location.DateEdited = DateTime.Now;
+
+        //    _context.Entry(location).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!LocationExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return Ok(location);
+        //}
 
         [HttpPut(Api.Location.EditLocationIsActive)]
         public async Task<IActionResult> EditLocationIsActive(int id)

@@ -30,9 +30,6 @@ export default {
             body: location,
             headers: authHeader
         };
-        // if (options && options.headers) {
-        //     delete options.headers['Content-Type'];
-        // }
         return fetch(`${baseUrl}Locations`, options).then(response =>
             response.json()
         );
@@ -67,5 +64,16 @@ export default {
             method: 'DELETE',
             headers: authHeadersForm
         }).then(response => response.json());
+    },
+    editLocation(id, location) {
+        const authHeader = createAuthHeadersForm();
+        const options = {
+            method: 'PUT',
+            body: location,
+            headers: authHeader
+        };
+        return fetch(`${baseUrl}Locations/${id}`, options).then(response =>
+            response.json()
+        );
     }
 };
