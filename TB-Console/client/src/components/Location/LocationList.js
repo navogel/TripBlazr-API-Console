@@ -312,7 +312,7 @@ class LocationList extends Component {
                                                     locationDetails={
                                                         locationDetails
                                                     }
-                                                    getData={this.getData}
+                                                    getData={this.getLocations}
                                                     {...this.props}
                                                     cardView={
                                                         this.state.cardView
@@ -336,7 +336,7 @@ class LocationList extends Component {
                                                     locationDetails={
                                                         locationDetails
                                                     }
-                                                    getData={this.getData}
+                                                    getData={this.getLocations}
                                                     {...this.props}
                                                     cardView={
                                                         this.state.cardView

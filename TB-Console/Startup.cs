@@ -35,7 +35,7 @@ namespace TripBlazrConsole
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("JerodisDefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -116,7 +116,7 @@ namespace TripBlazrConsole
                 options.AddPolicy(LocalhostOrigin,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200");
+                    builder.WithOrigins("http://localhost:4300");
                 });
             });
         }

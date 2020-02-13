@@ -258,7 +258,7 @@ class EditLocationForm extends Component {
                     city: data.city || '',
                     zipcode: data.zipcode || '',
                     state: data.state || '',
-                    isActive: data.isActive || '',
+                    isActive: data.isActive,
                     imageUrl: data.imageUrl || '',
                     tags: data.tags || '',
                     primaryCategory: ''
@@ -284,7 +284,7 @@ class EditLocationForm extends Component {
     // });
 
     render() {
-        //console.log('primary cat', this.state.primaryCategory);
+        console.log('blurb', this.state.blurb);
         const { classes } = this.props;
 
         return (
