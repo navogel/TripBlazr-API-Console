@@ -6,7 +6,7 @@ import EditLocationForm from './EditLocationForm';
 
 const styles = {
     list: {
-        width: 500
+        width:  
     },
     fullList: {
         width: 'auto'

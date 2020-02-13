@@ -142,9 +142,11 @@ class LocationList extends Component {
     };
 
     handleChange = (event, newAlignment) => {
-        this.setState({
-            alignment: newAlignment
-        });
+        if (newAlignment !== null) {
+            this.setState({
+                alignment: newAlignment
+            });
+        }
     };
 
     changeView = () => {
@@ -265,6 +267,7 @@ class LocationList extends Component {
                             </DialogTitle>
                             <ToggleButtonGroup
                                 value={this.state.alignment}
+                                size='small'
                                 exclusive
                                 onChange={this.handleChange}
                                 aria-label='text primary button group'
@@ -279,6 +282,7 @@ class LocationList extends Component {
                                 </ToggleButton>
 
                                 <ToggleButton
+                                    className='middleToggle'
                                     key={2}
                                     onClick={e => this.getLocations()}
                                     value='center'

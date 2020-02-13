@@ -152,7 +152,7 @@ h3 {
 
 /* locationListTable */
 
-v .mediaContainer {
+.mediaContainer {
 }
 
 .tableWrapper {
@@ -228,6 +228,12 @@ v .mediaContainer {
 
 /* page structure */
 
+.drawerWrapper {
+    width: 800px;
+    height: 100vh;
+    max-width: 100vw;
+}
+
 .editPageWrapper {
     display: flex;
     flex-direction: column;
@@ -255,10 +261,12 @@ v .mediaContainer {
 /* top right */
 
 .imageWrapper {
+    height: 350px;
+    width: 350px;
     display: flex;
     flex-direction: column;
     padding: 2em;
-    flex: 0.5 1 300px;
+    flex: 0 0 100px;
 }
 
 /* bottom row */
@@ -291,6 +299,7 @@ v .mediaContainer {
     flex-direction: column;
     padding: 2em;
     flex: 1 2 300px;
+    height: 250px;
 }
 
 /* misc */
@@ -312,18 +321,13 @@ v .mediaContainer {
     border-radius: 10px 10px 0px 0px;
 }
 
-.map {
-    height: 90%;
-    border-radius: 0px 0px 10px 10px;
-}
-
 .locationMap {
     height: 90%;
     border-radius: 0px 0px 10px 10px;
 }
 
 .map {
-    height: 350px;
+    height: 250px;
     border-radius: 0px 0px 10px 10px;
 }
 
@@ -349,14 +353,14 @@ v .mediaContainer {
 /* image section */
 
 .locationImage {
-    height: 100%;
-    width: 100%;
-    border-radius: 0px 0px 10px 10px;
+    height: 200px;
+    width: 200px;
+    border-radius: 10px 10px 10px 10px;
 }
-
+/* 
 .uploadButton {
     flex: 0.5;
-}
+} */
 
 /* video */
 
@@ -379,7 +383,7 @@ v .mediaContainer {
 
 .tagWrapper .MuiPaper-root {
     margin: auto;
-    background-color: rgba(55, 66, 104, 0.507) !important;
+    background-color: #7b88a3cc !important;
 }
 
 /* .MuiTableCell-root {
@@ -420,3 +424,26 @@ v .mediaContainer {
 .pointerLink:hover {
     cursor: pointer;
 }
+
+.locationRow .MuiToggleButtonGroup-root {
+    background-color: #4d5566;
+}
+
+.locationRow .MuiToggleButtonGroup-root .MuiToggleButton-root.Mui-selected {
+    background-color: #7b88a3cc;
+}
+
+.locationRow .MuiToggleButtonGroup-root .MuiToggleButton-root {
+    color: white;
+}
+
+.locationRow {
+    padding-bottom: 1em;
+}
+
+/* .locationRow
+    .MuiToggleButtonGroup-root
+    .MuiToggleButton-root
+    > span:nth-child(2) {
+    margin: 1em;
+} */

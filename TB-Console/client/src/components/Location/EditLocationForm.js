@@ -331,6 +331,33 @@ class EditLocationForm extends Component {
                     </Paper>
                 </div>
                 <div className='editPageWrapper'>
+                    <div className='mediaContainer'>
+                        <div className='imageWrapper'>
+                            {/* <Button
+                                className='uploadButton'
+                                color='primary'
+                                variant='contained'
+                                component='label'
+                            > */}
+                            Upload File
+                            <input
+                                type='file'
+                                name='file'
+                                id='fileInput'
+                                accept='.png, .jpg'
+                                onChange={this.fileSelectHandler}
+                            />
+                            {/* </Button> */}
+                            {this.state.imageUrl && (
+                                <img
+                                    className='locationImage'
+                                    src={`https://localhost:5001/upload/${
+                                        this.state.imageUrl
+                                    }?${this.ranNum()}`}
+                                />
+                            )}
+                        </div>
+                    </div>
                     <div className='formContainer'>
                         <div className='infoWrapper'>
                             <form
@@ -496,34 +523,29 @@ class EditLocationForm extends Component {
                             /> */}
                             </form>
                         </div>
-
-                        <div className='imageWrapper'>
-                            <Button
-                                className='uploadButton'
-                                color='primary'
-                                variant='contained'
-                                component='label'
-                            >
-                                Upload File
-                                <input
-                                    type='file'
-                                    name='file'
-                                    id='fileInput'
-                                    accept='.png, .jpg'
-                                    onChange={this.fileSelectHandler}
-                                />
-                            </Button>
-                            {this.state.imageUrl && (
-                                <img
-                                    className='locationImage'
-                                    src={`https://localhost:5001/upload/${
-                                        this.state.imageUrl
-                                    }?${this.ranNum()}`}
-                                />
-                            )}
-                        </div>
                     </div>
                     <div className='mediaContainer'>
+                        <div className='mapWrapper'>
+                            <Button
+                                variant='contained'
+                                //size='large'
+                                color='primary'
+                                //disabled={this.state.loadingStatus}
+                                onClick={this.submitAddress}
+                            >
+                                Drag pin, or click here to update from address
+                            </Button>
+                            <LocationDetailsMapper
+                                cityLat={this.state.latitude}
+                                cityLng={this.state.longitude}
+                                mapAddress={this.state.mapAddress}
+                                grabCoordsFromPin={this.grabCoordsFromPin}
+
+                                // address={this.state.address1}
+                                // name={this.state.name}
+                                // city={this.state.city}
+                            />
+                        </div>
                         <div className='videoWrapper'>
                             <TextField
                                 id='videoId'
@@ -547,28 +569,6 @@ class EditLocationForm extends Component {
                                     allowFullScreen
                                 ></iframe>
                             </div>
-                        </div>
-
-                        <div className='mapWrapper'>
-                            <Button
-                                variant='contained'
-                                //size='large'
-                                color='primary'
-                                //disabled={this.state.loadingStatus}
-                                onClick={this.submitAddress}
-                            >
-                                Drag pin, or click here to update from address
-                            </Button>
-                            <LocationDetailsMapper
-                                cityLat={this.state.latitude}
-                                cityLng={this.state.longitude}
-                                mapAddress={this.state.mapAddress}
-                                grabCoordsFromPin={this.grabCoordsFromPin}
-
-                                // address={this.state.address1}
-                                // name={this.state.name}
-                                // city={this.state.city}
-                            />
                         </div>
                     </div>
                 </div>
