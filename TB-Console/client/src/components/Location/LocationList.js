@@ -300,7 +300,7 @@ class LocationList extends Component {
                         </div>
                         {this.state.cardView ? (
                             <>
-                                {this.state.searchTarget.length > 1 ? (
+                                {this.state.searchTarget.length > 0 ? (
                                     <div className='container-cards'>
                                         {this.state.searchTarget
                                             .slice(0, this.state.itemsShown)

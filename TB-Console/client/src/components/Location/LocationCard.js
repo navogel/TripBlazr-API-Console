@@ -14,9 +14,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 class LocationCard extends Component {
     handleDelete = id => {
-        LocationManager.deleteLocation(id).then(() =>
-            this.props.getLocations()
-        );
+        LocationManager.deleteLocation(id).then(() => this.props.getData());
     };
 
     render() {
