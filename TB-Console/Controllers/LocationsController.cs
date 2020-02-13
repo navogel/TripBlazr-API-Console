@@ -219,7 +219,7 @@ namespace TripBlazrConsole.Controllers
                 State = viewModel.State,
                 Zipcode = viewModel.Zipcode,
                 IsDeleted = false,
-                IsActive = viewModel.IsActive,
+                IsActive = false,
                 ImageUrl = "logo.png"
             };
            

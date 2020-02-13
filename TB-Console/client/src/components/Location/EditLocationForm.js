@@ -333,21 +333,6 @@ class EditLocationForm extends Component {
                 <div className='editPageWrapper'>
                     <div className='mediaContainer'>
                         <div className='imageWrapper'>
-                            {/* <Button
-                                className='uploadButton'
-                                color='primary'
-                                variant='contained'
-                                component='label'
-                            > */}
-                            Upload File
-                            <input
-                                type='file'
-                                name='file'
-                                id='fileInput'
-                                accept='.png, .jpg'
-                                onChange={this.fileSelectHandler}
-                            />
-                            {/* </Button> */}
                             {this.state.imageUrl && (
                                 <img
                                     className='locationImage'
@@ -356,6 +341,20 @@ class EditLocationForm extends Component {
                                     }?${this.ranNum()}`}
                                 />
                             )}
+                            <Button
+                                className='uploadButton'
+                                color='primary'
+                                variant='contained'
+                                component='label'
+                            >
+                                <input
+                                    type='file'
+                                    name='file'
+                                    id='fileInput'
+                                    accept='.png, .jpg'
+                                    onChange={this.fileSelectHandler}
+                                />
+                            </Button>
                         </div>
                     </div>
                     <div className='formContainer'>
