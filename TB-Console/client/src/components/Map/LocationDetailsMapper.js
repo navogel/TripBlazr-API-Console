@@ -90,7 +90,7 @@ export default class LocationDetailsMapper extends Component {
                         draggable: true
                     })
                         .on('dragend', e => {
-                            this.ondragend(e);
+                            this.dragend(e);
                             //console.log('changed', posLat, posLng);
 
                             this.props.grabCoordsFromPin(posLat, posLng);
