@@ -10,6 +10,16 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import Checkbox from '@material-ui/core/Checkbox';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+
+const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
+const checkedIcon = <CheckBoxIcon fontSize='small' />;
 
 class LocationList extends Component {
     state = {
@@ -26,14 +36,26 @@ class LocationList extends Component {
         accountName: '',
         accountId: '',
         loading: true,
-        addElOpen: false
+        addElOpen: false,
+        itemsShown: 20,
+        searchTarget: [],
+        tagFilter: ''
     };
 
+    //spice for standard location array
     updateActiveLocation = (pos, location) => {
         const newState = [...this.state.locations];
         newState.splice(pos, 1, location);
         this.setState({
             locations: newState
+        });
+    };
+    //splice for search target array
+    updateActiveLocation2 = (pos, location) => {
+        const newState = [...this.state.searchTarget];
+        newState.splice(pos, 1, location);
+        this.setState({
+            searchTarget: newState
         });
     };
 
@@ -49,6 +71,12 @@ class LocationList extends Component {
         this.setState({ addElOpen: false });
     };
 
+    onTagsChange = (event, values) => {
+        this.setState({
+            searchTarget: values
+        });
+    };
+
     getLocations = () => {
         LocationManager.getAllLocationsByAccount(
             this.props.accountId,
@@ -61,6 +89,38 @@ class LocationList extends Component {
             //console.log(data);
         });
     };
+
+    getActiveLocations = () => {
+        LocationManager.getAllLocationsByAccount(
+            this.props.accountId,
+            this.state.search,
+            this.state.category,
+            this.state.tag,
+            true
+        ).then(data => {
+            this.setState({ locations: data, loading: false });
+            //console.log(data);
+        });
+    };
+
+    getInactiveLocations = () => {
+        LocationManager.getAllLocationsByAccount(
+            this.props.accountId,
+            this.state.search,
+            this.state.category,
+            this.state.tag,
+            false
+        ).then(data => {
+            this.setState({ locations: data, loading: false });
+            //console.log(data);
+        });
+    };
+
+    // searchLocations = e => {
+    //     let array = [];
+    //     array.push(e);
+    //     this.setState({ searchTarget: array });
+    // };
 
     changeView = () => {
         if (this.state.cardView === true) {
@@ -91,6 +151,7 @@ class LocationList extends Component {
     }
 
     render() {
+        console.log('search target state', this.state.searchTarget);
         return (
             <>
                 <section className='section-content'>
@@ -102,7 +163,41 @@ class LocationList extends Component {
                         >
                             <AddIcon />
                         </Fab>
-                        {/* <FormDialog {...this.props} getData={this.getData} /> */}
+
+                        <Autocomplete
+                            multiple
+                            id='checkboxes-tags-demo'
+                            options={this.state.locations}
+                            disableCloseOnSelect
+                            getOptionLabel={option =>
+                                typeof option === 'string'
+                                    ? option
+                                    : option.name
+                            }
+                            value={this.state.searchTarget}
+                            onChange={this.onTagsChange}
+                            renderOption={(option, { selected }) => (
+                                <React.Fragment>
+                                    <Checkbox
+                                        icon={icon}
+                                        checkedIcon={checkedIcon}
+                                        style={{ marginRight: 8 }}
+                                        checked={selected}
+                                    />
+                                    {option.name}
+                                </React.Fragment>
+                            )}
+                            style={{ width: 500 }}
+                            renderInput={params => (
+                                <TextField
+                                    {...params}
+                                    variant='outlined'
+                                    label='Selected Locations'
+                                    placeholder='Search'
+                                    fullWidth
+                                />
+                            )}
+                        />
                         <SwitchView changeView={this.changeView} />
                     </div>
                 </section>
@@ -135,32 +230,116 @@ class LocationList extends Component {
 
                 {this.state.accountId && this.state.loading == false && (
                     <>
-                        <DialogTitle className='modalTitle'>
-                            {"Nashville's Locations"}
-                        </DialogTitle>
+                        <div className='locationRow'>
+                            <DialogTitle className='modalTitle'>
+                                {"Nashville's Locations"}
+                            </DialogTitle>
+                            <ButtonGroup
+                                variant='text'
+                                color='primary'
+                                aria-label='text primary button group'
+                            >
+                                <Button
+                                    onClick={e => this.getActiveLocations()}
+                                >
+                                    Active
+                                </Button>
 
+                                <Button onClick={e => this.getLocations()}>
+                                    All
+                                </Button>
+                                <Button
+                                    onClick={e => this.getInactiveLocations()}
+                                >
+                                    Inactive
+                                </Button>
+                            </ButtonGroup>
+                        </div>
                         {this.state.cardView ? (
-                            <div className='container-cards'>
-                                {this.state.locations.map(locationDetails => (
-                                    <LocationCard
-                                        key={locationDetails.locationId}
-                                        locationDetails={locationDetails}
-                                        getData={this.getData}
-                                        {...this.props}
-                                        cardView={this.state.cardView}
-                                    />
-                                ))}
-                            </div>
+                            <>
+                                {this.state.searchTarget.length > 1 ? (
+                                    <div className='container-cards'>
+                                        {this.state.searchTarget
+                                            .slice(0, this.state.itemsShown)
+                                            .map(locationDetails => (
+                                                <LocationCard
+                                                    key={
+                                                        locationDetails.locationId
+                                                    }
+                                                    locationDetails={
+                                                        locationDetails
+                                                    }
+                                                    getData={this.getData}
+                                                    {...this.props}
+                                                    cardView={
+                                                        this.state.cardView
+                                                    }
+                                                />
+                                            ))}
+                                    </div>
+                                ) : (
+                                    <div className='container-cards'>
+                                        {this.state.locations
+                                            .slice(0, this.state.itemsShown)
+                                            .map(locationDetails => (
+                                                <LocationCard
+                                                    key={
+                                                        locationDetails.locationId
+                                                    }
+                                                    locationDetails={
+                                                        locationDetails
+                                                    }
+                                                    getData={this.getData}
+                                                    {...this.props}
+                                                    cardView={
+                                                        this.state.cardView
+                                                    }
+                                                />
+                                            ))}
+                                    </div>
+                                )}
+
+                                <div className='loadMoreButton'>
+                                    {this.state.itemsShown && (
+                                        <Button
+                                            onClick={() => {
+                                                let newNum =
+                                                    this.state.itemsShown + 20;
+                                                this.setState({
+                                                    itemsShown: newNum
+                                                });
+                                            }}
+                                            variant='contained'
+                                            color='primary'
+                                        >
+                                            Load More
+                                        </Button>
+                                    )}
+                                </div>
+                            </>
                         ) : (
                             <div className='container-table'>
-                                <LocationTable
-                                    locations={this.state.locations}
-                                    getData={this.getLocations}
-                                    {...this.props}
-                                    updateActiveLocation={
-                                        this.updateActiveLocation
-                                    }
-                                />
+                                {this.state.searchTarget.length > 0 ? (
+                                    <LocationTable
+                                        locations={this.state.searchTarget}
+                                        tagFilter={this.state.tagFilter}
+                                        getData={this.getLocations}
+                                        {...this.props}
+                                        updateActiveLocation={
+                                            this.updateActiveLocation2
+                                        }
+                                    />
+                                ) : (
+                                    <LocationTable
+                                        locations={this.state.locations}
+                                        tagFilter={this.state.tagFilter}
+                                        getData={this.getLocations}
+                                        {...this.props}
+                                        updateActiveLocation={
+                                            this.updateActiveLocation
+                                        }
+                                    />
+                                )}
                             </div>
                         )}
                     </>

@@ -14,15 +14,18 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 class LocationCard extends Component {
     handleDelete = id => {
-        LocationManager.delete(id).then(() => this.props.getData());
+        LocationManager.deleteLocation(id).then(() => this.props.getData());
     };
+
     render() {
         console.log('locationCard props', this.props);
         return (
             <>
                 <Card className='locationCard'>
                     <CardActionArea className='cardActionArea'>
-                        <Link to={`/locations/${this.props.location.id}`}>
+                        <Link
+                            to={`/accounts/${this.props.locationDetails.accountId}/locations/${this.props.locationDetails.locationId}`}
+                        >
                             {this.props.locationDetails.imageUrl ? (
                                 <CardMedia
                                     className='locationCardMedia'
@@ -60,10 +63,10 @@ class LocationCard extends Component {
                         </Button>
 
                         <Link
-                            to={`/locations/${this.props.locationDetails.id}`}
+                            to={`/accounts/${this.props.locationDetails.accountId}/locations/${this.props.locationDetails.locationId}`}
                         >
                             <Button size='small' color='primary'>
-                                Info
+                                Details
                             </Button>
                         </Link>
                     </CardActions>

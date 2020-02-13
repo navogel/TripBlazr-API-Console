@@ -1,8 +1,9 @@
 /* spinner */
 
 .spinner {
-    /* margin: auto; */
-    margin-top: 30%;
+    margin: auto;
+    margin-top: 100px;
+    /* margin-top: 30%; */
 }
 
 /* card css */
@@ -124,6 +125,11 @@ a {
 .addViewRow {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.addViewRow .MuiAutocomplete-root {
+    margin-left: 7em;
 }
 
 .tableIcons {
@@ -396,3 +402,14 @@ v .mediaContainer {
 /* .locationExit {
     height: 20px;
 } */
+
+.MuiTableCell-root a {
+    text-decoration: none;
+    color: black;
+}
+
+.addViewRow .MuiFormGroup-row {
+    flex-direction: row;
+    display: flex;
+    align-content: baseline;
+}

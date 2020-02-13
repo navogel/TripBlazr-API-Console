@@ -127,7 +127,7 @@ class EditLocationForm extends Component {
     submitAddress = () => {
         //console.log(value);
         this.setState({
-            mapAddress: `${this.state.name} ${this.state.address1} ${this.state.city}`
+            mapAddress: `${this.state.address1} ${this.state.city} ${this.state.state}`
         });
     };
 

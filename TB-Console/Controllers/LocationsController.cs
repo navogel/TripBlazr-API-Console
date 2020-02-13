@@ -346,7 +346,7 @@ namespace TripBlazrConsole.Controllers
             locationFromDb.Zipcode = viewModel.Zipcode;
             locationFromDb.IsDeleted = false;
             locationFromDb.IsActive = viewModel.IsActive;
-            locationFromDb.ImageUrl = viewModel.ImageUrl;
+            locationFromDb.ImageUrl = locationFromDb.ImageUrl;
             locationFromDb.DateEdited = DateTime.Now;
             locationFromDb.SeeWebsite = locationFromDb.SeeWebsite;
             locationFromDb.HoursNotes = locationFromDb.HoursNotes;

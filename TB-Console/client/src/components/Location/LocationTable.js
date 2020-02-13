@@ -79,34 +79,44 @@ export default function LocationTable(props) {
                                             scope='row'
                                             className='imageCell'
                                         >
-                                            <div className='tableIcons'>
-                                                {location.imageUrl ? (
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        alt='location image'
-                                                        src={`https://localhost:5001/upload/${location.imageUrl}`}
-                                                        className={
-                                                            classes.large
-                                                        }
-                                                    />
-                                                ) : (
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        alt='location image'
-                                                        src={`https://localhost:5001/upload/logo.png`}
-                                                        className={
-                                                            classes.large
-                                                        }
-                                                    />
-                                                )}
-                                            </div>
+                                            <Link
+                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                            >
+                                                <div className='tableIcons'>
+                                                    {location.imageUrl ? (
+                                                        <Avatar
+                                                            variant='rounded'
+                                                            alt='location image'
+                                                            src={`https://localhost:5001/upload/${location.imageUrl}`}
+                                                            className={
+                                                                classes.large
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <Avatar
+                                                            variant='rounded'
+                                                            alt='location image'
+                                                            src={`https://localhost:5001/upload/logo.png`}
+                                                            className={
+                                                                classes.large
+                                                            }
+                                                        />
+                                                    )}
+                                                </div>
+                                            </Link>
                                         </TableCell>
+
                                         <TableCell
                                             align='left'
                                             className='locationNameCell'
                                         >
-                                            {location.name}
+                                            <Link
+                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                            >
+                                                {location.name}
+                                            </Link>
                                         </TableCell>
+
                                         <TableCell align='left'>
                                             {location.description}
                                         </TableCell>
