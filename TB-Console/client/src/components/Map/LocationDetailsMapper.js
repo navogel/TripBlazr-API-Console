@@ -90,10 +90,10 @@ export default class LocationDetailsMapper extends Component {
                         draggable: true
                     })
                         .on('dragend', e => {
-                            this.dragend(e);
+                            this.dragEnd(e);
                             //console.log('changed', posLat, posLng);
 
-                            this.props.grabCoordsFromPin(posLat, posLng);
+                            //this.props.grabCoordsFromPin(posLat, posLng);
                         })
                         .addTo(map); // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
                     marker

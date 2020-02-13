@@ -300,55 +300,36 @@ class LocationList extends Component {
                         </div>
                         {this.state.cardView ? (
                             <>
-                                {this.state.searchTarget.length > 0 ? (
-                                    <div className='container-cards'>
-                                        {this.state.searchTarget
-                                            .slice(0, this.state.itemsShown)
-                                            .map(locationDetails => (
-                                                <LocationCard
-                                                    key={
-                                                        locationDetails.locationId
-                                                    }
-                                                    locationDetails={
-                                                        locationDetails
-                                                    }
-                                                    getData={this.getLocations}
-                                                    {...this.props}
-                                                    cardView={
-                                                        this.state.cardView
-                                                    }
-                                                    toggleDrawer={
-                                                        this.toggleDrawer
-                                                    }
-                                                    ranNum={this.ranNum}
-                                                />
-                                            ))}
-                                    </div>
-                                ) : (
-                                    <div className='container-cards'>
-                                        {this.state.locations
-                                            .slice(0, this.state.itemsShown)
-                                            .map(locationDetails => (
-                                                <LocationCard
-                                                    key={
-                                                        locationDetails.locationId
-                                                    }
-                                                    locationDetails={
-                                                        locationDetails
-                                                    }
-                                                    getData={this.getLocations}
-                                                    {...this.props}
-                                                    cardView={
-                                                        this.state.cardView
-                                                    }
-                                                    toggleDrawer={
-                                                        this.toggleDrawer
-                                                    }
-                                                    ranNum={this.ranNum}
-                                                />
-                                            ))}
-                                    </div>
-                                )}
+                                <div className='container-cards'>
+                                    {this.state.locations
+                                        .filter(l => {
+                                            if (
+                                                this.state.searchTarget
+                                                    .length === 0
+                                            ) {
+                                                return true;
+                                            }
+                                            return !!this.state.searchTarget.find(
+                                                t =>
+                                                    t.locationId ===
+                                                    l.locationId
+                                            );
+                                        })
+                                        .slice(0, this.state.itemsShown)
+                                        .map(locationDetails => (
+                                            <LocationCard
+                                                key={locationDetails.locationId}
+                                                locationDetails={
+                                                    locationDetails
+                                                }
+                                                getData={this.getLocations}
+                                                {...this.props}
+                                                cardView={this.state.cardView}
+                                                toggleDrawer={this.toggleDrawer}
+                                                ranNum={this.ranNum}
+                                            />
+                                        ))}
+                                </div>
 
                                 <div className='loadMoreButton'>
                                     {this.state.itemsShown && (

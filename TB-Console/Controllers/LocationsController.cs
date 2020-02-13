@@ -62,7 +62,7 @@ namespace TripBlazrConsole.Controllers
                 var userId = HttpContext.GetUserId();
                 string excludeId = "8A__mpnWBT8";
                 //initial query restricting by account
-                var query = await _context.Location
+                var query = _context.Location
                  .Include(l => l.Hours)
                  .Include(l => l.LocationCategories)
                       .ThenInclude(lc => lc.Category)
@@ -74,7 +74,7 @@ namespace TripBlazrConsole.Controllers
                  //verify user has access to this account
                  .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
                  .OrderByDescending(l => l.DateCreated)
-                 .ToListAsync();
+                 .AsQueryable();
 
                 //parameter filters
                 //if (!string.IsNullOrWhiteSpace(search))
@@ -87,10 +87,7 @@ namespace TripBlazrConsole.Controllers
                 //    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
                 //};
 
-                if (!string.IsNullOrWhiteSpace(tag))
-                {
-                    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).AsQueryable().ToList();
-                };
+               
 
                 //if (!string.IsNullOrWhiteSpace(tag))
                 //{
@@ -99,17 +96,17 @@ namespace TripBlazrConsole.Controllers
 
                 if (isActive == false)
                 {
-                    query = query.Where(q => q.IsActive == false).AsQueryable().ToList();
+                    query = query.Where(q => q.IsActive == false);
                 };
 
                 if (isActive == true)
                 {
-                    query = query.Where(q => q.IsActive == true).AsQueryable().ToList();
+                    query = query.Where(q => q.IsActive == true);
                 };
 
                 //create location object after filtering
-                var locations = query
-                .Select(l => _mapper.Map<LocationViewModel>(l)).AsQueryable().ToList();
+                var locations = await query
+                .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
 
                 //.Select(viewModel => new LocationViewModel()
                 //{
