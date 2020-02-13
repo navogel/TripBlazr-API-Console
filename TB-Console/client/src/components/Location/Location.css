@@ -315,7 +315,7 @@ h3 {
     flex-direction: column;
     padding: 2em;
     flex: 1 2 300px;
-    height: 250px;
+    height: 400px;
 }
 
 /* misc */
@@ -340,7 +340,7 @@ h3 {
 }
 
 .locationMap {
-    height: 90%;
+    height: 400px;
     border-radius: 0px 0px 10px 10px;
 }
 
@@ -372,9 +372,9 @@ h3 {
 /* image section */
 
 .locationImage {
-    height: 200px;
-    width: 200px;
-    border-radius: 10px 10px 10px 10px;
+    height: 300px;
+    width: 300px;
+    border-radius: 10px 10px 0px 0px;
 }
 /* 
 .uploadButton {
