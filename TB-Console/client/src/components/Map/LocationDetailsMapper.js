@@ -53,8 +53,12 @@ export default class LocationDetailsMapper extends Component {
     };
 
     dragEnd = e => {
-        console.log(e.target.getLatLng().lat);
-        console.log(e.target.getLatLng().lng);
+        // console.log(e.target.getLatLng().lat);
+        // console.log(e.target.getLatLng().lng);
+        this.props.grabCoordsFromPin(
+            e.target.getLatLng().lat,
+            e.target.getLatLng().lng
+        );
     };
 
     componentDidUpdate(prevProps) {
@@ -86,8 +90,7 @@ export default class LocationDetailsMapper extends Component {
                         draggable: true
                     })
                         .on('dragend', e => {
-                            posLat = e.target.getLatLng().lat;
-                            posLng = e.target.getLatLng().lng;
+                            this.ondragend(e);
                             //console.log('changed', posLat, posLng);
 
                             this.props.grabCoordsFromPin(posLat, posLng);

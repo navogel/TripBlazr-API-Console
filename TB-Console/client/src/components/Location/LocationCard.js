@@ -14,58 +14,72 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 class LocationCard extends Component {
     handleDelete = id => {
-        LocationManager.delete(id).then(() => this.props.getData());
+        LocationManager.deleteLocation(id).then(() =>
+            this.props.getLocations()
+        );
     };
+
     render() {
         console.log('locationCard props', this.props);
         return (
             <>
                 <Card className='locationCard'>
-                    <CardActionArea className='cardActionArea'>
-                        <Link to={`/locations/${this.props.location.id}`}>
-                            {this.props.locationDetails.imageUrl ? (
-                                <CardMedia
-                                    className='locationCardMedia'
-                                    image={`https://localhost:5001/upload/${this.props.locationDetails.imageUrl}`}
-                                    alt='my dog'
-                                />
-                            ) : (
-                                <CardMedia
-                                    className='locationCardMedia'
-                                    image={`https://localhost:5001/upload/logo.png`}
-                                    alt='my dog'
-                                />
-                            )}
-                            <CardContent className='cardContent'>
-                                <h3>
-                                    <span className='card-petname'>
-                                        {firstLetterCase(
-                                            this.props.locationDetails.name
-                                        )}
-                                    </span>
-                                </h3>
-                                <p>{this.props.locationDetails.description}</p>
-                            </CardContent>
-                        </Link>
+                    <CardActionArea
+                        className='cardActionArea'
+                        onClick={() => {
+                            this.props.toggleDrawer(this.props.locationDetails);
+                        }}
+                    >
+                        {this.props.locationDetails.imageUrl ? (
+                            <CardMedia
+                                className='locationCardMedia'
+                                image={`https://localhost:5001/upload/${
+                                    this.props.locationDetails.imageUrl
+                                }?${this.props.ranNum()}`}
+                                alt='my dog'
+                            />
+                        ) : (
+                            <CardMedia
+                                className='locationCardMedia'
+                                image={`https://localhost:5001/upload/logo.png`}
+                                alt='my dog'
+                            />
+                        )}
+                        <CardContent className='cardContent'>
+                            <h3>
+                                <span>
+                                    {firstLetterCase(
+                                        this.props.locationDetails.name
+                                    )}
+                                </span>
+                            </h3>
+                            <p>{this.props.locationDetails.description}</p>
+                        </CardContent>
                     </CardActionArea>
                     <CardActions className='cardButtons'>
                         <Button
                             size='small'
                             color='primary'
                             onClick={() =>
-                                this.handleDelete(this.props.location.id)
+                                this.handleDelete(
+                                    this.props.locationDetails.locationId
+                                )
                             }
                         >
                             Delete
                         </Button>
 
-                        <Link
-                            to={`/locations/${this.props.locationDetails.id}`}
+                        <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                                this.props.toggleDrawer(
+                                    this.props.locationDetails
+                                );
+                            }}
                         >
-                            <Button size='small' color='primary'>
-                                Info
-                            </Button>
-                        </Link>
+                            Details
+                        </Button>
                     </CardActions>
                 </Card>
             </>

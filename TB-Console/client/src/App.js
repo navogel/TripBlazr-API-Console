@@ -8,6 +8,7 @@ import { getUser, removeUser } from './API/userManager';
 import ApplicationViews from './components/ApplicationViews';
 import './App.css';
 import './TB-Console.css';
+import ScrollToTop from 'react-router-scroll-top';
 
 class App extends Component {
     state = {
@@ -23,34 +24,38 @@ class App extends Component {
         return (
             <div className='App'>
                 <Router>
-                    <Header user={this.state.user} logout={this.logout} />
-                    <Route
-                        exact
-                        path='/login'
-                        render={() => (
-                            <Login onLogin={user => this.setState({ user })} />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/register'
-                        render={() => (
-                            <Register
-                                onLogin={user => this.setState({ user })}
-                            />
-                        )}
-                    />
-                    <Route
-                        // exact
-                        path='/'
-                        render={() => {
-                            return this.state.user ? (
-                                <ApplicationViews user={this.state.user} />
-                            ) : (
-                                <Redirect to='/login' />
-                            );
-                        }}
-                    />
+                    <ScrollToTop>
+                        <Header user={this.state.user} logout={this.logout} />
+                        <Route
+                            exact
+                            path='/login'
+                            render={() => (
+                                <Login
+                                    onLogin={user => this.setState({ user })}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/register'
+                            render={() => (
+                                <Register
+                                    onLogin={user => this.setState({ user })}
+                                />
+                            )}
+                        />
+                        <Route
+                            // exact
+                            path='/'
+                            render={() => {
+                                return this.state.user ? (
+                                    <ApplicationViews user={this.state.user} />
+                                ) : (
+                                    <Redirect to='/login' />
+                                );
+                            }}
+                        />
+                    </ScrollToTop>
                 </Router>
             </div>
         );

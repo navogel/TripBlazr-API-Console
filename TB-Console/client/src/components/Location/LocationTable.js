@@ -79,34 +79,41 @@ export default function LocationTable(props) {
                                             scope='row'
                                             className='imageCell'
                                         >
-                                            <div className='tableIcons'>
-                                                {location.imageUrl ? (
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        alt='location image'
-                                                        src={`https://localhost:5001/upload/${location.imageUrl}`}
-                                                        className={
-                                                            classes.large
-                                                        }
-                                                    />
-                                                ) : (
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        alt='location image'
-                                                        src={`https://localhost:5001/upload/logo.png`}
-                                                        className={
-                                                            classes.large
-                                                        }
-                                                    />
-                                                )}
+                                            <div
+                                                className='tableIcons pointerLink'
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
+                                            >
+                                                <Avatar
+                                                    variant='rounded'
+                                                    alt='location image'
+                                                    src={`https://localhost:5001/upload/${
+                                                        location.imageUrl
+                                                    }?${props.ranNum()}`}
+                                                    className={classes.large}
+                                                />
                                             </div>
                                         </TableCell>
+
                                         <TableCell
                                             align='left'
                                             className='locationNameCell'
                                         >
-                                            {location.name}
+                                            <p
+                                                className='pointerLink'
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
+                                            >
+                                                {location.name}
+                                            </p>
                                         </TableCell>
+
                                         <TableCell align='left'>
                                             {location.description}
                                         </TableCell>
@@ -147,27 +154,26 @@ export default function LocationTable(props) {
                                             align='right'
                                             className='iconCell'
                                         >
-                                            <Link
-                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                            <IconButton
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
                                             >
-                                                <IconButton>
-                                                    <EditIcon />
-                                                </IconButton>
-                                            </Link>
-                                            <Link
-                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                                <EditIcon />
+                                            </IconButton>
+
+                                            <IconButton
+                                                aria-label='details'
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
                                             >
-                                                <IconButton
-                                                    aria-label='details'
-                                                    // onClick={() => {
-                                                    //     props.history.push(
-                                                    //         `/locations/${location.locationId}`
-                                                    //     );
-                                                    // }}
-                                                >
-                                                    <AssignmentIcon />
-                                                </IconButton>
-                                            </Link>
+                                                <AssignmentIcon />
+                                            </IconButton>
 
                                             <IconButton
                                                 aria-label='delete'

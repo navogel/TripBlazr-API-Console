@@ -77,34 +77,40 @@ namespace TripBlazrConsole.Controllers
                  .ToListAsync();
 
                 //parameter filters
-                if (!string.IsNullOrWhiteSpace(search))
-                {
-                    query = query.Where(q => EF.Functions.Like(q.Name, $"%{search}%")).ToList();
-                };
+                //if (!string.IsNullOrWhiteSpace(search))
+                //{
+                //    query = query.Where(q => EF.Functions.Like(q.Name, $"%{search}%")).ToList();
+                //};
 
-                if (!string.IsNullOrWhiteSpace(category))
-                {
-                    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
-                };
+                //if (!string.IsNullOrWhiteSpace(category))
+                //{
+                //    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
+                //};
 
                 if (!string.IsNullOrWhiteSpace(tag))
                 {
-                    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
+                    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).AsQueryable().ToList();
                 };
+
+                //if (!string.IsNullOrWhiteSpace(tag))
+                //{
+                //    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
+                //};
 
                 if (isActive == false)
                 {
-                    query = query.Where(q => q.IsActive == false).ToList();
+                    query = query.Where(q => q.IsActive == false).AsQueryable().ToList();
                 };
 
                 if (isActive == true)
                 {
-                    query = query.Where(q => q.IsActive == true).ToList();
+                    query = query.Where(q => q.IsActive == true).AsQueryable().ToList();
                 };
 
                 //create location object after filtering
                 var locations = query
-                .Select(l => _mapper.Map<LocationViewModel>(l)).ToList();
+                .Select(l => _mapper.Map<LocationViewModel>(l)).AsQueryable().ToList();
+
                 //.Select(viewModel => new LocationViewModel()
                 //{
                 //    LocationId = viewModel.LocationId,
@@ -213,7 +219,7 @@ namespace TripBlazrConsole.Controllers
                 State = viewModel.State,
                 Zipcode = viewModel.Zipcode,
                 IsDeleted = false,
-                IsActive = viewModel.IsActive,
+                IsActive = false,
                 ImageUrl = "logo.png"
             };
            
@@ -346,7 +352,7 @@ namespace TripBlazrConsole.Controllers
             locationFromDb.Zipcode = viewModel.Zipcode;
             locationFromDb.IsDeleted = false;
             locationFromDb.IsActive = viewModel.IsActive;
-            locationFromDb.ImageUrl = viewModel.ImageUrl;
+            locationFromDb.ImageUrl = locationFromDb.ImageUrl;
             locationFromDb.DateEdited = DateTime.Now;
             locationFromDb.SeeWebsite = locationFromDb.SeeWebsite;
             locationFromDb.HoursNotes = locationFromDb.HoursNotes;
