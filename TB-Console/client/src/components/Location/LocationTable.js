@@ -79,33 +79,39 @@ export default function LocationTable(props) {
                                             scope='row'
                                             className='imageCell'
                                         >
-                                            <Link
-                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                            <div
+                                                className='tableIcons pointerLink'
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
                                             >
-                                                <div className='tableIcons'>
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        alt='location image'
-                                                        src={`https://localhost:5001/upload/${
-                                                            location.imageUrl
-                                                        }?${props.ranNum()}`}
-                                                        className={
-                                                            classes.large
-                                                        }
-                                                    />
-                                                </div>
-                                            </Link>
+                                                <Avatar
+                                                    variant='rounded'
+                                                    alt='location image'
+                                                    src={`https://localhost:5001/upload/${
+                                                        location.imageUrl
+                                                    }?${props.ranNum()}`}
+                                                    className={classes.large}
+                                                />
+                                            </div>
                                         </TableCell>
 
                                         <TableCell
                                             align='left'
                                             className='locationNameCell'
                                         >
-                                            <Link
-                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                            <p
+                                                className='pointerLink'
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
                                             >
                                                 {location.name}
-                                            </Link>
+                                            </p>
                                         </TableCell>
 
                                         <TableCell align='left'>

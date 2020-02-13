@@ -416,3 +416,7 @@ v .mediaContainer {
 .formSubmit .MuiButtonBase-root {
     height: 3em;
 }
+
+.pointerLink:hover {
+    cursor: pointer;
+}

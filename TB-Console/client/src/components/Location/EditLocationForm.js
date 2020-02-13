@@ -219,7 +219,7 @@ class EditLocationForm extends Component {
             city: this.props.location.city || '',
             zipcode: this.props.location.zipcode || '',
             state: this.props.location.state || '',
-            isActive: this.props.location.isActive || '',
+            isActive: this.props.location.isActive,
             imageUrl: this.props.location.imageUrl || '',
             tags: this.props.location.tags || '',
             primaryCategory: ''

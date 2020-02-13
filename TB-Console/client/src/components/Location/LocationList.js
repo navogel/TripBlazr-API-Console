@@ -18,6 +18,8 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import LocationDrawer from './EditLocationDrawer';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
 const checkedIcon = <CheckBoxIcon fontSize='small' />;
@@ -40,7 +42,9 @@ class LocationList extends Component {
         addElOpen: false,
         itemsShown: 20,
         searchTarget: [],
-        tagFilter: ''
+        tagFilter: '',
+        currentSearchCode: 1,
+        alignment: 'center'
     };
 
     //spice for standard location array
@@ -80,6 +84,16 @@ class LocationList extends Component {
         this.setState({
             searchTarget: values
         });
+    };
+
+    UpdateCurrentLocations = () => {
+        if (this.state.alignment == 'center') {
+            this.getLocations();
+        } else if (this.state.alignment == 'left') {
+            this.getActiveLocations();
+        } else {
+            this.getInactiveLocations();
+        }
     };
 
     getLocations = () => {
@@ -127,6 +141,12 @@ class LocationList extends Component {
         this.refs.drawer.openDrawer(obj);
     };
 
+    handleChange = (event, newAlignment) => {
+        this.setState({
+            alignment: newAlignment
+        });
+    };
+
     changeView = () => {
         if (this.state.cardView === true) {
             this.setState({
@@ -162,7 +182,7 @@ class LocationList extends Component {
                 <section className='section-content'>
                     <LocationDrawer
                         ref='drawer'
-                        getLocations={this.getLocations}
+                        getLocations={this.UpdateCurrentLocations}
                     />
                     <div className='addViewRow'>
                         <Fab
@@ -243,26 +263,36 @@ class LocationList extends Component {
                             <DialogTitle className='modalTitle'>
                                 {"Nashville's Locations"}
                             </DialogTitle>
-                            <ButtonGroup
-                                variant='text'
-                                color='primary'
+                            <ToggleButtonGroup
+                                value={this.state.alignment}
+                                exclusive
+                                onChange={this.handleChange}
                                 aria-label='text primary button group'
+                                exclusive
                             >
-                                <Button
+                                <ToggleButton
+                                    key={1}
                                     onClick={e => this.getActiveLocations()}
+                                    value='left'
                                 >
                                     Active
-                                </Button>
+                                </ToggleButton>
 
-                                <Button onClick={e => this.getLocations()}>
+                                <ToggleButton
+                                    key={2}
+                                    onClick={e => this.getLocations()}
+                                    value='center'
+                                >
                                     All
-                                </Button>
-                                <Button
+                                </ToggleButton>
+                                <ToggleButton
+                                    key={3}
                                     onClick={e => this.getInactiveLocations()}
+                                    value='right'
                                 >
                                     Inactive
-                                </Button>
-                            </ButtonGroup>
+                                </ToggleButton>
+                            </ToggleButtonGroup>
                         </div>
                         {this.state.cardView ? (
                             <>
