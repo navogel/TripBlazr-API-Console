@@ -22,6 +22,8 @@ import Paper from '@material-ui/core/Paper';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { Link } from 'react-router-dom';
 
+import CloseIcon from '@material-ui/icons/Close';
+
 const styles = theme => ({
     container: {
         display: 'flex',
@@ -103,7 +105,7 @@ class EditLocationForm extends Component {
 
     handleDelete = data => () => {
         LocationManager.deleteTag(
-            this.props.locationId,
+            this.props.location.locationId,
             this.state.tags[data].tagId
         );
         // console.log(
@@ -119,7 +121,11 @@ class EditLocationForm extends Component {
         this.setState({
             tags: newState
         });
-        return;
+        this.props.getLocations();
+    };
+
+    ranNum = () => {
+        return Math.random() * (1000 - 1) + 1;
     };
 
     //pass to the map
@@ -175,74 +181,107 @@ class EditLocationForm extends Component {
             formData.append('isActive', this.state.isActive);
             formData.append('file', fileInput.files[0]);
 
-            LocationManager.editLocation(this.props.locationId, formData).then(
-                data => {
-                    // console.log(
-                    //     'return from post',
-                    //     data.locationId,
-                    //     this.state.primaryCategory
-                    // );
-                    LocationManager.createPrimaryCategory(
-                        data.locationId,
-                        parseInt(this.state.primaryCategory)
-                    ).then(data => this.getData());
-                    this.setState({ loadingStatus: false });
-                }
-            );
+            LocationManager.editLocation(
+                this.props.location.locationId,
+                formData
+            ).then(data => {
+                // console.log(
+                //     'return from post',
+                //     data.locationId,
+                //     this.state.primaryCategory
+                // );
+                LocationManager.createPrimaryCategory(
+                    data.locationId,
+                    parseInt(this.state.primaryCategory)
+                ).then(data => this.getData());
+                this.props.getLocations();
+                this.setState({ loadingStatus: false });
+            });
         }
     };
     componentDidMount() {
-        this.getData();
-        // console.log('props to edit form', this.props);
-        // this.setState({
-        //     labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
-        // });
+        this.setState({
+            accountId: this.props.location.accountId,
+            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
+            name: this.props.location.name || '',
+            phoneNumber: this.props.location.phonenumber || '',
+            website: this.props.location.website || '',
+            shortSummary: this.props.location.shortSummary || '',
+            description: this.props.location.description || '',
+            latitude: this.props.location.latitude || '',
+            longitude: this.props.location.longitude || '',
+            sortId: this.props.location.sortId || '',
+            videoId: this.props.location.videoId || '',
+            videoStartTime: this.props.location.videoStartTime || '',
+            videoEndTime: this.props.location.videoEndTime || '',
+            address1: this.props.location.address1 || '',
+            address2: this.props.location.address2 || '',
+            city: this.props.location.city || '',
+            zipcode: this.props.location.zipcode || '',
+            state: this.props.location.state || '',
+            isActive: this.props.location.isActive || '',
+            imageUrl: this.props.location.imageUrl || '',
+            tags: this.props.location.tags || '',
+            primaryCategory: ''
+        });
+
+        let primaryCategory = this.props.location.categories.find(
+            c => c.isPrimary == true
+        );
+        if (primaryCategory) {
+            this.setState({
+                primaryCategory: primaryCategory.categoryId
+            });
+        }
     }
 
     getData = () => {
-        LocationManager.getLocationById(this.props.locationId).then(data => {
-            this.setState({
-                accountId: this.props.accountId,
-                labelWidth: ReactDOM.findDOMNode(this.InputLabelRef)
-                    .offsetWidth,
-                name: data.name || '',
-                phoneNumber: data.phonenumber || '',
-                website: data.website || '',
-                shortSummary: data.shortSummary || '',
-                description: data.description || '',
-                latitude: data.latitude || '',
-                longitude: data.longitude || '',
-                sortId: data.sortId || '',
-                videoId: data.videoId || '',
-                videoStartTime: data.videoStartTime || '',
-                videoEndTime: data.videoEndTime || '',
-                address1: data.address1 || '',
-                address2: data.address2 || '',
-                city: data.city || '',
-                zipcode: data.zipcode || '',
-                state: data.state || '',
-                isActive: data.isActive || '',
-                imageUrl: data.imageUrl || '',
-                tags: data.tags || '',
-                primaryCategory: ''
-            });
-            let primaryCategory = data.categories.find(
-                c => c.isPrimary == true
-            );
-            if (primaryCategory) {
+        LocationManager.getLocationById(this.props.location.locationId).then(
+            data => {
                 this.setState({
-                    primaryCategory: primaryCategory.categoryId
+                    accountId: data.accountId,
+                    labelWidth: ReactDOM.findDOMNode(this.InputLabelRef)
+                        .offsetWidth,
+                    name: data.name || '',
+                    phoneNumber: data.phonenumber || '',
+                    website: data.website || '',
+                    shortSummary: data.shortSummary || '',
+                    description: data.description || '',
+                    latitude: data.latitude || '',
+                    longitude: data.longitude || '',
+                    sortId: data.sortId || '',
+                    videoId: data.videoId || '',
+                    videoStartTime: data.videoStartTime || '',
+                    videoEndTime: data.videoEndTime || '',
+                    address1: data.address1 || '',
+                    address2: data.address2 || '',
+                    city: data.city || '',
+                    zipcode: data.zipcode || '',
+                    state: data.state || '',
+                    isActive: data.isActive || '',
+                    imageUrl: data.imageUrl || '',
+                    tags: data.tags || '',
+                    primaryCategory: ''
                 });
+
+                let primaryCategory = data.categories.find(
+                    c => c.isPrimary == true
+                );
+                if (primaryCategory) {
+                    this.setState({
+                        primaryCategory: primaryCategory.categoryId
+                    });
+                }
+                console.log('primary cat', primaryCategory);
             }
-            console.log('primary cat', primaryCategory);
-        });
-
-        //add some logic here to manage the obj that is passed
-
-        // this.setState({
-        //     accountId: this.props.accountId
-        // });
+        );
     };
+
+    //add some logic here to manage the obj that is passed
+
+    // this.setState({
+    //     accountId: this.props.accountId
+    // });
 
     render() {
         //console.log('primary cat', this.state.primaryCategory);
@@ -250,33 +289,33 @@ class EditLocationForm extends Component {
 
         return (
             <>
-                <div className='locationHeader'>
-                    <Link to={`/accounts/${this.props.accountId}/locations/`}>
-                        <HighlightOffIcon
-                            color='primary'
-                            className='locationExit'
-                            fontSize='large'
-                        />
-                    </Link>
-                    <h1>{this.state.name}</h1>
-                    <div className='formSubmit'>
-                        <Button
-                            variant='contained'
-                            // size='small'
-                            color='primary'
-                            aria-label='submit'
-                            className={classes.margin}
-                            disabled={this.state.loadingStatus}
-                            onClick={this.constructNewLocation}
-                        >
-                            {/* <AddIcon className={classes.extendedIcon} /> */}
-                            Update
-                        </Button>
-                    </div>
+                {' '}
+                <div className='absoluteCloseFab'>
+                    <Fab
+                        color='primary'
+                        size='small'
+                        onClick={e => this.props.closeDrawer()}
+                    >
+                        <CloseIcon />
+                    </Fab>
                 </div>
-                <DialogTitle className='modalTitle'>
-                    {'OK, here is everything you can edit:'}
-                </DialogTitle>
+                <div className='locationHeader'>
+                    <h1>{this.state.name}</h1>
+                </div>
+                <div className='formSubmit'>
+                    <Button
+                        variant='contained'
+                        // size='small'
+                        color='primary'
+                        aria-label='submit'
+                        className={classes.margin}
+                        disabled={this.state.loadingStatus}
+                        onClick={this.constructNewLocation}
+                    >
+                        {/* <AddIcon className={classes.extendedIcon} /> */}
+                        Update
+                    </Button>
+                </div>
                 <div className='tagWrapper'>
                     <Paper className={classes.root}>
                         {this.state.tags.map((tag, index) => (
@@ -343,7 +382,7 @@ class EditLocationForm extends Component {
                                                     />
                                                 }
                                             >
-                                                <option value={undefined} />
+                                                {/* <option value={undefined} /> */}
                                                 <option value={1}>Stay</option>
                                                 <option value={2}>Eat</option>
                                                 <option value={3}>Drink</option>
@@ -477,7 +516,9 @@ class EditLocationForm extends Component {
                             {this.state.imageUrl && (
                                 <img
                                     className='locationImage'
-                                    src={`https://localhost:5001/upload/${this.state.imageUrl}`}
+                                    src={`https://localhost:5001/upload/${
+                                        this.state.imageUrl
+                                    }?${this.ranNum()}`}
                                 />
                             )}
                         </div>

@@ -296,7 +296,7 @@ v .mediaContainer {
 /* misc */
 
 .locationHeader {
-    font-size: 3em;
+    font-size: 1.5em;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -306,19 +306,6 @@ v .mediaContainer {
 }
 
 .locationHeader h1 {
-    margin-bottom: 0px;
-}
-
-.formSubmit {
-    display: flex;
-    padding-left: 0.5em;
-    padding-top: 1.2em;
-    align-items: center;
-    justify-content: center;
-}
-
-.formSubmit .MuiButtonBase-root {
-    height: 5em;
 }
 
 .mapWrapper .MuiButtonBase-root {
@@ -412,4 +399,20 @@ v .mediaContainer {
     flex-direction: row;
     display: flex;
     align-content: baseline;
+}
+
+.absoluteCloseFab {
+    position: relative;
+    left: 40px;
+    top: 40px;
+}
+
+.formSubmit {
+    position: fixed;
+    right: 40px;
+    top: 30px;
+}
+
+.formSubmit .MuiButtonBase-root {
+    height: 3em;
 }

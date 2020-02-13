@@ -17,6 +17,7 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import LocationDrawer from './EditLocationDrawer';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
 const checkedIcon = <CheckBoxIcon fontSize='small' />;
@@ -57,6 +58,10 @@ class LocationList extends Component {
         this.setState({
             searchTarget: newState
         });
+    };
+
+    ranNum = () => {
+        return Math.random() * (1000 - 1) + 1;
     };
 
     openAddForm = () => {
@@ -116,11 +121,11 @@ class LocationList extends Component {
         });
     };
 
-    // searchLocations = e => {
-    //     let array = [];
-    //     array.push(e);
-    //     this.setState({ searchTarget: array });
-    // };
+    toggleDrawer = obj => {
+        // Access the handleToggle function of the drawer reference
+        //onClick={this.toggleDrawer('right', true)
+        this.refs.drawer.openDrawer(obj);
+    };
 
     changeView = () => {
         if (this.state.cardView === true) {
@@ -155,6 +160,10 @@ class LocationList extends Component {
         return (
             <>
                 <section className='section-content'>
+                    <LocationDrawer
+                        ref='drawer'
+                        getLocations={this.getLocations}
+                    />
                     <div className='addViewRow'>
                         <Fab
                             color='primary'
@@ -274,6 +283,10 @@ class LocationList extends Component {
                                                     cardView={
                                                         this.state.cardView
                                                     }
+                                                    toggleDrawer={
+                                                        this.toggleDrawer
+                                                    }
+                                                    ranNum={this.ranNum}
                                                 />
                                             ))}
                                     </div>
@@ -294,6 +307,10 @@ class LocationList extends Component {
                                                     cardView={
                                                         this.state.cardView
                                                     }
+                                                    toggleDrawer={
+                                                        this.toggleDrawer
+                                                    }
+                                                    ranNum={this.ranNum}
                                                 />
                                             ))}
                                     </div>
@@ -328,6 +345,8 @@ class LocationList extends Component {
                                         updateActiveLocation={
                                             this.updateActiveLocation2
                                         }
+                                        toggleDrawer={this.toggleDrawer}
+                                        ranNum={this.ranNum}
                                     />
                                 ) : (
                                     <LocationTable
@@ -338,6 +357,8 @@ class LocationList extends Component {
                                         updateActiveLocation={
                                             this.updateActiveLocation
                                         }
+                                        toggleDrawer={this.toggleDrawer}
+                                        ranNum={this.ranNum}
                                     />
                                 )}
                             </div>

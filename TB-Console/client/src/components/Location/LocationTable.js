@@ -83,25 +83,16 @@ export default function LocationTable(props) {
                                                 to={`/accounts/${location.accountId}/locations/${location.locationId}`}
                                             >
                                                 <div className='tableIcons'>
-                                                    {location.imageUrl ? (
-                                                        <Avatar
-                                                            variant='rounded'
-                                                            alt='location image'
-                                                            src={`https://localhost:5001/upload/${location.imageUrl}`}
-                                                            className={
-                                                                classes.large
-                                                            }
-                                                        />
-                                                    ) : (
-                                                        <Avatar
-                                                            variant='rounded'
-                                                            alt='location image'
-                                                            src={`https://localhost:5001/upload/logo.png`}
-                                                            className={
-                                                                classes.large
-                                                            }
-                                                        />
-                                                    )}
+                                                    <Avatar
+                                                        variant='rounded'
+                                                        alt='location image'
+                                                        src={`https://localhost:5001/upload/${
+                                                            location.imageUrl
+                                                        }?${props.ranNum()}`}
+                                                        className={
+                                                            classes.large
+                                                        }
+                                                    />
                                                 </div>
                                             </Link>
                                         </TableCell>
@@ -157,27 +148,26 @@ export default function LocationTable(props) {
                                             align='right'
                                             className='iconCell'
                                         >
-                                            <Link
-                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                            <IconButton
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
                                             >
-                                                <IconButton>
-                                                    <EditIcon />
-                                                </IconButton>
-                                            </Link>
-                                            <Link
-                                                to={`/accounts/${location.accountId}/locations/${location.locationId}`}
+                                                <EditIcon />
+                                            </IconButton>
+
+                                            <IconButton
+                                                aria-label='details'
+                                                onClick={() => {
+                                                    props.toggleDrawer(
+                                                        location
+                                                    );
+                                                }}
                                             >
-                                                <IconButton
-                                                    aria-label='details'
-                                                    // onClick={() => {
-                                                    //     props.history.push(
-                                                    //         `/locations/${location.locationId}`
-                                                    //     );
-                                                    // }}
-                                                >
-                                                    <AssignmentIcon />
-                                                </IconButton>
-                                            </Link>
+                                                <AssignmentIcon />
+                                            </IconButton>
 
                                             <IconButton
                                                 aria-label='delete'
