@@ -49,8 +49,18 @@ class LocationList extends Component {
 
   //spice for standard location array
   updateActiveLocation = (pos, location) => {
+    //console.log('splice pos, location', pos location)
     const newState = [...this.state.locations];
-    newState.splice(pos, 1, location);
+    newState
+      .filter(l => {
+        if (this.state.searchTarget.length === 0) {
+          return true;
+        }
+        return !!this.state.searchTarget.find(
+          t => t.locationId === l.locationId
+        );
+      })
+      .splice(pos, 1, location);
     this.setState({
       locations: newState
     });
