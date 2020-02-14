@@ -226,7 +226,7 @@ class EditLocationForm extends Component {
         });
 
         let primaryCategory = this.props.location.categories.find(
-            c => c.isPrimary == true
+            c => c.isPrimary === true
         );
         if (primaryCategory) {
             this.setState({
@@ -284,7 +284,7 @@ class EditLocationForm extends Component {
     // });
 
     render() {
-        console.log('blurb', this.state.blurb);
+        console.log('lat/lng', this.state.latitude, this.state.longitude);
         const { classes } = this.props;
 
         return (
