@@ -7,10 +7,10 @@ import {
     Tooltip,
     FeatureGroup
 } from 'react-leaflet';
-import Token from '../../Token';
-import L from '../../../node_modules/leaflet';
-import GeoSearch from './Geosearch';
-import { OpenStreetMapProvider } from '../../../node_modules/leaflet-geosearch';
+import Token from '../../token';
+import L from 'leaflet';
+// import GeoSearch from './Geosearch';
+import { OpenStreetMapProvider } from 'leaflet-geosearch/lib';
 
 const myIcon = L.icon({
     iconUrl: '/images/markers/icon1.png',
