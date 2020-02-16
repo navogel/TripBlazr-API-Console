@@ -76,6 +76,7 @@ namespace TripBlazrConsole
             })));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITagService, TagService>();
 
             services.AddControllers();
 

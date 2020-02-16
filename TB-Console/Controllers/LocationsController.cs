@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripBlazrConsole.Data;
 using TripBlazrConsole.Helpers;
+using TripBlazrConsole.Interfaces;
 using TripBlazrConsole.Models;
 using TripBlazrConsole.Models.ViewModels.LocationViewModels;
 using TripBlazrConsole.Routes.V1;
@@ -28,11 +29,16 @@ namespace TripBlazrConsole.Controllers
 
         private readonly IMapper _mapper;
 
-        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper)
+        private readonly ITagService _tagService;
+
+
+
+        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper, ITagService tagService)
         {
             _context = context;
             _environment = environment;
             _mapper = mapper;
+            _tagService = _tagService;
         }
 
         // GET: CLIENT: ANON: api/Locations/citySlug
@@ -505,33 +511,20 @@ namespace TripBlazrConsole.Controllers
 
         //ADD TAGS TO Location
         [HttpPost(Api.Location.AddTag)]
-        public async Task<ActionResult<LocationTag>> AddTag([FromRoute] int locationId, [FromRoute] int tagId)
+        public async Task<ActionResult<LocationTagResponse>> AddLocationTags(LocationTagRequest request)
         {
             try
             {
-                var newTag = new LocationTag()
-                {
-                    TagId = tagId,
-                    LocationId = locationId
-                };
-
-                _context.LocationTag.Add(newTag);
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-
-                return Ok(newTag);
-
-            } catch
-            {
-                return BadRequest();
+                var response = await _tagService.AddLocationTags(request);
+                return Ok(response);
             }
+            catch (Exception e)
+            {
+                var f = 8;
+                return null;
+            }
+
+            return Ok();
         }
 
         //REMOVE: TAG FROM LOCATION
