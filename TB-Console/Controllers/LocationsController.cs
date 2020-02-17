@@ -511,7 +511,7 @@ namespace TripBlazrConsole.Controllers
 
         //ADD TAGS TO Location
         [HttpPost(Api.Location.AddTag)]
-        public async Task<ActionResult<LocationTagResponse>> AddLocationTags([FromBody]LocationTagRequest request)
+        public async Task<ActionResult<LocationTagResponse>> AddLocationTags(LocationTagRequest request)
         {
             try
             {
