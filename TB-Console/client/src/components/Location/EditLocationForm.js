@@ -147,14 +147,14 @@ class EditLocationForm extends Component {
       tags: this.state.tagsToAdd
     };
 
-    console.log(tagRequest);
+    console.log('tagrequest', tagRequest);
 
-    // LocationManager.addTag(tagRequest).then(data => {
-    // console.log('uploaded tags response', data);
-    // this.setState({ tagsToAdd: [] });
-    // this.props.getLocations();
-    // this.getData(e);
-    // })
+    LocationManager.addTag(tagRequest).then(data => {
+      console.log('uploaded tags response', data);
+      this.setState({ tagsToAdd: [] });
+      this.props.getLocations();
+      this.getData(e);
+    });
   };
 
   handleDelete = data => () => {

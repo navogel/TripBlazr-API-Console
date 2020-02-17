@@ -38,7 +38,7 @@ namespace TripBlazrConsole.Controllers
             _context = context;
             _environment = environment;
             _mapper = mapper;
-            _tagService = _tagService;
+            _tagService = tagService;
         }
 
         // GET: CLIENT: ANON: api/Locations/citySlug
@@ -511,20 +511,20 @@ namespace TripBlazrConsole.Controllers
 
         //ADD TAGS TO Location
         [HttpPost(Api.Location.AddTag)]
-        public async Task<ActionResult<LocationTagResponse>> AddLocationTags(LocationTagRequest request)
+        public async Task<ActionResult<LocationTagResponse>> AddLocationTags([FromBody]LocationTagRequest request)
         {
             try
             {
-                var response = await _tagService.AddLocationTags(request);
+                LocationTagResponse response = await _tagService.AddLocationTags(request);
                 return Ok(response);
             }
             catch (Exception e)
             {
-                var f = 8;
-                return null;
+                
+                return NotFound(e);
             }
 
-            return Ok();
+           
         }
 
         //REMOVE: TAG FROM LOCATION

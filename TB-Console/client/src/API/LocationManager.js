@@ -52,8 +52,8 @@ export default {
     }).then(response => response.json());
   },
   addTag(tagRequest) {
-    const authHeadersForm = createAuthHeadersForm();
-    return fetch(`${baseUrl}/Locations/AddTag`, {
+    const authHeadersForm = createAuthHeaders();
+    return fetch(`${baseUrl}/Locations/AddTags`, {
       method: 'POST',
       body: tagRequest,
       headers: authHeadersForm

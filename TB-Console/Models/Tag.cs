@@ -19,7 +19,7 @@ namespace TripBlazrConsole.Models
         public string Image { get; set; }
 
         [Required]
-        [JsonIgnore]
+        
         public int AccountId { get; set; }
 
         [JsonIgnore]

@@ -477,14 +477,21 @@ h3 {
 }
 
 .tagManager .MuiButton-root {
-  padding-left: 2em;
-
-  display: flex;
-
-  align-self: left;
-  height: 17px;
+  height: 28px;
+  top: 10px;
+  left: 15px;
+  padding-bottom: 27px;
 }
 
 .tagManager .MuiButton-root:hover {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.219);
+  /* height: 26px;
+  top: 5px;
+  left: 19px; */
 }
+
+/* .tagManager .MuiButton-root:hover .MuiTouchRipple-root {
+  height: 26px;
+  top: 5px;
+  left: 19px;
+} */
