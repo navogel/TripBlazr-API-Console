@@ -28,6 +28,7 @@ namespace TripBlazrConsole
         }
 
         public IConfiguration Configuration { get; }
+        readonly string LocalhostOrigin = "_localhostOrigin";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -75,6 +76,7 @@ namespace TripBlazrConsole
             })));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITagService, TagService>();
 
             services.AddControllers();
 
@@ -109,6 +111,15 @@ namespace TripBlazrConsole
                     }
                 });
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(LocalhostOrigin,
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4300");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -122,6 +133,8 @@ namespace TripBlazrConsole
             {
                 app.UseHsts();
             }
+
+            app.UseCors(LocalhostOrigin); 
 
             app.UseDefaultFiles();
 

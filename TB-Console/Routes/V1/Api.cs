@@ -34,7 +34,7 @@ namespace TripBlazrConsole.Routes.V1
             public const string EditLocation = Base + "/Locations/{id}";
             public const string EditLocationIsActive = Base + "/Locations/{id}/isActive";
             public const string DeleteLocation = Base + "/Locations/{id}";
-            public const string AddTag = Base + "/Locations/{locationId}/AddTag/{tagId}";
+            public const string AddTag = Base + "/Locations/AddTags";
             public const string DeleteTag = Base + "/Locations/{locationId}/DeleteTag/{tagId}";
             public const string AddCategory = Base + "/Locations/{locationId}/AddCategory/{categoryId}";
             public const string DeleteCategory = Base + "/Locations/{locationId}/DeleteCategory/{categoryId}";

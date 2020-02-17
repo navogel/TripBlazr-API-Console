@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripBlazrConsole.Data;
 using TripBlazrConsole.Helpers;
+using TripBlazrConsole.Interfaces;
 using TripBlazrConsole.Models;
 using TripBlazrConsole.Models.ViewModels.LocationViewModels;
 using TripBlazrConsole.Routes.V1;
@@ -28,11 +29,16 @@ namespace TripBlazrConsole.Controllers
 
         private readonly IMapper _mapper;
 
-        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper)
+        private readonly ITagService _tagService;
+
+
+
+        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper, ITagService tagService)
         {
             _context = context;
             _environment = environment;
             _mapper = mapper;
+            _tagService = tagService;
         }
 
         // GET: CLIENT: ANON: api/Locations/citySlug
@@ -62,7 +68,7 @@ namespace TripBlazrConsole.Controllers
                 var userId = HttpContext.GetUserId();
                 string excludeId = "8A__mpnWBT8";
                 //initial query restricting by account
-                var query = await _context.Location
+                var query = _context.Location
                  .Include(l => l.Hours)
                  .Include(l => l.LocationCategories)
                       .ThenInclude(lc => lc.Category)
@@ -74,7 +80,7 @@ namespace TripBlazrConsole.Controllers
                  //verify user has access to this account
                  .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
                  .OrderByDescending(l => l.DateCreated)
-                 .ToListAsync();
+                 .AsQueryable();
 
                 //parameter filters
                 //if (!string.IsNullOrWhiteSpace(search))
@@ -87,10 +93,7 @@ namespace TripBlazrConsole.Controllers
                 //    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
                 //};
 
-                if (!string.IsNullOrWhiteSpace(tag))
-                {
-                    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).AsQueryable().ToList();
-                };
+               
 
                 //if (!string.IsNullOrWhiteSpace(tag))
                 //{
@@ -99,17 +102,17 @@ namespace TripBlazrConsole.Controllers
 
                 if (isActive == false)
                 {
-                    query = query.Where(q => q.IsActive == false).AsQueryable().ToList();
+                    query = query.Where(q => q.IsActive == false);
                 };
 
                 if (isActive == true)
                 {
-                    query = query.Where(q => q.IsActive == true).AsQueryable().ToList();
+                    query = query.Where(q => q.IsActive == true);
                 };
 
                 //create location object after filtering
-                var locations = query
-                .Select(l => _mapper.Map<LocationViewModel>(l)).AsQueryable().ToList();
+                var locations = await query
+                .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
 
                 //.Select(viewModel => new LocationViewModel()
                 //{
@@ -508,33 +511,20 @@ namespace TripBlazrConsole.Controllers
 
         //ADD TAGS TO Location
         [HttpPost(Api.Location.AddTag)]
-        public async Task<ActionResult<LocationTag>> AddTag([FromRoute] int locationId, [FromRoute] int tagId)
+        public async Task<ActionResult<LocationTagResponse>> AddLocationTags([FromBody]LocationTagRequest request)
         {
             try
             {
-                var newTag = new LocationTag()
-                {
-                    TagId = tagId,
-                    LocationId = locationId
-                };
-
-                _context.LocationTag.Add(newTag);
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-
-                return Ok(newTag);
-
-            } catch
-            {
-                return BadRequest();
+                LocationTagResponse response = await _tagService.AddLocationTags(request);
+                return Ok(response);
             }
+            catch (Exception e)
+            {
+                
+                return NotFound(e);
+            }
+
+           
         }
 
         //REMOVE: TAG FROM LOCATION
