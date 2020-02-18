@@ -62,16 +62,7 @@ namespace TripBlazrConsole.Controllers
             {
                 return NotFound(e);
             }
-            //var applicationDbContext = await _context.Location
-            //   .Include(l => l.Hours)
-            //   .Include(l => l.LocationCategories)
-            //        .ThenInclude(lc => lc.Category)
-            //   .Include(l => l.LocationTags)
-            //         .ThenInclude(c => c.Tag)
-            //   .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true && l.IsActive == true)
-            //   .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
-
-            //return Ok(applicationDbContext);
+           
         }
 
         // GET: CONSOLE: PRIVATE: api/Locations/Account/{id}?search/category/tag={params}
@@ -79,88 +70,81 @@ namespace TripBlazrConsole.Controllers
         [HttpGet(Api.Location.GetConsoleLocations)]
         public async Task<ActionResult<IEnumerable<LocationViewModel>>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive)
         {
+            
+
             try
             {
                 var userId = HttpContext.GetUserId();
-                string excludeId = "8A__mpnWBT8";
-                //initial query restricting by account
-                var query = _context.Location
-                 .Include(l => l.Hours)
-                 .Include(l => l.LocationCategories)
-                      .ThenInclude(lc => lc.Category)
-                 .Include(l => l.LocationTags)
-                       .ThenInclude(c => c.Tag)
-                 .Where(q => q.AccountId == id && q.IsDeleted != true)
-                 //.Where(q => q.LocationCategories.Any(lc => lc.CategoryId != 9))
-                 .Where(q => q.VideoId != excludeId)
-                 //verify user has access to this account
-                 .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                 .OrderByDescending(l => l.DateCreated)
-                 .AsQueryable();
+                var response = await _locationService.GetConsoleLocations(id, search, category, tag, isActive, userId);
 
-                //parameter filters
-                //if (!string.IsNullOrWhiteSpace(search))
-                //{
-                //    query = query.Where(q => EF.Functions.Like(q.Name, $"%{search}%")).ToList();
-                //};
-
-                //if (!string.IsNullOrWhiteSpace(category))
-                //{
-                //    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
-                //};
-
-               
-
-                //if (!string.IsNullOrWhiteSpace(tag))
-                //{
-                //    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
-                //};
-
-                if (isActive == false)
-                {
-                    query = query.Where(q => q.IsActive == false);
-                };
-
-                if (isActive == true)
-                {
-                    query = query.Where(q => q.IsActive == true);
-                };
-
-                //create location object after filtering
-                var locations = await query
-                .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
-
-                //.Select(viewModel => new LocationViewModel()
-                //{
-                //    LocationId = viewModel.LocationId,
-                //    AccountId = viewModel.AccountId,
-                //    Name = viewModel.Name,
-                //    PhoneNumber = viewModel.PhoneNumber,
-                //    Website = viewModel.Website,
-                //    ShortSummary = viewModel.ShortSummary,
-                //    Description = viewModel.Description,
-                //    Latitude = viewModel.Latitude,
-                //    Longitude = viewModel.Longitude,
-                //    VideoId = viewModel.VideoId,
-                //    VideoStartTime = viewModel.VideoStartTime,
-                //    VideoEndTime = viewModel.VideoEndTime,
-                //    Address1 = viewModel.Address1,
-                //    Address2 = viewModel.Address2,
-                //    City = viewModel.City,
-                //    Zipcode = viewModel.Zipcode,
-                //    IsDeleted = viewModel.IsDeleted,
-                //    IsActive = viewModel.IsActive,
-                //    ImageUrl = viewModel.ImageUrl,
-                //    Tags = viewModel.LocationTags.Select(t => t.Tag).ToList(),
-                //   // Categories = viewModel.LocationCategories.Select(c => c.Category).ToList(),
-                //    Hours = viewModel.Hours.ToList()
-                //});
-
-                return Ok(locations);
-            } catch
-            {
-                return BadRequest("You must be logged in");
+                return Ok(response);
             }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
+            //try
+            //{
+            //    var userId = HttpContext.GetUserId();
+
+
+
+            //string excludeId = "8A__mpnWBT8";
+            ////initial query restricting by account
+            //var query = _context.Location
+            // .Include(l => l.Hours)
+            // .Include(l => l.LocationCategories)
+            //      .ThenInclude(lc => lc.Category)
+            // .Include(l => l.LocationTags)
+            //       .ThenInclude(c => c.Tag)
+            // .Where(q => q.AccountId == id && q.IsDeleted != true)
+            // //.Where(q => q.LocationCategories.Any(lc => lc.CategoryId != 9))
+            // .Where(q => q.VideoId != excludeId)
+            // //verify user has access to this account
+            // .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+            // .OrderByDescending(l => l.DateCreated)
+            // .AsQueryable();
+
+            //parameter filters
+            //if (!string.IsNullOrWhiteSpace(search))
+            //{
+            //    query = query.Where(q => EF.Functions.Like(q.Name, $"%{search}%")).ToList();
+            //};
+
+            //if (!string.IsNullOrWhiteSpace(category))
+            //{
+            //    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
+            //};
+
+
+
+            //if (!string.IsNullOrWhiteSpace(tag))
+            //{
+            //    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
+            //};
+
+            //if (isActive == false)
+            //{
+            //    query = query.Where(q => q.IsActive == false);
+            //};
+
+            //if (isActive == true)
+            //{
+            //    query = query.Where(q => q.IsActive == true);
+            //};
+
+            //create location object after filtering
+
+            //var locations = await query
+            //.Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
+
+
+
+            //    return Ok(locations);
+            //} catch
+            //{
+            //    return BadRequest("You must be logged in");
+            //}
         }
 
         // GET: CONSOLE: PRIVATE api/Locations/by Id

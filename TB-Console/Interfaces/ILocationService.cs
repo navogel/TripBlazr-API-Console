@@ -12,7 +12,7 @@ namespace TripBlazrConsole.Interfaces
     {
         Task<IEnumerable<LocationViewModel>> GetLocations(string citySlug);
 
-        Task<IEnumerable<LocationViewModel>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive);
+        Task<IEnumerable<LocationViewModel>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive, string userId);
 
         Task<LocationsDetailViewModel> GetLocation(int id);
 

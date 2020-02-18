@@ -107,6 +107,7 @@ class LocationList extends Component {
   };
 
   getLocations = () => {
+    this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -120,6 +121,7 @@ class LocationList extends Component {
   };
 
   getActiveLocations = () => {
+    this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -133,6 +135,7 @@ class LocationList extends Component {
   };
 
   getInactiveLocations = () => {
+    this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -240,6 +243,44 @@ class LocationList extends Component {
             <SwitchView changeView={this.changeView} />
           </div>
         </section>
+
+        <div className='locationRow'>
+          <DialogTitle className='modalTitle'>
+            {`${this.state.city}'s Locations`}
+          </DialogTitle>
+          <ToggleButtonGroup
+            value={this.state.alignment}
+            size='small'
+            exclusive
+            onChange={this.handleChange}
+            aria-label='text primary button group'
+            exclusive
+          >
+            <ToggleButton
+              key={1}
+              onClick={e => this.getActiveLocations()}
+              value='left'
+            >
+              Active
+            </ToggleButton>
+
+            <ToggleButton
+              className='middleToggle'
+              key={2}
+              onClick={e => this.getLocations()}
+              value='center'
+            >
+              All
+            </ToggleButton>
+            <ToggleButton
+              key={3}
+              onClick={e => this.getInactiveLocations()}
+              value='right'
+            >
+              Inactive
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
         {this.state.loading && (
           <div className='spinner'>
             <CircularProgress />
@@ -266,43 +307,6 @@ class LocationList extends Component {
 
         {this.state.accountId && this.state.loading === false && (
           <>
-            <div className='locationRow'>
-              <DialogTitle className='modalTitle'>
-                {"Nashville's Locations"}
-              </DialogTitle>
-              <ToggleButtonGroup
-                value={this.state.alignment}
-                size='small'
-                exclusive
-                onChange={this.handleChange}
-                aria-label='text primary button group'
-                exclusive
-              >
-                <ToggleButton
-                  key={1}
-                  onClick={e => this.getActiveLocations()}
-                  value='left'
-                >
-                  Active
-                </ToggleButton>
-
-                <ToggleButton
-                  className='middleToggle'
-                  key={2}
-                  onClick={e => this.getLocations()}
-                  value='center'
-                >
-                  All
-                </ToggleButton>
-                <ToggleButton
-                  key={3}
-                  onClick={e => this.getInactiveLocations()}
-                  value='right'
-                >
-                  Inactive
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </div>
             {this.state.cardView ? (
               <>
                 <div className='container-cards'>
