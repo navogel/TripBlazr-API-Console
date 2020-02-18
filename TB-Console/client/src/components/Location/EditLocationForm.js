@@ -631,18 +631,19 @@ class EditLocationForm extends Component {
                 variant='outlined'
                 placeholder='Any Youtube Video Id'
               />
-
-              <div className='video-responsive'>
-                <iframe
-                  title={this.state.name}
-                  width='560'
-                  height='315'
-                  src={`https://www.youtube.com/embed/${this.state.videoId}`}
-                  frameBorder='0'
-                  allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
-                  allowFullScreen
-                ></iframe>
-              </div>
+              {this.state.videoId && (
+                <div className='video-responsive'>
+                  <iframe
+                    title={this.state.name}
+                    width='560'
+                    height='315'
+                    src={`https://www.youtube.com/embed/${this.state.videoId}`}
+                    frameBorder='0'
+                    allow='accelerometer; encrypted-media; gyroscope; picture-in-picture'
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              )}
             </div>
           </div>
         </div>

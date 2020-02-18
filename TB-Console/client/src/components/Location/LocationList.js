@@ -107,7 +107,7 @@ class LocationList extends Component {
   };
 
   getLocations = () => {
-    this.setState({ loading: true });
+    //this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -121,7 +121,7 @@ class LocationList extends Component {
   };
 
   getActiveLocations = () => {
-    this.setState({ loading: true });
+    // this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -135,7 +135,7 @@ class LocationList extends Component {
   };
 
   getInactiveLocations = () => {
-    this.setState({ loading: true });
+    //this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
