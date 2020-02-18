@@ -31,14 +31,19 @@ namespace TripBlazrConsole.Controllers
 
         private readonly ITagService _tagService;
 
+        private readonly ILocationService _locationService;
 
 
-        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper, ITagService tagService)
+
+        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper, ITagService tagService, ILocationService locationService)
         {
             _context = context;
             _environment = environment;
             _mapper = mapper;
             _tagService = tagService;
+            _locationService = locationService;
+
+
         }
 
         // GET: CLIENT: ANON: api/Locations/citySlug
@@ -46,16 +51,27 @@ namespace TripBlazrConsole.Controllers
         [HttpGet(Api.Location.GetLocations)]
         public async Task<ActionResult<IEnumerable<LocationViewModel>>> GetLocations(string citySlug)
         {
-            var applicationDbContext = await _context.Location
-               .Include(l => l.Hours)
-               .Include(l => l.LocationCategories)
-                    .ThenInclude(lc => lc.Category)
-               .Include(l => l.LocationTags)
-                     .ThenInclude(c => c.Tag)
-               .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true && l.IsActive == true)
-               .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
 
-            return Ok(applicationDbContext);
+            try
+            {
+                var response = await _locationService.GetLocations(citySlug);
+                
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
+            //var applicationDbContext = await _context.Location
+            //   .Include(l => l.Hours)
+            //   .Include(l => l.LocationCategories)
+            //        .ThenInclude(lc => lc.Category)
+            //   .Include(l => l.LocationTags)
+            //         .ThenInclude(c => c.Tag)
+            //   .Where(l => l.Account.CitySlug == citySlug && l.IsDeleted != true && l.IsActive == true)
+            //   .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
+
+            //return Ok(applicationDbContext);
         }
 
         // GET: CONSOLE: PRIVATE: api/Locations/Account/{id}?search/category/tag={params}
