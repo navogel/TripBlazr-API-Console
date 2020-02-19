@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 import LocationManager from '../../API/LocationManager';
 import accountManager from '../../API/accountManager';
 import './Location.css';
@@ -177,6 +178,10 @@ class LocationList extends Component {
   componentDidMount() {
     // console.log('im locations list page', this.props);
     accountManager.getAccountById(this.props.accountId).then(data => {
+      if (data.status !== 200) {
+        console.log('anauthorized');
+        return <Redirect to='/login' />;
+      }
       this.setState({
         accountId: data.accountId,
         city: data.city,

@@ -51,7 +51,6 @@ namespace TripBlazrConsole.Controllers
         [HttpGet(Api.Location.GetLocations)]
         public async Task<ActionResult<IEnumerable<LocationViewModel>>> GetLocations(string citySlug)
         {
-
             try
             {
                 var response = await _locationService.GetLocations(citySlug);
@@ -70,11 +69,10 @@ namespace TripBlazrConsole.Controllers
         [HttpGet(Api.Location.GetConsoleLocations)]
         public async Task<ActionResult<IEnumerable<LocationViewModel>>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive)
         {
-            
-
             try
             {
                 var userId = HttpContext.GetUserId();
+
                 var response = await _locationService.GetConsoleLocations(id, search, category, tag, isActive, userId);
 
                 return Ok(response);
@@ -83,114 +81,68 @@ namespace TripBlazrConsole.Controllers
             {
                 return NotFound(e);
             }
-            //try
-            //{
-            //    var userId = HttpContext.GetUserId();
-
-
-
-            //string excludeId = "8A__mpnWBT8";
-            ////initial query restricting by account
-            //var query = _context.Location
-            // .Include(l => l.Hours)
-            // .Include(l => l.LocationCategories)
-            //      .ThenInclude(lc => lc.Category)
-            // .Include(l => l.LocationTags)
-            //       .ThenInclude(c => c.Tag)
-            // .Where(q => q.AccountId == id && q.IsDeleted != true)
-            // //.Where(q => q.LocationCategories.Any(lc => lc.CategoryId != 9))
-            // .Where(q => q.VideoId != excludeId)
-            // //verify user has access to this account
-            // .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-            // .OrderByDescending(l => l.DateCreated)
-            // .AsQueryable();
-
-            //parameter filters
-            //if (!string.IsNullOrWhiteSpace(search))
-            //{
-            //    query = query.Where(q => EF.Functions.Like(q.Name, $"%{search}%")).ToList();
-            //};
-
-            //if (!string.IsNullOrWhiteSpace(category))
-            //{
-            //    query = query.Where(q => q.LocationCategories.Any(lc => lc.Category.Name == category)).ToList();
-            //};
-
-
-
-            //if (!string.IsNullOrWhiteSpace(tag))
-            //{
-            //    query = query.Where(q => q.LocationTags.Any(lc => lc.Tag.Name == tag)).ToList();
-            //};
-
-            //if (isActive == false)
-            //{
-            //    query = query.Where(q => q.IsActive == false);
-            //};
-
-            //if (isActive == true)
-            //{
-            //    query = query.Where(q => q.IsActive == true);
-            //};
-
-            //create location object after filtering
-
-            //var locations = await query
-            //.Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
-
-
-
-            //    return Ok(locations);
-            //} catch
-            //{
-            //    return BadRequest("You must be logged in");
-            //}
         }
 
         // GET: CONSOLE: PRIVATE api/Locations/by Id
        
         [HttpGet(Api.Location.GetLocation)]
-        public async Task<ActionResult<LocationsDetailViewModel>> GetLocation(int id)
+        public async Task<ActionResult<LocationViewModel>> GetLocation(int id)
         {
             try
             {
                 var userId = HttpContext.GetUserId();
 
-                var location = await _context.Location
-                    .Include(l => l.Hours)
-                    .Include(l => l.LocationCategories)
-                        .ThenInclude(lc => lc.Category)
-                    .Include(l => l.LocationTags)
-                        .ThenInclude(lt => lt.Tag)
-                    .Include(l => l.Account.AccountUsers)
-                    //.Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                    //.FirstOrDefaultAsync(l => l.LocationId == id);
-                
-                    .Where(l => l.LocationId == id)
-                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                    .Select(l => _mapper.Map<LocationViewModel>(l)).FirstOrDefaultAsync();
+                var response = await _locationService.GetLocation(id, userId);
 
-
-                if (location == null)
+                if (response == null)
                 {
                     return NotFound($"No Location found with the ID of {id}");
                 }
 
-                //var JsonLocation = new LocationsDetailViewModel()
-                //    {
-                //        Location = location,
-                //        Tags = location.LocationTags.Select(t => t.Tag).ToList(),
-                //        Categories = location.LocationCategories.Select(c => c.Category).ToList(),
-                //        Hours = location.Hours.ToList()
-                //    };
-
-                
-
-                return Ok(location);
-            } catch
-            {
-                return BadRequest("You must be logged in");
+                return Ok(response);
             }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
+
+
+            //    try
+            //    {
+            //        var userId = HttpContext.GetUserId();
+
+            //var location = await _context.Location
+            //    .Include(l => l.Hours)
+            //    .Include(l => l.LocationCategories)
+            //        .ThenInclude(lc => lc.Category)
+            //    .Include(l => l.LocationTags)
+            //        .ThenInclude(lt => lt.Tag)
+            //    .Include(l => l.Account.AccountUsers)
+            //    //.Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+            //    //.FirstOrDefaultAsync(l => l.LocationId == id);
+
+            //    .Where(l => l.LocationId == id)
+            //    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+            //    .Select(l => _mapper.Map<LocationViewModel>(l)).FirstOrDefaultAsync();
+
+
+            
+
+            //var JsonLocation = new LocationsDetailViewModel()
+            //    {
+            //        Location = location,
+            //        Tags = location.LocationTags.Select(t => t.Tag).ToList(),
+            //        Categories = location.LocationCategories.Select(c => c.Category).ToList(),
+            //        Hours = location.Hours.ToList()
+            //    };
+
+
+
+            //return Ok(location);
+            //    } catch
+            //    {
+            //        return BadRequest("You must be logged in");
+            //    }
         }
 
        

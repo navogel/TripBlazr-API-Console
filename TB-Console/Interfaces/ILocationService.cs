@@ -14,7 +14,7 @@ namespace TripBlazrConsole.Interfaces
 
         Task<IEnumerable<LocationViewModel>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive, string userId);
 
-        Task<LocationsDetailViewModel> GetLocation(int id);
+        Task<LocationViewModel> GetLocation(int id, string userId);
 
         Task<Location> UploadImage(IFormFile file, int id);
 
