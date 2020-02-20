@@ -143,7 +143,7 @@ class AddLocationForm extends Component {
                     parseInt(this.state.primaryCategory)
                 );
                 this.props.getLocations();
-                this.props.closeAddForm();
+                
                 this.setState({
                     loadingStatus: false,
 
@@ -167,6 +167,7 @@ class AddLocationForm extends Component {
                     primaryCategory: ''
                 });
                 fileInput.value = '';
+                this.props.closeAddForm();
             });
         }
     };

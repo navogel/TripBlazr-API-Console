@@ -104,115 +104,83 @@ namespace TripBlazrConsole.Controllers
             catch (Exception e)
             {
                 return NotFound(e);
-            }
-
-
-            //    try
-            //    {
-            //        var userId = HttpContext.GetUserId();
-
-            //var location = await _context.Location
-            //    .Include(l => l.Hours)
-            //    .Include(l => l.LocationCategories)
-            //        .ThenInclude(lc => lc.Category)
-            //    .Include(l => l.LocationTags)
-            //        .ThenInclude(lt => lt.Tag)
-            //    .Include(l => l.Account.AccountUsers)
-            //    //.Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-            //    //.FirstOrDefaultAsync(l => l.LocationId == id);
-
-            //    .Where(l => l.LocationId == id)
-            //    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-            //    .Select(l => _mapper.Map<LocationViewModel>(l)).FirstOrDefaultAsync();
-
-
-            
-
-            //var JsonLocation = new LocationsDetailViewModel()
-            //    {
-            //        Location = location,
-            //        Tags = location.LocationTags.Select(t => t.Tag).ToList(),
-            //        Categories = location.LocationCategories.Select(c => c.Category).ToList(),
-            //        Hours = location.Hours.ToList()
-            //    };
-
-
-
-            //return Ok(location);
-            //    } catch
-            //    {
-            //        return BadRequest("You must be logged in");
-            //    }
+            } 
         }
 
-       
-
         // POST: api/Locations  - CREATE LOCATION
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        
        
         [HttpPost(Api.Location.PostLocation)]
-        public async Task<ActionResult<CreateLocationViewModel>> PostLocation([FromForm]CreateLocationViewModel viewModel)
-        //public async Task<ActionResult<Location>> PostLocation([FromBody]CreateLocationViewModel viewModel, IFormFile file)
+        public async Task<ActionResult<Location>> PostLocation([FromForm]CreateLocationViewModel viewModel)
         {
-            var location = new Location()
+            try
             {
-                AccountId = viewModel.AccountId,
-                Name = viewModel.Name,
-                PhoneNumber = viewModel.PhoneNumber,
-                Website = viewModel.Website,
-                ShortSummary = viewModel.ShortSummary,
-                Description = viewModel.Description,
-                Latitude = viewModel.Latitude,
-                Longitude = viewModel.Longitude,
-                VideoId = viewModel.VideoId,
-                VideoStartTime = viewModel.VideoStartTime,
-                VideoEndTime = viewModel.VideoEndTime,
-                Address1 = viewModel.Address1,
-                Address2 = viewModel.Address2,
-                City = viewModel.City,
-                State = viewModel.State,
-                Zipcode = viewModel.Zipcode,
-                IsDeleted = false,
-                IsActive = false,
-                ImageUrl = "logo.png"
-            };
-           
-            //create new location
-             _context.Location.Add(location);
-            await _context.SaveChangesAsync();
+                var response = await _locationService.PostLocation(viewModel);
 
-            //check if there is a file attatched
-
-            if (viewModel.File != null && viewModel.File.Length > 0)
-            {
-                
-                //create filname based on created location ID
-                int fileName = location.LocationId;
-
-               //create path and insert image with original filename
-
-                using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
-                {
-                    viewModel.File.CopyTo(fileStream);
-                    fileStream.Flush();
-                }
-
-                //replace original filename with location ID filename, keeping extension
-
-                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
-                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension);
-                
-                // update location with new filename
-
-                location.ImageUrl = fileName + currentFile.Extension;
-                _context.Entry(location).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
+                return CreatedAtAction("GetLocation", new { id = response.LocationId }, response);
             }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
+            //var location = new Location()
+            //{
+            //    AccountId = viewModel.AccountId,
+            //    Name = viewModel.Name,
+            //    PhoneNumber = viewModel.PhoneNumber,
+            //    Website = viewModel.Website,
+            //    ShortSummary = viewModel.ShortSummary,
+            //    Description = viewModel.Description,
+            //    Latitude = viewModel.Latitude,
+            //    Longitude = viewModel.Longitude,
+            //    VideoId = viewModel.VideoId,
+            //    VideoStartTime = viewModel.VideoStartTime,
+            //    VideoEndTime = viewModel.VideoEndTime,
+            //    Address1 = viewModel.Address1,
+            //    Address2 = viewModel.Address2,
+            //    City = viewModel.City,
+            //    State = viewModel.State,
+            //    Zipcode = viewModel.Zipcode,
+            //    IsDeleted = false,
+            //    IsActive = false,
+            //    ImageUrl = "logo.png"
+            //};
 
-            return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
+            ////create new location
+            // _context.Location.Add(location);
+            //await _context.SaveChangesAsync();
+
+            ////check if there is a file attatched
+
+            //if (viewModel.File != null && viewModel.File.Length > 0)
+            //{
+
+            //    //create filname based on created location ID
+            //    int fileName = location.LocationId;
+
+            //   //create path and insert image with original filename
+
+            //    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
+            //    {
+            //        viewModel.File.CopyTo(fileStream);
+            //        fileStream.Flush();
+            //    }
+
+            //    //replace original filename with location ID filename, keeping extension
+
+            //    FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
+            //    currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension);
+
+            //    // update location with new filename
+
+            //    location.ImageUrl = fileName + currentFile.Extension;
+            //    _context.Entry(location).State = EntityState.Modified;
+            //    await _context.SaveChangesAsync();
+
+            //    return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
+            //}
+
+            //return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
         }
 
         //PUT for IMAGE update only /uploadImage/{id} of location

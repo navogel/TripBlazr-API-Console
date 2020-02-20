@@ -16,6 +16,8 @@ namespace TripBlazrConsole.Interfaces
 
         Task<LocationViewModel> GetLocation(int id, string userId);
 
+        Task<Location> PostLocation(CreateLocationViewModel viewModel);
+
         Task<Location> UploadImage(IFormFile file, int id);
 
         Task<CreateLocationViewModel> EditLocation(CreateLocationViewModel viewModel, int id);

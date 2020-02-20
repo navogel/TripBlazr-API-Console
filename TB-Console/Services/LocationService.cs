@@ -12,7 +12,8 @@ using TripBlazrConsole.Models.ViewModels.LocationViewModels;
 using TripBlazrConsole.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
-
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace TripBlazrConsole.Services
 {
@@ -20,11 +21,13 @@ namespace TripBlazrConsole.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private static IWebHostEnvironment _environment;
 
-        public LocationService(ApplicationDbContext context, IMapper mapper)
+        public LocationService(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment environment)
         {
             _context = context;
             _mapper = mapper;
+            _environment = environment;
         }
 
         public async Task<IEnumerable<LocationViewModel>> GetLocations(string citySlug)
@@ -103,9 +106,6 @@ namespace TripBlazrConsole.Services
                 .Include(l => l.LocationTags)
                     .ThenInclude(lt => lt.Tag)
                 .Include(l => l.Account.AccountUsers)
-                //.Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                //.FirstOrDefaultAsync(l => l.LocationId == id);
-
                 .Where(l => l.LocationId == id)
                 .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
                 .Select(l => _mapper.Map<LocationViewModel>(l)).FirstOrDefaultAsync();
@@ -113,15 +113,79 @@ namespace TripBlazrConsole.Services
             return location;
         }
 
-        public Task<Location> DeleteLocation(int id)
+        public async Task<Location> PostLocation(CreateLocationViewModel viewModel)
         {
-            throw new NotImplementedException();
+            var location = new Location()
+            {
+                AccountId = viewModel.AccountId,
+                Name = viewModel.Name,
+                PhoneNumber = viewModel.PhoneNumber,
+                Website = viewModel.Website,
+                ShortSummary = viewModel.ShortSummary,
+                Description = viewModel.Description,
+                Latitude = viewModel.Latitude,
+                Longitude = viewModel.Longitude,
+                VideoId = viewModel.VideoId,
+                VideoStartTime = viewModel.VideoStartTime,
+                VideoEndTime = viewModel.VideoEndTime,
+                Address1 = viewModel.Address1,
+                Address2 = viewModel.Address2,
+                City = viewModel.City,
+                State = viewModel.State,
+                Zipcode = viewModel.Zipcode,
+                IsDeleted = false,
+                IsActive = false,
+                ImageUrl = "logo.png"
+            };
+
+            //create new location
+            _context.Location.Add(location);
+            await _context.SaveChangesAsync();
+
+            //check if there is a file attatched
+
+            if (viewModel.File != null && viewModel.File.Length > 0)
+            {
+
+                //create filname based on created location ID
+                int fileName = location.LocationId;
+
+                //create path and insert image with original filename
+
+                using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
+                {
+                    viewModel.File.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+
+                //replace original filename with location ID filename, keeping extension
+
+                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
+                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension);
+
+                // update location with new filename
+
+                location.ImageUrl = fileName + currentFile.Extension;
+                _context.Entry(location).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return location;
+            }
+
+            return location;
         }
 
         public Task<CreateLocationViewModel> EditLocation(CreateLocationViewModel viewModel, int id)
         {
             throw new NotImplementedException();
         }
+
+        public Task<Location> DeleteLocation(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        
 
         public Task EditLocationIsActive(int id)
         {
@@ -133,10 +197,6 @@ namespace TripBlazrConsole.Services
             throw new NotImplementedException();
         }
 
-
-
-
-
-
+       
     }
 }
