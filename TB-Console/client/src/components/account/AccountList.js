@@ -32,7 +32,7 @@ class AccountList extends Component {
     //creat auth header for every request
 
     AccountManager.getAllAccounts().then(data => {
-      if (data.response === 'not authorized') {
+      if (data.response) {
         this.setState({ toLogin: true });
       } else {
         this.setState({ accounts: data });

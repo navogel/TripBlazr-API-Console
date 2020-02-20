@@ -12,8 +12,9 @@ export default {
     }).then(response => {
       if (response.status === 401) {
         return noAuth;
+      } else {
+        return response.json();
       }
-      response.json();
     });
   },
   getAccountById(id) {
@@ -21,11 +22,12 @@ export default {
     return fetch(`${baseUrl}/Accounts/${id}`, {
       headers: authHeader
     }).then(response => {
-      //console.log(response.status);
+      console.log(response.status);
       if (response.status === 401) {
         return noAuth;
+      } else {
+        return response.json();
       }
-      response.json();
     });
   }
 };
