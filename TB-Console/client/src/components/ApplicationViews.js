@@ -8,13 +8,13 @@ import AccountDetails from './account/AccountDetails';
 import AccountList from './account/AccountList';
 
 class ApplicationViews extends Component {
-    //check for login before showing content
+  //check for login before showing content
 
-    render() {
-        //console.log(this.props.user);
-        return (
-            <React.Fragment>
-                {/* <Route
+  render() {
+    //console.log(this.props.user);
+    return (
+      <React.Fragment>
+        {/* <Route
                     exact
                     path='/'
                     render={props => {
@@ -22,81 +22,68 @@ class ApplicationViews extends Component {
                     }}
                 /> */}
 
-                <Route
-                    exact
-                    path='/'
-                    render={props => {
-                        if (this.props.user) {
-                            return (
-                                <AccountList
-                                    user={this.props.user}
-                                    {...props}
-                                />
-                            );
-                        } else {
-                            return <Redirect to='/login' />;
-                        }
-                    }}
+        <Route
+          exact
+          path='/'
+          render={props => {
+            if (this.props.user) {
+              return <AccountList user={this.props.user} {...props} />;
+            } else {
+              return <Redirect to='/login' />;
+            }
+          }}
+        />
+        <Route
+          exact
+          path='/accounts/:accountId(\d+)'
+          render={props => {
+            if (this.props.user) {
+              return (
+                <AccountDetails
+                  AccountId={parseInt(props.match.params.accountId)}
+                  {...props}
                 />
-                <Route
-                    exact
-                    path='/accounts/:accountId(\d+)'
-                    render={props => {
-                        if (this.props.user) {
-                            return (
-                                <AccountDetails
-                                    AccountId={parseInt(
-                                        props.match.params.accountId
-                                    )}
-                                    {...props}
-                                />
-                            );
-                        } else {
-                            return <Redirect to='/login' />;
-                        }
-                    }}
+              );
+            } else {
+              return <Redirect to='/login' />;
+            }
+          }}
+        />
+        <Route
+          exact
+          path='/accounts/:accountId(\d+)/Locations'
+          render={props => {
+            if (this.props.user) {
+              return (
+                <LocationList
+                  accountId={parseInt(props.match.params.accountId)}
+                  {...props}
                 />
-                <Route
-                    exact
-                    path='/accounts/:accountId(\d+)/Locations'
-                    render={props => {
-                        if (this.props.user) {
-                            return (
-                                <LocationList
-                                    accountId={parseInt(
-                                        props.match.params.accountId
-                                    )}
-                                    {...props}
-                                />
-                            );
-                        } else {
-                            return <Redirect to='/login' />;
-                        }
-                    }}
+              );
+            } else {
+              return <Redirect to='/login' />;
+            }
+          }}
+        />
+        {/* <Route
+          exact
+          path='/accounts/:accountId(\d+)/Locations/:locationId(\d+)'
+          render={props => {
+            if (this.props.user) {
+              return (
+                <EditLocationForm
+                  accountId={parseInt(props.match.params.accountId)}
+                  locationId={parseInt(props.match.params.locationId)}
+                  {...props}
                 />
-                <Route
-                    exact
-                    path='/accounts/:accountId(\d+)/Locations/:locationId(\d+)'
-                    render={props => {
-                        if (this.props.user) {
-                            return (
-                                <EditLocationForm
-                                    accountId={parseInt(
-                                        props.match.params.accountId
-                                    )}
-                                    locationId={parseInt(
-                                        props.match.params.locationId
-                                    )}
-                                    {...props}
-                                />
-                            );
-                        } else {
-                            return <Redirect to='/login' />;
-                        }
-                    }}
-                />
+              );
+            } else {
+              return <Redirect to='/login' />;
+            }
+          }}
+        /> */}
 
-                <Route
+        {/* <Route
                     exact
                     path='/login'
                     render={props => {
@@ -104,11 +91,11 @@ class ApplicationViews extends Component {
                             <Login setUser={this.props.setUser} {...props} />
                         );
                     }}
-                />
-                {/* <Route render={() => <h1>404 Error</h1>} /> */}
-            </React.Fragment>
-        );
-    }
+                /> */}
+        {/* <Route render={() => <h1>404 Error</h1>} /> */}
+      </React.Fragment>
+    );
+  }
 }
 
 export default ApplicationViews;

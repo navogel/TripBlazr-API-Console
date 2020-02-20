@@ -45,7 +45,9 @@ class LocationList extends Component {
     searchTarget: [],
     tagFilter: '',
     currentSearchCode: 1,
-    alignment: 'center'
+    alignment: 'center',
+    //redirect if no authorization
+    toLogin: false
   };
 
   //spice for standard location array
@@ -178,25 +180,28 @@ class LocationList extends Component {
   componentDidMount() {
     // console.log('im locations list page', this.props);
     accountManager.getAccountById(this.props.accountId).then(data => {
-      if (data.status !== 200) {
-        console.log('anauthorized');
-        return <Redirect to='/login' />;
+      console.log('response data', data);
+      if (data.response === 'not authorized') {
+        this.setState({ toLogin: true });
+      } else {
+        this.setState({
+          accountId: data.accountId,
+          city: data.city,
+          accountName: data.name,
+          cityLat: data.latitude,
+          cityLng: data.longitude
+        });
+        console.log('account info', data);
+        this.getLocations();
       }
-      this.setState({
-        accountId: data.accountId,
-        city: data.city,
-        accountName: data.name,
-        cityLat: data.latitude,
-        cityLng: data.longitude
-      });
-      console.log('account info', data);
     });
-
-    this.getLocations();
   }
 
   render() {
     console.log('search target state', this.state.searchTarget);
+    if (this.state.toLogin === true) {
+      return <Redirect to='/login' />;
+    }
     return (
       <>
         <section className='section-content'>
