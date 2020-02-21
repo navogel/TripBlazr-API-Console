@@ -220,9 +220,11 @@ class EditLocationForm extends Component {
         LocationManager.createPrimaryCategory(
           data.locationId,
           parseInt(this.state.primaryCategory)
-        ).then(data => this.getData());
-        this.props.getLocations();
-        this.setState({ loadingStatus: false });
+        ).then(data => {
+          this.getData();
+          this.props.getLocations();
+          this.setState({ loadingStatus: false });
+        });
       });
     }
   };

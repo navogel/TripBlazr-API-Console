@@ -23,27 +23,17 @@ namespace TripBlazrConsole.Controllers
     [ApiController]
     public class LocationsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        private static IWebHostEnvironment _environment;
-
-        private readonly IMapper _mapper;
-
         private readonly ITagService _tagService;
 
         private readonly ILocationService _locationService;
 
+        private readonly ICategoryService _categoryService;
 
-
-        public LocationsController(ApplicationDbContext context, IWebHostEnvironment environment, IMapper mapper, ITagService tagService, ILocationService locationService)
+        public LocationsController(ITagService tagService, ILocationService locationService, ICategoryService categoryService)
         {
-            _context = context;
-            _environment = environment;
-            _mapper = mapper;
             _tagService = tagService;
             _locationService = locationService;
-
-
+            _categoryService = categoryService;
         }
 
         // GET: CLIENT: ANON: api/Locations/citySlug
@@ -213,99 +203,39 @@ namespace TripBlazrConsole.Controllers
             {
                 return NotFound(e);
             }
-            //var tagToDelete = await _context.LocationTag.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
-
-            //if (tagToDelete == null)
-            //{
-            //    return NotFound("No tag found");
-            //}
-
-            //_context.LocationTag.Remove(tagToDelete);
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    throw;
-            //}
-
-            //return Ok(tagToDelete);
         }
 
         //ADD CATS TO LOCATION
         [HttpPost(Api.Location.AddCategory)]
         public async Task<ActionResult<LocationCategory>> AddCategory([FromRoute] int locationId, [FromRoute] int categoryId, bool isPrimary)
         {
+
             try
             {
-                var newCat = new LocationCategory()
-                {
-                    CategoryId = categoryId,
-                    LocationId = locationId,
-                    IsPrimary = isPrimary
-                };
-
-                if (newCat.IsPrimary == true)
-                {
-                    var catToDelete = await _context.LocationCategory
-                        .FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.IsPrimary == true);
-
-                    if (catToDelete != null)
-                    {
-                        _context.LocationCategory.Remove(catToDelete);
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-                _context.LocationCategory.Add(newCat);
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-
-                return Ok(newCat);
+                var response = await _categoryService.AddCategory(locationId, categoryId, isPrimary);
+                return Ok(response);
             }
-            catch
+            catch (Exception e)
             {
-                return BadRequest();
+                return NotFound(e);
             }
+            
         }
 
         //REMOVE: CATS FROM LOCATION
         [HttpDelete(Api.Location.DeleteCategory)]
         public async Task<ActionResult<LocationCategory>> DeleteCategory([FromRoute] int locationId, [FromRoute] int categoryId)
         {
-            var catToDelete = await _context.LocationCategory.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.CategoryId == categoryId);
-
-            if (catToDelete == null)
-            {
-                return NotFound("No Category found");
-            }
-
-            _context.LocationCategory.Remove(catToDelete);
-
             try
             {
-                await _context.SaveChangesAsync();
+                var response = await _categoryService.DeleteCategory(locationId, categoryId);
+                return Ok(response);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                throw;
+                return NotFound(e);
             }
-
-            return Ok(catToDelete);
         }
 
-        private bool LocationExists(int id)
-        {
-            return _context.Location.Any(e => e.LocationId == id);
-        }
     }
 }
