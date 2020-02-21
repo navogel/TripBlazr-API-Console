@@ -9,5 +9,7 @@ namespace TripBlazrConsole.Interfaces
     public interface ITagService
     {
         Task<LocationTagResponse> AddLocationTags(LocationTagRequest request);
+
+        Task<LocationTag> DeleteTag(int locationId, int tagId);
     }
 }

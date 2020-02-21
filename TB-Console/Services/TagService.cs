@@ -50,13 +50,31 @@ namespace TripBlazrConsole.Services
                     LocationTags = locationTags
                 };
 
+            return Task.FromResult(response);
 
-
-                return Task.FromResult(response);
             } catch (Exception ex)
             {
                 return null;
             }
+        }
+
+        public async Task<LocationTag> DeleteTag(int locationId, int tagId)
+        {
+            var tagToDelete = await _context.LocationTag
+                .FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
+
+            _context.LocationTag.Remove(tagToDelete);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return tagToDelete;
         }
     }
 }

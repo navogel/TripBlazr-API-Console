@@ -125,116 +125,26 @@ namespace TripBlazrConsole.Controllers
             }           
         }
 
-        //PUT for IMAGE update only /uploadImage/{id} of location
-        
-        
-
-
-
         // PUT: api/Locations/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
        
         [HttpPut(Api.Location.EditLocation)]
 
-        public async Task<ActionResult<CreateLocationViewModel>> EditLocation([FromForm]CreateLocationViewModel viewModel, int id)
-        //public async Task<ActionResult<Location>> PostLocation([FromBody]CreateLocationViewModel viewModel, IFormFile file)
+        public async Task<ActionResult<Location>> EditLocation([FromForm]CreateLocationViewModel viewModel, int id)
         {
-
             var userId = HttpContext.GetUserId();
 
-            var locationFromDb = await _context.Location
-                    .Include(l => l.Account.AccountUsers)
-                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                    .FirstOrDefaultAsync(l => l.LocationId == id);
-
-            if (locationFromDb == null)
+            try
             {
-                return BadRequest();
+                var response = await _locationService.EditLocation(viewModel, id, userId);
+
+                return Ok(response);
             }
-
-
-            locationFromDb.Name = viewModel.Name;
-            locationFromDb.PhoneNumber = viewModel.PhoneNumber;
-            locationFromDb.Website = viewModel.Website;
-            locationFromDb.ShortSummary = viewModel.ShortSummary;
-            locationFromDb.Description = viewModel.Description;
-            locationFromDb.Latitude = viewModel.Latitude;
-            locationFromDb.Longitude = viewModel.Longitude;
-            locationFromDb.SortId = viewModel.SortId;
-            locationFromDb.VideoId = viewModel.VideoId;
-            locationFromDb.VideoStartTime = viewModel.VideoStartTime;
-            locationFromDb.VideoEndTime = viewModel.VideoEndTime;
-            locationFromDb.Address1 = viewModel.Address1;
-            locationFromDb.Address2 = viewModel.Address2;
-            locationFromDb.City = viewModel.City;
-            locationFromDb.State = viewModel.State;
-            locationFromDb.Zipcode = viewModel.Zipcode;
-            locationFromDb.IsDeleted = false;
-            locationFromDb.IsActive = viewModel.IsActive;
-            locationFromDb.ImageUrl = locationFromDb.ImageUrl;
-            locationFromDb.DateEdited = DateTime.Now;
-            locationFromDb.SeeWebsite = locationFromDb.SeeWebsite;
-            locationFromDb.HoursNotes = locationFromDb.HoursNotes;
-            
-
-
-            if (viewModel.File != null && viewModel.File.Length > 0)
+            catch (Exception e)
             {
-
-                //create filname based on created location ID
-                int fileName = locationFromDb.LocationId;
-
-                //create path and insert image with original filename
-
-                using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
-                {
-                    viewModel.File.CopyTo(fileStream);
-                    fileStream.Flush();
-                }
-
-                //replace original filename with location ID filename, keeping extension
-
-                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
-                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension, true);
-
-                // update location with new filename
-
-                locationFromDb.ImageUrl = fileName + currentFile.Extension;
-
-
-                
-                
-
-                try
-                {
-                    _context.Entry(locationFromDb).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest();
-                }
-                
-
-                return Ok(locationFromDb);
-            }
-
-            
-
-            try 
-            {
-                _context.Entry(locationFromDb).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-            } catch (Exception ex)
-            {
-                return BadRequest();
-            }
-            
-           
-
-            return Ok(locationFromDb);
+                return NotFound(e);
+            }  
         }
        
 
@@ -243,47 +153,16 @@ namespace TripBlazrConsole.Controllers
         {
             var userId = HttpContext.GetUserId();
 
-            var location = await _context.Location
-                    .Include(l => l.Account.AccountUsers)
-                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                    .FirstOrDefaultAsync(l => l.LocationId == id);
-
-
-
-
-            if (location == null)
-            {
-                return BadRequest();
-            }
-
-            if (location.IsActive == false)
-            {
-                location.IsActive = true;
-            } else
-            {
-                location.IsActive = false;
-            }
-
-            _context.Entry(location).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var response = await _locationService.EditLocationIsActive (id, userId);
 
+                return Ok(response);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (!LocationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok(location);
+                return NotFound(e);
+            }  
         }
 
         // SOFTDELETE: api/Locations/5
@@ -293,37 +172,16 @@ namespace TripBlazrConsole.Controllers
         {
             var userId = HttpContext.GetUserId();
 
-            var location = await _context.Location
-                    .Include(l => l.Account.AccountUsers)
-                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
-                    .FirstOrDefaultAsync(l => l.LocationId == id);
-
-            if (location == null)
-            {
-                return NotFound();
-            }
-
-            location.IsDeleted = true;
-
-            _context.Update(location);
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LocationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            } 
+                var response = await _locationService.DeleteLocation(id, userId);
 
-            return Ok(location);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
         }
 
         //ADD TAGS TO Location
@@ -337,36 +195,43 @@ namespace TripBlazrConsole.Controllers
             }
             catch (Exception e)
             {
-                
                 return NotFound(e);
             }
-
-           
         }
 
         //REMOVE: TAG FROM LOCATION
       [HttpDelete(Api.Location.DeleteTag)]
         public async Task<ActionResult<LocationTag>> DeleteTag([FromRoute] int locationId, [FromRoute] int tagId)
         {
-            var tagToDelete = await _context.LocationTag.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
-                
-            if (tagToDelete == null)
-            {
-                return NotFound("No tag found");
-            }
-
-            _context.LocationTag.Remove(tagToDelete);
 
             try
             {
-                await _context.SaveChangesAsync();
+                var response = await _tagService.DeleteTag(locationId, tagId);
+                return Ok(response);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                throw;
+                return NotFound(e);
             }
+            //var tagToDelete = await _context.LocationTag.FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
 
-            return Ok(tagToDelete);
+            //if (tagToDelete == null)
+            //{
+            //    return NotFound("No tag found");
+            //}
+
+            //_context.LocationTag.Remove(tagToDelete);
+
+            //try
+            //{
+            //    await _context.SaveChangesAsync();
+            //}
+            //catch (DbUpdateConcurrencyException)
+            //{
+            //    throw;
+            //}
+
+            //return Ok(tagToDelete);
         }
 
         //ADD CATS TO LOCATION

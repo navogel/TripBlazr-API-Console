@@ -18,11 +18,11 @@ namespace TripBlazrConsole.Interfaces
 
         Task<Location> PostLocation(CreateLocationViewModel viewModel);
 
-        Task<CreateLocationViewModel> EditLocation(CreateLocationViewModel viewModel, int id);
+        Task<Location> EditLocation(CreateLocationViewModel viewModel, int id, string userId);
 
-        Task EditLocationIsActive(int id);
+        Task<Location> EditLocationIsActive(int id, string userId);
 
-        Task<Location> DeleteLocation(int id);
+        Task<Location> DeleteLocation(int id, string userId);
 
 
     }

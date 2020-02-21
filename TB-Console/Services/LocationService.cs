@@ -30,6 +30,9 @@ namespace TripBlazrConsole.Services
             _environment = environment;
         }
 
+
+        //Client API get all locations
+
         public async Task<IEnumerable<LocationViewModel>> GetLocations(string citySlug)
         {
             var locationList = await _context.Location
@@ -44,6 +47,7 @@ namespace TripBlazrConsole.Services
             return locationList;
         }
 
+        //Console API get all locations with UserId check
         public async Task<IEnumerable<LocationViewModel>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive, string userId)
         {
             //exclude parking lots by videoId
@@ -97,6 +101,7 @@ namespace TripBlazrConsole.Services
             return locations;    
         }
 
+        //Console API get single location with UserId check
         public async Task<LocationViewModel> GetLocation(int id, string userId)
         {
             var location = await _context.Location
@@ -113,6 +118,7 @@ namespace TripBlazrConsole.Services
             return location;
         }
 
+        //Console API create location
         public async Task<Location> PostLocation(CreateLocationViewModel viewModel)
         {
             var location = new Location()
@@ -143,15 +149,12 @@ namespace TripBlazrConsole.Services
             await _context.SaveChangesAsync();
 
             //check if there is a file attatched
-
             if (viewModel.File != null && viewModel.File.Length > 0)
             {
-
                 //create filname based on created location ID
                 int fileName = location.LocationId;
 
                 //create path and insert image with original filename
-
                 using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
                 {
                     viewModel.File.CopyTo(fileStream);
@@ -159,13 +162,12 @@ namespace TripBlazrConsole.Services
                 }
 
                 //replace original filename with location ID filename, keeping extension
-
                 FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
                 currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension);
 
                 // update location with new filename
-
                 location.ImageUrl = fileName + currentFile.Extension;
+
                 _context.Entry(location).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
@@ -175,19 +177,142 @@ namespace TripBlazrConsole.Services
             return location;
         }
 
-        public Task<CreateLocationViewModel> EditLocation(CreateLocationViewModel viewModel, int id)
+        //Console API edit location with userId check
+        public async Task<Location> EditLocation(CreateLocationViewModel viewModel, int id, string userId)
         {
-            throw new NotImplementedException();
+            var locationFromDb = await _context.Location
+                    .Include(l => l.Account.AccountUsers)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .FirstOrDefaultAsync(l => l.LocationId == id);
+
+            locationFromDb.Name = viewModel.Name;
+            locationFromDb.PhoneNumber = viewModel.PhoneNumber;
+            locationFromDb.Website = viewModel.Website;
+            locationFromDb.ShortSummary = viewModel.ShortSummary;
+            locationFromDb.Description = viewModel.Description;
+            locationFromDb.Latitude = viewModel.Latitude;
+            locationFromDb.Longitude = viewModel.Longitude;
+            locationFromDb.SortId = viewModel.SortId;
+            locationFromDb.VideoId = viewModel.VideoId;
+            locationFromDb.VideoStartTime = viewModel.VideoStartTime;
+            locationFromDb.VideoEndTime = viewModel.VideoEndTime;
+            locationFromDb.Address1 = viewModel.Address1;
+            locationFromDb.Address2 = viewModel.Address2;
+            locationFromDb.City = viewModel.City;
+            locationFromDb.State = viewModel.State;
+            locationFromDb.Zipcode = viewModel.Zipcode;
+            locationFromDb.IsDeleted = false;
+            locationFromDb.IsActive = viewModel.IsActive;
+            locationFromDb.ImageUrl = locationFromDb.ImageUrl;
+            locationFromDb.DateEdited = DateTime.Now;
+            locationFromDb.SeeWebsite = locationFromDb.SeeWebsite;
+            locationFromDb.HoursNotes = locationFromDb.HoursNotes;
+
+            if (viewModel.File != null && viewModel.File.Length > 0)
+            {
+                //create filname based on created location ID
+                int fileName = locationFromDb.LocationId;
+
+                //create path and insert image with original filename
+                using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
+                {
+                    viewModel.File.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+                //replace original filename with location ID filename, keeping extension
+                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
+                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension, true);
+
+                // update location with new filename
+                locationFromDb.ImageUrl = fileName + currentFile.Extension;
+
+                _context.Entry(locationFromDb).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+               
+                return locationFromDb;
+            }            
+
+            _context.Entry(locationFromDb).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return locationFromDb;
         }
 
-        public Task<Location> DeleteLocation(int id)
+        //Console API toggle location isActive with UserID
+        public async Task<Location> EditLocationIsActive(int id, string userId)
         {
-            throw new NotImplementedException();
+            var location = await _context.Location
+                    .Include(l => l.Account.AccountUsers)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .FirstOrDefaultAsync(l => l.LocationId == id);
+
+            if (location.IsActive == false)
+            {
+                location.IsActive = true;
+            }
+            else
+            {
+                location.IsActive = false;
+            }
+
+            _context.Entry(location).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LocationExists(id))
+                {
+                    //what to throw here???
+                    throw;
+                }
+                else
+                {
+                    //and here???
+                    throw;
+                }
+            }
+
+            return location;
         }
 
-        public Task EditLocationIsActive(int id)
+        //Console API soft delete with userId check
+        public async Task<Location> DeleteLocation(int id, string userId)
         {
-            throw new NotImplementedException();
-        } 
+            var location = await _context.Location
+                    .Include(l => l.Account.AccountUsers)
+                    .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
+                    .FirstOrDefaultAsync(l => l.LocationId == id);
+
+            location.IsDeleted = true;
+
+            _context.Update(location);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LocationExists(id))
+                {
+                    throw;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return location;
+        }
+
+        //helper function to check if location exists
+        private bool LocationExists(int id)
+        {
+            return _context.Location.Any(e => e.LocationId == id);
+        }
     }
 }
