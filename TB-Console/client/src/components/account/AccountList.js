@@ -4,6 +4,7 @@ import AccountManager from '../../API/accountManager';
 import AccountMapper from '../map/AccountMapper';
 import { Link } from 'react-router-dom';
 import { Route, Redirect } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 
 class AccountList extends Component {
   state = {
@@ -47,35 +48,12 @@ class AccountList extends Component {
     }
     return (
       <>
-        <h1>Welcome to my app</h1>
+        <h1>Welcome to TripBlazr Console</h1>
         {this.state.accounts && (
           <>
-            <form className='modalContainer'>
-              <fieldset>
-                <div className='formgrid'>
-                  <input
-                    type='text'
-                    required
-                    onChange={this.handleFieldChange}
-                    id='tempAddress'
-                    placeholder='tempAddress'
-                  />
-                  <label htmlFor='animalName'>Name</label>
-
-                  <button
-                    type='button'
-                    //disabled={this.state.loadingStatus}
-                    onClick={this.submitAddress}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </fieldset>
-            </form>
             <div>
               {this.state.accounts.map(account => (
                 <div key={account.accountId}>
-                  <li>{account.city}</li>
                   <div className={'mapWrapper'}>
                     <AccountMapper
                       className={'map'}
@@ -85,7 +63,9 @@ class AccountList extends Component {
                     />
                   </div>
                   <Link to={`/accounts/${account.accountId}/locations`}>
-                    <button>Locations</button>
+                    <Button variant='contained' color='primary'>
+                      Manage Locations
+                    </Button>
                   </Link>
                 </div>
               ))}
