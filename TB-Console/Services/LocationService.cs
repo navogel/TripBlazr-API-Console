@@ -185,18 +185,9 @@ namespace TripBlazrConsole.Services
             throw new NotImplementedException();
         }
 
-        
-
         public Task EditLocationIsActive(int id)
         {
             throw new NotImplementedException();
-        }
-
-        public Task<Location> UploadImage(IFormFile file, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-       
+        } 
     }
 }

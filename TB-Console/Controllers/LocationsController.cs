@@ -122,115 +122,12 @@ namespace TripBlazrConsole.Controllers
             catch (Exception e)
             {
                 return NotFound(e);
-            }
-            //var location = new Location()
-            //{
-            //    AccountId = viewModel.AccountId,
-            //    Name = viewModel.Name,
-            //    PhoneNumber = viewModel.PhoneNumber,
-            //    Website = viewModel.Website,
-            //    ShortSummary = viewModel.ShortSummary,
-            //    Description = viewModel.Description,
-            //    Latitude = viewModel.Latitude,
-            //    Longitude = viewModel.Longitude,
-            //    VideoId = viewModel.VideoId,
-            //    VideoStartTime = viewModel.VideoStartTime,
-            //    VideoEndTime = viewModel.VideoEndTime,
-            //    Address1 = viewModel.Address1,
-            //    Address2 = viewModel.Address2,
-            //    City = viewModel.City,
-            //    State = viewModel.State,
-            //    Zipcode = viewModel.Zipcode,
-            //    IsDeleted = false,
-            //    IsActive = false,
-            //    ImageUrl = "logo.png"
-            //};
-
-            ////create new location
-            // _context.Location.Add(location);
-            //await _context.SaveChangesAsync();
-
-            ////check if there is a file attatched
-
-            //if (viewModel.File != null && viewModel.File.Length > 0)
-            //{
-
-            //    //create filname based on created location ID
-            //    int fileName = location.LocationId;
-
-            //   //create path and insert image with original filename
-
-            //    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
-            //    {
-            //        viewModel.File.CopyTo(fileStream);
-            //        fileStream.Flush();
-            //    }
-
-            //    //replace original filename with location ID filename, keeping extension
-
-            //    FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
-            //    currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension);
-
-            //    // update location with new filename
-
-            //    location.ImageUrl = fileName + currentFile.Extension;
-            //    _context.Entry(location).State = EntityState.Modified;
-            //    await _context.SaveChangesAsync();
-
-            //    return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
-            //}
-
-            //return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
+            }           
         }
 
         //PUT for IMAGE update only /uploadImage/{id} of location
         
-        [HttpPut(Api.Location.UploadImage)]
-        public async Task<ActionResult<Location>> UploadImage(IFormFile file, [FromRoute]int id)
-        {
-            if (id > 0 && file != null && file.Length > 0)
-            {
-                if (!Directory.Exists(_environment.WebRootPath + "\\Upload\\"))
-                {
-                    Directory.CreateDirectory(_environment.WebRootPath + "\\Upload\\");
-                }
-
-                using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + file.FileName))
-                {
-                    file.CopyTo(fileStream);
-                    fileStream.Flush();
-                }
-
-                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + file.FileName);
-                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + id + currentFile.Extension, true);
-
-                var location = await _context.Location.FirstOrDefaultAsync(l => l.LocationId == id);
-
-                location.ImageUrl = id + currentFile.Extension;
-                location.DateEdited = DateTime.Now;
-
-               _context.Entry(location).State = EntityState.Modified;
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return Ok(location);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LocationExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
-            return NotFound();
-        }
+        
 
 
 
