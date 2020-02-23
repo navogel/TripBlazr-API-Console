@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { createAuthHeaders } from '../../API/userManager';
-import AccountManager from '../../API/accountManager';
 import Mapper from '../map/AccountMapper';
 
 class AccountDetails extends Component {

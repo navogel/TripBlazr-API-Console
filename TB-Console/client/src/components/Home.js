@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { createAuthHeaders } from '../API/userManager';
 import AccountManager from '../API/accountManager';
 import AccountMapper from './map/AccountMapper';
 import 'leaflet/dist/leaflet.css';
-import { Link } from 'react-router-dom';
 class Home extends Component {
     state = {
         values: [],

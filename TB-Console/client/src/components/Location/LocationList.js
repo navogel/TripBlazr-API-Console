@@ -16,7 +16,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Checkbox from '@material-ui/core/Checkbox';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import LocationDrawer from './EditLocationDrawer';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -276,7 +275,6 @@ class LocationList extends Component {
                 exclusive
                 onChange={this.handleChange}
                 aria-label='text primary button group'
-                exclusive
               >
                 <ToggleButton
                   key={1}

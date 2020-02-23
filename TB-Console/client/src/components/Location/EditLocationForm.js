@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
 import LocationManager from '../../API/LocationManager';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import ReactDOM from 'react-dom';
 //import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
 import LocationDetailsMapper from '../map/LocationDetailsMapper';
-import IconButton from '@material-ui/core/IconButton';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import PropTypes from 'prop-types';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import { Link } from 'react-router-dom';
 import tagManager from '../../API/tagManager';
 import CloseIcon from '@material-ui/icons/Close';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -303,7 +296,7 @@ class EditLocationForm extends Component {
           primaryCategory: ''
         });
 
-        let primaryCategory = data.categories.find(c => c.isPrimary == true);
+        let primaryCategory = data.categories.find(c => c.isPrimary === true);
         if (primaryCategory) {
           this.setState({
             primaryCategory: primaryCategory.categoryId

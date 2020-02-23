@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { firstLetterCase } from '../../modules/helpers';
 import LocationManager from '../../API/LocationManager';
 import Button from '@material-ui/core/Button';

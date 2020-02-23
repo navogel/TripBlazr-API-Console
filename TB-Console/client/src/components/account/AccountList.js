@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { createAuthHeaders } from '../../API/userManager';
 import AccountManager from '../../API/accountManager';
 import AccountMapper from '../map/AccountMapper';
 import { Link } from 'react-router-dom';

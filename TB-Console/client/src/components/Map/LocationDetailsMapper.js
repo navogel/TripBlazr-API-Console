@@ -7,9 +7,9 @@ import {
   Tooltip,
   FeatureGroup
 } from 'react-leaflet';
-import Token from '../../Token';
+import Token from '../../token';
 import L from 'leaflet';
-import GeoSearch from './Geosearch';
+import GeoSearch from './geosearch';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';

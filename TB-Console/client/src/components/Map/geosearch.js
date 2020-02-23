@@ -1,6 +1,6 @@
 import { MapControl, withLeaflet } from 'react-leaflet';
 import L from 'leaflet';
-import Token from '../../Token';
+import Token from '../../token';
 //import { divIcon } from 'leaflet';
 
 class GeoSearch extends MapControl {
