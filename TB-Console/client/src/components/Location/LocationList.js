@@ -255,9 +255,11 @@ class LocationList extends Component {
         </section>
 
         <div className='locationRow'>
-          <DialogTitle className='modalTitle'>
-            {`${this.state.city}'s Locations`}
-          </DialogTitle>
+          {this.state.accountId && (
+            <DialogTitle className='modalTitle'>
+              {`${this.state.city}'s Locations`}
+            </DialogTitle>
+          )}
           <ToggleButtonGroup
             value={this.state.alignment}
             size='small'
