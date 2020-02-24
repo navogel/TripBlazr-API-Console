@@ -25,37 +25,31 @@ namespace TripBlazrConsole.Services
         {
             _context = context;
         }
-        public Task<LocationTagResponse> AddLocationTags(LocationTagRequest request)
+        public async Task<LocationTagResponse> AddLocationTags(LocationTagRequest request)
         {
-            try
-            {
-                var locationId = request.LocationId;
-                List<LocationTag> locationTags = new List<LocationTag>();
+            var locationId = request.LocationId;
 
-                request.Tags.ForEach(tag => locationTags.Add(
-                    new LocationTag
-                    {
-                        LocationId = locationId,
-                        TagId = tag.TagId
-                    }
-                 ));
+            List<LocationTag> locationTags = new List<LocationTag>();
 
-                _context.LocationTag.AddRange(locationTags);
-
-                _context.SaveChanges();
-
-                var response = new LocationTagResponse
+            request.Tags.ForEach(tag => locationTags.Add(
+                new LocationTag
                 {
                     LocationId = locationId,
-                    LocationTags = locationTags
-                };
+                    TagId = tag.TagId
+                }
+                ));
 
-            return Task.FromResult(response);
+            _context.LocationTag.AddRange(locationTags);
 
-            } catch (Exception ex)
+            await _context.SaveChangesAsync();
+
+            var response = new LocationTagResponse
             {
-                return null;
-            }
+                LocationId = locationId,
+                LocationTags = locationTags
+            };
+
+            return response;   
         }
 
         public async Task<LocationTag> DeleteTag(int locationId, int tagId)
@@ -64,15 +58,8 @@ namespace TripBlazrConsole.Services
                 .FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
 
             _context.LocationTag.Remove(tagToDelete);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
+ 
+            await _context.SaveChangesAsync();
 
             return tagToDelete;
         }

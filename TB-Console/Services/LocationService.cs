@@ -50,9 +50,8 @@ namespace TripBlazrConsole.Services
         //Console API get all locations with UserId check
         public async Task<IEnumerable<LocationViewModel>> GetConsoleLocations(int id, string search, string category, string tag, bool? isActive, string userId)
         {
-            //exclude parking lots by videoId
-            string excludeId = "8A__mpnWBT8";
-            //initial query restricting by account
+            string excludeParkingByVideoId = "8A__mpnWBT8";
+
             var query = _context.Location
                 .Include(l => l.Hours)
                 .Include(l => l.LocationCategories)
@@ -60,8 +59,7 @@ namespace TripBlazrConsole.Services
                 .Include(l => l.LocationTags)
                     .ThenInclude(c => c.Tag)
                 .Where(q => q.AccountId == id && q.IsDeleted != true)
-                .Where(q => q.VideoId != excludeId)
-                //verify user has access to this account
+                .Where(q => q.VideoId != excludeParkingByVideoId)
                 .Where(l => l.Account.AccountUsers.Any(au => au.ApplicationUserId == userId))
                 .OrderByDescending(l => l.DateCreated)
                 .AsQueryable();
@@ -93,7 +91,6 @@ namespace TripBlazrConsole.Services
                 query = query.Where(q => q.IsActive == true);
             };
 
-            //create location object after filtering
             var locations = await query
 
             .Select(l => _mapper.Map<LocationViewModel>(l)).ToListAsync();
@@ -144,29 +141,23 @@ namespace TripBlazrConsole.Services
                 ImageUrl = "logo.png"
             };
 
-            //create new location
             _context.Location.Add(location);
             await _context.SaveChangesAsync();
 
-            //check if there is a file attatched
             if (viewModel.File != null && viewModel.File.Length > 0)
             {
-                //create filname based on created location ID
-                int fileName = location.LocationId;
+                int newImageFileName = location.LocationId;
 
-                //create path and insert image with original filename
                 using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
                 {
                     viewModel.File.CopyTo(fileStream);
                     fileStream.Flush();
                 }
 
-                //replace original filename with location ID filename, keeping extension
                 FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
-                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension);
+                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + newImageFileName + currentFile.Extension);
 
-                // update location with new filename
-                location.ImageUrl = fileName + currentFile.Extension;
+                location.ImageUrl = newImageFileName + currentFile.Extension;
 
                 _context.Entry(location).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -210,21 +201,18 @@ namespace TripBlazrConsole.Services
 
             if (viewModel.File != null && viewModel.File.Length > 0)
             {
-                //create filname based on created location ID
-                int fileName = locationFromDb.LocationId;
+                int newImageFileName = locationFromDb.LocationId;
 
-                //create path and insert image with original filename
                 using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName))
                 {
                     viewModel.File.CopyTo(fileStream);
                     fileStream.Flush();
                 }
-                //replace original filename with location ID filename, keeping extension
-                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
-                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + fileName + currentFile.Extension, true);
 
-                // update location with new filename
-                locationFromDb.ImageUrl = fileName + currentFile.Extension;
+                FileInfo currentFile = new FileInfo(_environment.WebRootPath + "\\Upload\\" + viewModel.File.FileName);
+                currentFile.MoveTo(currentFile.Directory.FullName + "\\" + newImageFileName + currentFile.Extension, true);
+
+                locationFromDb.ImageUrl = newImageFileName + currentFile.Extension;
 
                 _context.Entry(locationFromDb).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -256,25 +244,9 @@ namespace TripBlazrConsole.Services
             }
 
             _context.Entry(location).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LocationExists(id))
-                {
-                    //what to throw here???
-                    throw;
-                }
-                else
-                {
-                    //and here???
-                    throw;
-                }
-            }
-
+        
+            await _context.SaveChangesAsync();
+            
             return location;
         }
 
@@ -290,29 +262,9 @@ namespace TripBlazrConsole.Services
 
             _context.Update(location);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LocationExists(id))
-                {
-                    throw;
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _context.SaveChangesAsync();
+            
             return location;
-        }
-
-        //helper function to check if location exists
-        private bool LocationExists(int id)
-        {
-            return _context.Location.Any(e => e.LocationId == id);
         }
     }
 }
