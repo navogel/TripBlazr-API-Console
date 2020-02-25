@@ -25,38 +25,43 @@ namespace TripBlazrConsole.Services
         {
             _context = context;
         }
-        public Task<LocationTagResponse> AddLocationTags(LocationTagRequest request)
+        public async Task<LocationTagResponse> AddLocationTags(LocationTagRequest request)
         {
-            try
-            {
-                var locationId = request.LocationId;
-                List<LocationTag> locationTags = new List<LocationTag>();
+            var locationId = request.LocationId;
 
-                request.Tags.ForEach(tag => locationTags.Add(
-                    new LocationTag
-                    {
-                        LocationId = locationId,
-                        TagId = tag.TagId
-                    }
-                 ));
+            List<LocationTag> locationTags = new List<LocationTag>();
 
-                _context.LocationTag.AddRange(locationTags);
-
-                _context.SaveChanges();
-
-                var response = new LocationTagResponse
+            request.Tags.ForEach(tag => locationTags.Add(
+                new LocationTag
                 {
                     LocationId = locationId,
-                    LocationTags = locationTags
-                };
+                    TagId = tag.TagId
+                }
+                ));
 
+            _context.LocationTag.AddRange(locationTags);
 
+            await _context.SaveChangesAsync();
 
-                return Task.FromResult(response);
-            } catch (Exception ex)
+            var response = new LocationTagResponse
             {
-                return null;
-            }
+                LocationId = locationId,
+                LocationTags = locationTags
+            };
+
+            return response;   
+        }
+
+        public async Task<LocationTag> DeleteTag(int locationId, int tagId)
+        {
+            var tagToDelete = await _context.LocationTag
+                .FirstOrDefaultAsync(lt => lt.LocationId == locationId && lt.TagId == tagId);
+
+            _context.LocationTag.Remove(tagToDelete);
+ 
+            await _context.SaveChangesAsync();
+
+            return tagToDelete;
         }
     }
 }

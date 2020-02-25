@@ -404,6 +404,14 @@ h3 {
 .tagWrapper .MuiPaper-root {
   margin: auto;
   background-color: #7b88a3cc !important;
+  padding: 0em;
+  margin-left: 1em;
+  margin-right: 1em;
+  border-radius: 5px;
+}
+
+.tagWrapper .MuiPaper-root .MuiChip-root {
+  margin: 7px;
 }
 
 /* .MuiTableCell-root {

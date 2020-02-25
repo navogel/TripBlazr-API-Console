@@ -62,6 +62,7 @@ namespace TripBlazrConsole.Controllers
             {
                 var userId = HttpContext.GetUserId();
 
+
                 var account = await _context.Account
                         .Include(a => a.AccountUsers)
 

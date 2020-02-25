@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 import LocationManager from '../../API/LocationManager';
 import accountManager from '../../API/accountManager';
 import './Location.css';
@@ -44,7 +45,9 @@ class LocationList extends Component {
     searchTarget: [],
     tagFilter: '',
     currentSearchCode: 1,
-    alignment: 'center'
+    alignment: 'center',
+    //redirect if no authorization
+    toLogin: false
   };
 
   //spice for standard location array
@@ -107,6 +110,7 @@ class LocationList extends Component {
   };
 
   getLocations = () => {
+    //this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -120,6 +124,7 @@ class LocationList extends Component {
   };
 
   getActiveLocations = () => {
+    // this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -133,6 +138,7 @@ class LocationList extends Component {
   };
 
   getInactiveLocations = () => {
+    //this.setState({ loading: true });
     LocationManager.getAllLocationsByAccount(
       this.props.accountId,
       this.state.search,
@@ -174,21 +180,28 @@ class LocationList extends Component {
   componentDidMount() {
     // console.log('im locations list page', this.props);
     accountManager.getAccountById(this.props.accountId).then(data => {
-      this.setState({
-        accountId: data.accountId,
-        city: data.city,
-        accountName: data.name,
-        cityLat: data.latitude,
-        cityLng: data.longitude
-      });
-      console.log('account info', data);
+      console.log('response data', data);
+      if (data.response === 'not authorized') {
+        this.setState({ toLogin: true });
+      } else {
+        this.setState({
+          accountId: data.accountId,
+          city: data.city,
+          accountName: data.name,
+          cityLat: data.latitude,
+          cityLng: data.longitude
+        });
+        console.log('account info', data);
+        this.getLocations();
+      }
     });
-
-    this.getLocations();
   }
 
   render() {
     console.log('search target state', this.state.searchTarget);
+    if (this.state.toLogin === true) {
+      return <Redirect to='/login' />;
+    }
     return (
       <>
         <section className='section-content'>
@@ -240,6 +253,46 @@ class LocationList extends Component {
             <SwitchView changeView={this.changeView} />
           </div>
         </section>
+
+        <div className='locationRow'>
+          {this.state.accountId && (
+            <DialogTitle className='modalTitle'>
+              {`${this.state.city}'s Locations`}
+            </DialogTitle>
+          )}
+          <ToggleButtonGroup
+            value={this.state.alignment}
+            size='small'
+            exclusive
+            onChange={this.handleChange}
+            aria-label='text primary button group'
+            exclusive
+          >
+            <ToggleButton
+              key={1}
+              onClick={e => this.getActiveLocations()}
+              value='left'
+            >
+              Active
+            </ToggleButton>
+
+            <ToggleButton
+              className='middleToggle'
+              key={2}
+              onClick={e => this.getLocations()}
+              value='center'
+            >
+              All
+            </ToggleButton>
+            <ToggleButton
+              key={3}
+              onClick={e => this.getInactiveLocations()}
+              value='right'
+            >
+              Inactive
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
         {this.state.loading && (
           <div className='spinner'>
             <CircularProgress />
@@ -266,43 +319,6 @@ class LocationList extends Component {
 
         {this.state.accountId && this.state.loading === false && (
           <>
-            <div className='locationRow'>
-              <DialogTitle className='modalTitle'>
-                {"Nashville's Locations"}
-              </DialogTitle>
-              <ToggleButtonGroup
-                value={this.state.alignment}
-                size='small'
-                exclusive
-                onChange={this.handleChange}
-                aria-label='text primary button group'
-                exclusive
-              >
-                <ToggleButton
-                  key={1}
-                  onClick={e => this.getActiveLocations()}
-                  value='left'
-                >
-                  Active
-                </ToggleButton>
-
-                <ToggleButton
-                  className='middleToggle'
-                  key={2}
-                  onClick={e => this.getLocations()}
-                  value='center'
-                >
-                  All
-                </ToggleButton>
-                <ToggleButton
-                  key={3}
-                  onClick={e => this.getInactiveLocations()}
-                  value='right'
-                >
-                  Inactive
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </div>
             {this.state.cardView ? (
               <>
                 <div className='container-cards'>
