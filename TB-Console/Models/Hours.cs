@@ -14,11 +14,9 @@ namespace TripBlazrConsole.Models
         [Required]
 
         [JsonIgnore]
-
         public int LocationId { get; set; }
 
         [JsonIgnore]
-
         public Location Location { get; set; }
 
         [Required]

@@ -24,11 +24,28 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/Hours
         [HttpGet("ByLocation/{id}")]
-        public async Task<ActionResult<IEnumerable<Hours>>> GetHoursByLocation(int id)
+        public async Task<ActionResult<IEnumerable<HoursViewModel>>> GetHoursByLocation(int id)
         {
-            return await _context.Hours
+            var locations = await _context.Hours
                 .Where(h => h.LocationId == id)
                 .ToListAsync();
+
+            List<HoursViewModel> locationHours = new List<HoursViewModel>();
+
+            locations.ForEach(hours => locationHours.Add(
+                new HoursViewModel
+                {
+                    HoursId = hours.HoursId,
+                    LocationId = hours.LocationId,
+                    DayCode = hours.DayCode,
+                    Open = hours.Open,
+                    Close = hours.Close,
+                    Is24Hours = hours.Is24Hours,
+                    IsClosed = hours.IsClosed
+                }));
+
+            return locationHours;
+
         }
 
         // GET: api/Hours/5

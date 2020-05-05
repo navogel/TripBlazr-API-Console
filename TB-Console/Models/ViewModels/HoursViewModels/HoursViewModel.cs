@@ -18,11 +18,7 @@ namespace TripBlazrConsole.Models.ViewModels.HoursViewModels
         [Range(1, 7, ErrorMessage = "Day Code must be between 1 and 7")]
         public int DayCode { get; set; }
 
-       
-
         public string Open { get; set; }
-
-        
 
         public string Close { get; set; }
 

@@ -97,6 +97,9 @@ class EditLocationForm extends Component {
     availableTags: [],
     tagsToAdd: [],
 
+    //hours
+    hours: [],
+
     //page state
     loadingStatus: false,
     labelWidth: 0
@@ -251,7 +254,8 @@ class EditLocationForm extends Component {
       isActive: this.props.location.isActive,
       imageUrl: this.props.location.imageUrl || '',
       tags: this.props.location.tags || '',
-      primaryCategory: ''
+      primaryCategory: '',
+      hours: this.props.location.hours || ''
     });
 
     let primaryCategory = this.props.location.categories.find(
@@ -302,7 +306,8 @@ class EditLocationForm extends Component {
           isActive: data.isActive,
           imageUrl: data.imageUrl || '',
           tags: data.tags || '',
-          primaryCategory: ''
+          primaryCategory: '',
+          hours: data.hours || ''
         });
 
         let primaryCategory = data.categories.find(c => c.isPrimary == true);
