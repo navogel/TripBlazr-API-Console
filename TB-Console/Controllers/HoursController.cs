@@ -24,11 +24,28 @@ namespace TripBlazrConsole.Controllers
 
         // GET: api/Hours
         [HttpGet("ByLocation/{id}")]
-        public async Task<ActionResult<IEnumerable<Hours>>> GetHoursByLocation(int id)
+        public async Task<ActionResult<IEnumerable<HoursViewModel>>> GetHoursByLocation(int id)
         {
-            return await _context.Hours
+            var locations = await _context.Hours
                 .Where(h => h.LocationId == id)
                 .ToListAsync();
+
+            List<HoursViewModel> locationHours = new List<HoursViewModel>();
+
+            locations.ForEach(hours => locationHours.Add(
+                new HoursViewModel
+                {
+                    HoursId = hours.HoursId,
+                    LocationId = hours.LocationId,
+                    DayCode = hours.DayCode,
+                    Open = hours.Open,
+                    Close = hours.Close,
+                    Is24Hours = hours.Is24Hours,
+                    IsClosed = hours.IsClosed
+                }));
+
+            return locationHours;
+
         }
 
         // GET: api/Hours/5
@@ -49,26 +66,58 @@ namespace TripBlazrConsole.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<HoursViewModel>> PostHours(HoursViewModel viewModel)
+        public async Task<ActionResult<LocationHours>> PostHours(LocationHours request)
         {
-            try
-            {
-                var hours = new Hours()
-                {
-                    LocationId = viewModel.LocationId,
-                    DayCode = viewModel.DayCode,
-                    Open = viewModel.Open,
-                    Close = viewModel.Close
-                };
-                _context.Hours.Add(hours);
-                await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetHours", new { id = hours.HoursId }, hours);
-            }
-            catch (Exception ex)
+            var locationId = request.LocationId;
+
+            var hoursToDelete = await _context.Hours
+                .Where(h => h.LocationId == locationId)
+                .ToListAsync();
+
+            _context.Hours.RemoveRange(hoursToDelete);
+            await _context.SaveChangesAsync();
+
+            List<Hours> locationHours = new List<Hours>();
+
+            request.Hours.ForEach(hours => locationHours.Add(
+                new Hours
+                {
+                    LocationId = locationId,
+                    DayCode = hours.DayCode,
+                    Open = hours.Open,
+                    Close = hours.Close,
+                    Is24Hours = hours.Is24Hours,
+                    IsClosed = hours.IsClosed
+                }
+                ));
+
+            _context.Hours.AddRange(locationHours);
+
+            await _context.SaveChangesAsync();
+
+            var response = new LocationHours
             {
-                return BadRequest("bad request");
-            }
+                LocationId = locationId,
+                Hours = locationHours
+            };
+
+            return response;
+            //var hours = new Hours()
+            //    {
+            //        LocationId = viewModel.LocationId,
+            //        DayCode = viewModel.DayCode,
+            //        Open = viewModel.Open,
+            //        Close = viewModel.Close,
+            //        Is24Hours = viewModel.Is24Hours,
+            //        IsClosed = viewModel.IsClosed
+            //    };
+            //    _context.Hours.Add(hours);
+            //    await _context.SaveChangesAsync();
+
+            //    return CreatedAtAction("GetHours", new { id = hours.HoursId }, hours);
+
+
 
         }
 
